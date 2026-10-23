@@ -1,0 +1,67 @@
+name: Build and deploy ASP.Net Core app to Azure Web App - rrhh-gobierno-regional
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  PROYECTO_WEB: Proyecto-Evo-RRLL/Proyecto-Evo-RRLL.csproj
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore ${{ env.PROYECTO_WEB }}
+
+      - name: Build
+        run: dotnet build ${{ env.PROYECTO_WEB }} --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish ${{ env.PROYECTO_WEB }} -c Release --no-build -o "${{ github.workspace }}/publicado"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: "${{ github.workspace }}/publicado"
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+          path: ./publicado
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_88C347DC9EFA4127BF4F5F4187500704 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A95750996B424860ADCB3CF587E8472E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A495674B4EA44A38B8CDA3C47C901ED5 }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'rrhh-gobierno-regional'
+          slot-name: 'Production'
+          package: ./publicado
