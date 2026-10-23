@@ -1,0 +1,86 @@
+@model EstructOrganiz
+@{
+    ViewData["Title"] = Model.idAreaOrganiz > 0 ? "Editar unidad orgánica" : "Nueva unidad orgánica";
+    var areas = ViewBag.Areas as List<EstructOrganiz> ?? new List<EstructOrganiz>();
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var year = ViewBag.Year as int? ?? Model.Year;
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">@(Model.idAreaOrganiz > 0 ? "Editar unidad orgánica" : "Nueva unidad orgánica")</h3>
+        <span class="text-secondary small">Año @year - complete los datos y guarde</span>
+    </div>
+    <a asp-action="Index" asp-route-year="@year" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="@(Model.idAreaOrganiz > 0 ? "Editar" : "Nuevo")" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input type="hidden" asp-for="Year" />
+    @if (Model.idAreaOrganiz > 0)
+    {
+        <input type="hidden" asp-for="idAreaOrganiz" />
+    }
+
+    <div class="card mb-3">
+        <div class="card-header fw-semibold"><i class="bi bi-diagram-3 me-2"></i>Datos generales</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Área organizacional <span class="text-danger">*</span></label>
+                    <input asp-for="AreaOrganizacional" class="form-control" />
+                    <span asp-validation-for="AreaOrganizacional" class="text-danger small"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Abreviatura</label>
+                    <input asp-for="Abrev" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Sigla</label>
+                    <input asp-for="Sigla" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Depende de</label>
+                    <select asp-for="idDependeDe" class="form-select">
+                        <option value="">(ninguna)</option>
+                        @foreach (var a in areas.Where(x => !(x.Year == Model.Year && x.idAreaOrganiz == Model.idAreaOrganiz)))
+                        {
+                            <option value="@a.idAreaOrganiz" selected="@(Model.idDependeDe == a.idAreaOrganiz)">@a.AreaOrganizacional</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Jefe de unidad</label>
+                    <select asp-for="IdEmpleado" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var e in empleados)
+                        {
+                            <option value="@e.Id" selected="@(Model.IdEmpleado == e.Id)">@e.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Año al que depende</label>
+                    <input asp-for="YearDe" type="number" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Misión</label>
+                    <textarea asp-for="Mision" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Visión</label>
+                    <textarea asp-for="Vision" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+        <a asp-action="Index" asp-route-year="@year" class="btn btn-outline-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

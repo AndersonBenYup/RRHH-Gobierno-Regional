@@ -1,0 +1,63 @@
+@model Capacitacion
+@{
+    ViewData["Title"] = "Curso de capacitación";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var esNuevo = Model.IdCapacitacion == 0;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>@(esNuevo ? "Nuevo curso" : $"Editar curso #{Model.IdCapacitacion}")</h3>
+    <a asp-action="Index" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="@(esNuevo ? "Nuevo" : "Editar")" asp-route-id="@(esNuevo ? null : Model.IdCapacitacion)" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <div class="card">
+        <div class="card-body">
+            @if (!esNuevo)
+            {
+                <input type="hidden" asp-for="IdCapacitacion" />
+            }
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre del curso *</label>
+                    <input asp-for="NombreCurso" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Institución organizadora</label>
+                    <input asp-for="InstitucionOrganizadora" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Fecha inicio</label>
+                    <input asp-for="FechaInicio" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Fecha fin</label>
+                    <input asp-for="FechaFin" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">N° horas</label>
+                    <input asp-for="NumHoras" class="form-control" placeholder="Ej. 40" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Empleado</label>
+                    <select asp-for="IdEmpleado" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var e in empleados)
+                        {
+                            <option value="@e.Id">@e.Nombre</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,49 @@
+@model List<RolFila>
+@{
+    ViewData["Title"] = "Roles";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Roles</h3>
+        <span class="text-secondary small">@Model.Count rol(es)</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Usuarios" class="btn btn-outline-primary btn-sm"><i class="bi bi-person me-1"></i>Usuarios</a>
+        <a asp-action="RolNuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo rol</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>Rol</th>
+                <th>Sistema</th>
+                <th>Usuarios</th>
+                <th style="width:160px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="4" class="text-center text-secondary py-4">Sin roles.</td></tr>
+            }
+            @foreach (var f in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@f.Rol.Descripcion</td>
+                    <td>@f.Rol.IdSistema</td>
+                    <td>@f.Usuarios</td>
+                    <td>
+                        <a asp-action="RolAccesos" asp-route-id="@f.Rol.IdRol" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Permisos"><i class="bi bi-key"></i></a>
+                        <a asp-action="RolEditar" asp-route-id="@f.Rol.IdRol" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="RolEliminar" asp-route-id="@f.Rol.IdRol" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar el rol @(f.Rol.Descripcion)?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,72 @@
+@model List<Local>
+@{
+    ViewData["Title"] = "Locales";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Locales</h3>
+        <span class="text-secondary small">@Model.Count registro(s)</span>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver a unidades</a>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header fw-semibold"><i class="bi bi-plus-lg me-1"></i>Nuevo local</div>
+    <div class="card-body">
+        <form asp-action="LocalNuevo" method="post" class="d-flex gap-2 align-items-end flex-wrap">
+            <div style="min-width:280px">
+                <label class="form-label">Nombre del local <span class="text-danger">*</span></label>
+                <input name="NombreLocal" class="form-control" required />
+            </div>
+            <div>
+                <label class="form-label">Estado</label>
+                <select name="Estado" class="form-select">
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>Local</th>
+                <th>Estado</th>
+                <th style="width:70px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="3" class="text-center text-secondary py-4">Sin locales.</td></tr>
+            }
+            @foreach (var l in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@l.NombreLocal</td>
+                    <td>
+                        @if (l.Estado == true)
+                        {
+                            <span class="badge rounded-pill text-bg-success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge rounded-pill text-bg-secondary">Inactivo</span>
+                        }
+                    </td>
+                    <td>
+                        <form asp-action="LocalEliminar" asp-route-idLocal="@l.idLocal" method="post"
+                              onsubmit="return confirm('¿Eliminar este local?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,67 @@
+@model List<Capacitacion>
+@{
+    ViewData["Title"] = "Capacitación";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Capacitaciones</h3>
+        @if (idEmpleado is not null)
+        {
+            <span class="text-secondary small">Empleado: @ViewBag.NombreEmpleado</span>
+        }
+    </div>
+    <a asp-action="Nuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo curso</a>
+</div>
+
+<partial name="_FiltroEmpleado" model="@idEmpleado" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>Curso</th>
+                <th>Institución</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Horas</th>
+                <th>Empleado</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center text-secondary py-4">Sin registros.</td></tr>
+            }
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@c.NombreCurso</td>
+                    <td>@c.InstitucionOrganizadora</td>
+                    <td>@c.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                    <td>@c.FechaFin?.ToString("dd/MM/yyyy")</td>
+                    <td>@c.NumHoras</td>
+                    <td>
+                        @{ var emp = empleados.FirstOrDefault(e => e.Id == c.IdEmpleado); }
+                        @emp.Nombre
+                    </td>
+                    <td>
+                        <a asp-action="Editar" asp-route-id="@c.IdCapacitacion" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Eliminar" asp-route-id="@c.IdCapacitacion" asp-route-idEmpleado="@idEmpleado" method="post" class="d-inline"
+                              onsubmit="return confirm('¿Eliminar este curso?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Estudios" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-journal-text me-1"></i>Estudios</a>
+    <a asp-action="Titulos" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-award me-1"></i>Títulos</a>
+</div>

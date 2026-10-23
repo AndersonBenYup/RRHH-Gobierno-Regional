@@ -1,0 +1,65 @@
+@model List<TitulosEmpleado>
+@{
+    ViewData["Title"] = "Títulos";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Títulos</h3>
+        @if (idEmpleado is not null)
+        {
+            <span class="text-secondary small">Empleado: @ViewBag.NombreEmpleado</span>
+        }
+    </div>
+    <a asp-action="TituloNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo título</a>
+</div>
+
+<partial name="_FiltroEmpleado" model="@idEmpleado" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>N° colegiatura</th>
+                <th>Denominación / grado</th>
+                <th>Institución</th>
+                <th>Fecha</th>
+                <th>Empleado</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="6" class="text-center text-secondary py-4">Sin registros.</td></tr>
+            }
+            @foreach (var t in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@t.NumColegiatura</td>
+                    <td>@t.DenominacionGrado</td>
+                    <td>@t.Institucion</td>
+                    <td>@t.Fecha?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @{ var emp = empleados.FirstOrDefault(e => e.Id == t.IdEmpleado); }
+                        @emp.Nombre
+                    </td>
+                    <td>
+                        <a asp-action="TituloEditar" asp-route-id="@t.IdTitulo" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="TituloEliminar" asp-route-id="@t.IdTitulo" asp-route-idEmpleado="@idEmpleado" method="post" class="d-inline"
+                              onsubmit="return confirm('¿Eliminar este título?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Index" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-mortarboard me-1"></i>Capacitaciones</a>
+    <a asp-action="Estudios" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-journal-text me-1"></i>Estudios</a>
+</div>

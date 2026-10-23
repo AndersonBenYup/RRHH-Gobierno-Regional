@@ -1,0 +1,157 @@
+@model Vivienda
+@{
+    ViewData["Title"] = Model.IdVivienda == 0 ? "Registrar vivienda" : "Editar vivienda";
+    var esNuevo = Model.IdVivienda == 0;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">@ViewData["Title"]</h3>
+        <span class="text-muted">Empleado @ViewBag.IdEmpleado — @ViewBag.NombreEmpleado</span>
+    </div>
+    <a asp-action="Index" asp-route-idEmpleado="@((int)ViewBag.IdEmpleado)" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="ViviendaForm" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="IdEmpleado" value="@ViewBag.IdEmpleado" />
+
+    <div class="card">
+        <div class="card-header fw-bold">Características</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Tenencia</label>
+                    <select name="IdTenencia" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var t in ViewBag.Tenencias as List<TenenciaViv> ?? new List<TenenciaViv>())
+                        {
+                            <option value="@t.IdTenencia" selected="@(Model.IdTenencia == t.IdTenencia)">@t.DescripTenencia</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tipo</label>
+                    <select name="IdTipo" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var t in ViewBag.Tipos as List<TipoViv> ?? new List<TipoViv>())
+                        {
+                            <option value="@t.IdTipo" selected="@(Model.IdTipo == t.IdTipo)">@t.DescripTipo</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Material</label>
+                    <select name="IdMaterial" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var m in ViewBag.Materiales as List<MaterialViv> ?? new List<MaterialViv>())
+                        {
+                            <option value="@m.IdMaterial" selected="@(Model.IdMaterial == m.IdMaterial)">@m.DescripMaterial</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Conservación</label>
+                    <select name="IdConservacion" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var c in ViewBag.Conservaciones as List<ConservacionViv> ?? new List<ConservacionViv>())
+                        {
+                            <option value="@c.IdConservacion" selected="@(Model.IdConservacion == c.IdConservacion)">@c.DescripConserva</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ubicación</label>
+                    <select name="IdUbicacion" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var u in ViewBag.Ubicaciones as List<UbicacionViv> ?? new List<UbicacionViv>())
+                        {
+                            <option value="@u.IdUbicacion" selected="@(Model.IdUbicacion == u.IdUbicacion)">@u.DescripUbicacion</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">N° dormitorios</label>
+                    <input name="NumDormitorio" class="form-control" value="@Model.NumDormitorio" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">N° servicios higiénicos</label>
+                    <input name="NumServHig" class="form-control" value="@Model.NumServHig" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">N° ambientes compartidos</label>
+                    <input name="NumCompart" class="form-control" value="@Model.NumCompart" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Personas por dormitorio</label>
+                    <input name="NumPerDorm" class="form-control" value="@Model.NumPerDorm" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card my-3">
+        <div class="card-header fw-bold">Servicios básicos</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Alumbrado</label>
+                    <select name="IdAlumbrado" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var a in ViewBag.Alumbrados as List<AlumbradoViv> ?? new List<AlumbradoViv>())
+                        {
+                            <option value="@a.IdAlumbrado" selected="@(Model.IdAlumbrado == a.IdAlumbrado)">@a.DescripAlumbrado</option>
+                        }
+                    </select>
+                    <input name="OtroAlumbrado" class="form-control mt-2" placeholder="Otro alumbrado..." value="@Model.OtroAlumbrado" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Agua</label>
+                    <select name="IdAgua" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var a in ViewBag.Aguas as List<AguaViv> ?? new List<AguaViv>())
+                        {
+                            <option value="@a.IdAgua" selected="@(Model.IdAgua == a.IdAgua)">@a.DescripAgua</option>
+                        }
+                    </select>
+                    <input name="OtroAgua" class="form-control mt-2" placeholder="Otro agua..." value="@Model.OtroAgua" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Excretas</label>
+                    <select name="IdExcretas" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var e in ViewBag.Excretas as List<ExcretasViv> ?? new List<ExcretasViv>())
+                        {
+                            <option value="@e.IdExcretas" selected="@(Model.IdExcretas == e.IdExcretas)">@e.DescripExcretas</option>
+                        }
+                    </select>
+                    <input name="OtroExcreta" class="form-control mt-2" placeholder="Otro excreta..." value="@Model.OtroExcreta" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card my-3">
+        <div class="card-header fw-bold">Servicios adicionales</div>
+        <div class="card-body">
+            @foreach (var s in ViewBag.Servicios as List<(ServicioViv Servicio, bool Tiene)> ?? new())
+            {
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="servicios" value="@s.Servicio.IdServicio" id="servicio-@s.Servicio.IdServicio" @(s.Tiene ? "checked" : "") />
+                    <label class="form-check-label" for="servicio-@s.Servicio.IdServicio">@s.Servicio.Descripcion</label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <label class="form-label">Observación</label>
+            <textarea name="Observacion" class="form-control" rows="2">@Model.Observacion</textarea>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </div>
+</form>

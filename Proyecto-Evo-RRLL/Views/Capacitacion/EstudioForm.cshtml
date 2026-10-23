@@ -1,0 +1,82 @@
+@model EstudiosRealizado
+@{
+    ViewData["Title"] = "Estudio";
+    var idEmpleado = ViewBag.IdEmpleado as int? ?? Model.IdEmpleado;
+    var esNuevo = Model.Correlativo == 0;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var tipos = ViewBag.TiposEstudio as List<TipoEstudio> ?? new List<TipoEstudio>();
+    var estados = ViewBag.EstadosEstudio as List<EstadoEstudio> ?? new List<EstadoEstudio>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>@(esNuevo ? "Nuevo estudio" : "Editar estudio")</h3>
+    <a asp-action="Estudios" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="@(esNuevo ? "EstudioNuevo" : "EstudioEditar")" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <div class="card">
+        <div class="card-body">
+            @if (!esNuevo)
+            {
+                <input type="hidden" asp-for="IdEmpleado" />
+                <input type="hidden" asp-for="IdTipoEstudios" />
+                <input type="hidden" asp-for="Correlativo" />
+            }
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Tipo de estudio *</label>
+                    <select asp-for="IdTipoEstudios" class="form-select" required>
+                        <option value="">(seleccionar)</option>
+                        @foreach (var t in tipos)
+                        {
+                            <option value="@t.IdTipoEstudios">@t.DescripTipoEst</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Centro de estudios</label>
+                    <input asp-for="CentroEstudios" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Especialidad</label>
+                    <input asp-for="Especialidad" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Año inicio</label>
+                    <input asp-for="FechaInicio" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Año fin</label>
+                    <input asp-for="FechaTermino" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Estado del estudio</label>
+                    <select asp-for="IdEstadoEstudio" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var es in estados)
+                        {
+                            <option value="@es.IdEstadoEstudio">@es.DescripEstadoEstudio</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Empleado</label>
+                    <select asp-for="IdEmpleado" class="form-select">
+                        @foreach (var e in empleados)
+                        {
+                            <option value="@e.Id">@e.Nombre</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

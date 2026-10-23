@@ -1,0 +1,75 @@
+@model RegAsisDiario
+@{
+    ViewData["Title"] = "Registro diario";
+    var esNuevo = Model.IdEmpleado == 0;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>@(esNuevo ? "Nuevo registro diario" : "Editar registro diario")</h3>
+    <a asp-action="RegDiario" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="@(esNuevo ? "RegDiarioNuevo" : "RegDiarioEditar")" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Fecha *</label>
+                    @if (esNuevo)
+                    {
+                        <input asp-for="Fecha" type="date" class="form-control" required />
+                    }
+                    else
+                    {
+                        <input asp-for="Fecha" type="date" class="form-control" required readonly />
+                    }
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Empleado *</label>
+                    @if (esNuevo)
+                    {
+                        <select asp-for="IdEmpleado" class="form-select" required>
+                            <option value="">(seleccionar)</option>
+                            @foreach (var e in empleados)
+                            {
+                                <option value="@e.Id">@e.Nombre</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="IdEmpleado" />
+                        <input class="form-control" value="@(empleados.FirstOrDefault(e => e.Id == Model.IdEmpleado).Nombre)" readonly />
+                    }
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Estado</label>
+                    <select asp-for="Estado" class="form-select">
+                        <option value="">-- Sin estado --</option>
+                        @foreach (var est in ViewBag.EstadosAsistencia as List<EstadoAsistencia> ?? new())
+                        {
+                            <option value="@est.Codigo">@(est.Descripcion ?? est.Codigo)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Minutos normales</label>
+                    <input asp-for="MinNormales" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Segundos de tardanza</label>
+                    <input asp-for="SegundosTarde" type="number" min="0" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

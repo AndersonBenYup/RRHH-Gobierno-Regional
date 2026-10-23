@@ -1,0 +1,48 @@
+@model List<RRHH_AcudeEnferm>
+@{
+    ViewData["Title"] = "A quién acudir en caso de enfermedad";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Opción: a quién acudir</h3>
+        <span class="text-secondary small">@Model.Count registro(s)</span>
+    </div>
+    <a asp-action="AcudeEnfermNuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva opción</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>Descripción</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="3" class="text-center text-secondary py-4">Sin opciones.</td></tr>
+            }
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@a.idAcudeEnferm</td>
+                    <td>@a.AcudeEnfermDescrip</td>
+                    <td>
+                        <a asp-action="AcudeEnfermEditar" asp-route-id="@a.idAcudeEnferm" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="AcudeEnfermEliminar" asp-route-id="@a.idAcudeEnferm" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar esta opción?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Index" class="btn btn-outline-primary btn-sm"><i class="bi bi-heart-pulse me-1"></i>Ficha de salud</a>
+    <a asp-action="Asegurados" class="btn btn-outline-secondary btn-sm"><i class="bi bi-people me-1"></i>Beneficiarios</a>
+</div>

@@ -1,0 +1,388 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+RecursosHumanos
+</name>
+</assembly>
+<members>
+<member name="P:RecursosHumanos.My.Resources.Resources.ResourceManager">
+	<summary>
+  Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
+</summary>
+</member><member name="P:RecursosHumanos.My.Resources.Resources.Culture">
+	<summary>
+  Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
+  búsquedas de recursos mediante esta clase de recurso con establecimiento inflexible de tipos.
+</summary>
+</member><member name="T:RecursosHumanos.My.Resources.Resources">
+	<summary>
+  Clase de recurso con establecimiento inflexible de tipos, para buscar cadenas traducidas, etc.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet_Porcentaje">
+	<summary>
+Represents a strongly typed in-memory cache of data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet_PorcentajeTableAdapters.QueriesTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_ExpLabDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_ExpLab_DatosDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Det_FamiliarDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Estudio_RealizadoDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Estudio_TituloDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Estudio_CapacitacionDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_CuadroPerDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_OficinaDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_CumpleDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Rep_cargosDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Ingreso_EgresoDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_DatosPersonalesDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Det_Familiar_SaludDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_ViviendaDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_FaltasDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_RepPermisosDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_RepAsisdiarriaDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_FechaIngresoDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Rep_profesionDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_busca_DisciplinaDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_ExpLabRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_ExpLab_DatosRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Det_FamiliarRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Estudio_RealizadoRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Estudio_TituloRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Estudio_CapacitacionRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_CuadroPerRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_OficinaRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_CumpleRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Rep_cargosRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Ingreso_EgresoRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_DatosPersonalesRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Det_Familiar_SaludRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_ViviendaRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_FaltasRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_RepPermisosRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_RepAsisdiarriaRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_FechaIngresoRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Rep_profesionRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_busca_DisciplinaRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_ExpLabRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_ExpLab_DatosRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Det_FamiliarRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Estudio_RealizadoRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Estudio_TituloRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Estudio_CapacitacionRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_CuadroPerRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_OficinaRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_CumpleRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Rep_cargosRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Ingreso_EgresoRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_DatosPersonalesRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_Det_Familiar_SaludRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Ficha_ViviendaRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_FaltasRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_RepPermisosRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_RepAsisdiarriaRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Report_FechaIngresoRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_Rep_profesionRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1.spRRHH_busca_DisciplinaRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1">
+	<summary>
+Represents a strongly typed in-memory cache of data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_ExpLabTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_ExpLab_DatosTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_Det_FamiliarTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_Estudio_RealizadoTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_Estudio_TituloTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_Estudio_CapacitacionTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Report_CuadroPerTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Report_OficinaTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Report_CumpleTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Rep_cargosTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_Ingreso_EgresoTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_DatosPersonalesTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_Det_Familiar_SaludTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Ficha_ViviendaTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_FaltasTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_RepPermisosTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_RepAsisdiarriaTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Report_FechaIngresoTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_Rep_profesionTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.spRRHH_busca_DisciplinaTableAdapter">
+	<summary>
+Represents the connection and commands used to retrieve and save data.
+</summary>
+</member><member name="M:RecursosHumanos.DataSet1TableAdapters.TableAdapterManager.UpdateUpdatedRows(RecursosHumanos.DataSet1,System.Collections.Generic.List{System.Data.DataRow},System.Collections.Generic.List{System.Data.DataRow})">
+	<summary>
+Update rows in top-down order.
+</summary>
+</member><member name="M:RecursosHumanos.DataSet1TableAdapters.TableAdapterManager.UpdateInsertedRows(RecursosHumanos.DataSet1,System.Collections.Generic.List{System.Data.DataRow})">
+	<summary>
+Insert rows in top-down order.
+</summary>
+</member><member name="M:RecursosHumanos.DataSet1TableAdapters.TableAdapterManager.UpdateDeletedRows(RecursosHumanos.DataSet1,System.Collections.Generic.List{System.Data.DataRow})">
+	<summary>
+Delete rows in bottom-up order.
+</summary>
+</member><member name="M:RecursosHumanos.DataSet1TableAdapters.TableAdapterManager.GetRealUpdatedRows(System.Data.DataRow[],System.Collections.Generic.List{System.Data.DataRow})">
+	<summary>
+Remove inserted rows that become updated rows after calling TableAdapter.Update(inserted rows) first
+</summary>
+</member><member name="M:RecursosHumanos.DataSet1TableAdapters.TableAdapterManager.UpdateAll(RecursosHumanos.DataSet1)">
+	<summary>
+Update all changes to the dataset.
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.TableAdapterManager.UpdateOrderOption">
+	<summary>
+Update Order Option
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.TableAdapterManager.SelfReferenceComparer">
+	<summary>
+Used to sort self-referenced table's rows
+</summary>
+</member><member name="T:RecursosHumanos.DataSet1TableAdapters.TableAdapterManager">
+	<summary>
+TableAdapterManager is used to coordinate TableAdapters in the dataset to enable Hierarchical Update scenarios
+</summary>
+</member>
+</members>
+</doc>

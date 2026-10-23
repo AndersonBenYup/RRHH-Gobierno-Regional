@@ -1,0 +1,154 @@
+@model EmpleadoDetalleViewModel
+@{
+    ViewData["Title"] = "Ficha del empleado";
+    var e = Model.Empleado;
+    var p = Model.Persona;
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Ficha del empleado</h3>
+        <span class="text-secondary small">#@Model.IdEmpleado · @Model.NombresCompletos</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Editar" asp-route-id="@Model.IdEmpleado" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                @if (Model.TieneFoto)
+                {
+                    <img src="@Url.Action("MostrarFoto", new { id = Model.IdEmpleado })" alt="Foto" class="rounded-circle object-fit-cover mb-3" style="width:120px;height:120px" />
+                }
+                else
+                {
+                    <div class="mx-auto rounded-circle bg-body-tertiary d-flex align-items-center justify-content-center text-secondary mb-3" style="width:120px;height:120px;font-size:3rem">
+                        <i class="bi bi-person"></i>
+                    </div>
+                }
+                <h5 class="mb-1">@Model.NombresCompletos</h5>
+                <div class="text-secondary small mb-2">
+                    @if (e?.Estado == "A")
+                    {
+                        <span class="badge rounded-pill text-bg-success"><i class="bi bi-check-circle me-1"></i>Activo</span>
+                    }
+                    else if (e?.Estado == "I")
+                    {
+                        <span class="badge rounded-pill text-bg-secondary"><i class="bi bi-dash-circle me-1"></i>Inactivo</span>
+                    }
+                    else
+                    {
+                        @(e?.Estado)
+                    }
+                </div>
+                <dl class="row text-start small mb-0">
+                    <dt class="col-5">Cargo</dt><dd class="col-7">@Model.Cargo</dd>
+                    <dt class="col-5">Área</dt><dd class="col-7">@Model.Area</dd>
+                    <dt class="col-5">Local</dt><dd class="col-7">@Model.Local</dd>
+                    <dt class="col-5">Horario</dt><dd class="col-7">@Model.Horario</dd>
+                    <dt class="col-5">Ingreso</dt><dd class="col-7">@e?.FechaIngreso?.ToString("dd/MM/yyyy")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header fw-semibold"><i class="bi bi-person-badge me-2"></i>Datos personales</div>
+            <div class="card-body">
+                <div class="row g-3 small">
+                    <div class="col-md-4"><label class="text-secondary">Nombres</label><div class="fw-semibold">@p?.Nombres</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Apellido paterno</label><div class="fw-semibold">@p?.Apellido_Paterno</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Apellido materno</label><div class="fw-semibold">@p?.Apellido_Materno</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Tipo documento</label><div class="fw-semibold">@Model.TipoDoc</div></div>
+                    <div class="col-md-3"><label class="text-secondary">N° documento</label><div class="fw-semibold">@p?.NumDocID</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Sexo</label><div class="fw-semibold">@e?.Sexo</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Fecha nacimiento</label><div class="fw-semibold">@p?.FechaNacimiento?.ToString("dd/MM/yyyy")</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Estado civil</label><div class="fw-semibold">@Model.EstadoCivil</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Nacionalidad</label><div class="fw-semibold">@Model.Nacionalidad</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Tipo persona</label><div class="fw-semibold">@p?.TipoPersona</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Dirección</label><div class="fw-semibold">@p?.Direccion</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Ubigeo</label><div class="fw-semibold" style="word-break:break-all">@(Model.Ubigeo ?? p?.IdUbigeo)</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Ubigeo dirección</label><div class="fw-semibold">@p?.UbigeoDireccion</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Teléfono</label><div class="fw-semibold">@p?.Telefono</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Celular</label><div class="fw-semibold">@p?.NumCelular</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Email</label><div class="fw-semibold" style="word-break:break-all">@p?.Email</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header fw-semibold"><i class="bi bi-briefcase me-2"></i>Datos laborales</div>
+            <div class="card-body">
+                <div class="row g-3 small">
+                    <div class="col-md-3"><label class="text-secondary">Tipo trabajador</label><div class="fw-semibold">@Model.TipoTrabajador</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Cargo</label><div class="fw-semibold">@Model.Cargo</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Área (año @e?.Year)</label><div class="fw-semibold">@Model.Area</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Local</label><div class="fw-semibold">@Model.Local</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Horario</label><div class="fw-semibold">@Model.Horario</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Estado</label><div class="fw-semibold">@e?.Estado</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Ingreso</label><div class="fw-semibold">@e?.FechaIngreso?.ToString("dd/MM/yyyy")</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Profesión</label><div class="fw-semibold">@e?.Profesion</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Grado instrucción</label><div class="fw-semibold">@e?.GradoInstruccion</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Brevete</label><div class="fw-semibold">@e?.Brevete</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Libreta militar</label><div class="fw-semibold">@e?.NumLibretaMilitar</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Cta. corriente</label><div class="fw-semibold">@e?.CtaCorriente</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Discapacidad</label><div class="fw-semibold">@Model.Discapacidad</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Exp. social</label><div class="fw-semibold">@e?.ExpSocial</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header fw-semibold"><i class="bi bi-shield-check me-2"></i>Seguridad social y pensiones</div>
+            <div class="card-body">
+                <div class="row g-3 small">
+                    <div class="col-md-3"><label class="text-secondary">AFP</label><div class="fw-semibold">@Model.AFP</div></div>
+                    <div class="col-md-3"><label class="text-secondary">N° AFP</label><div class="fw-semibold">@e?.NroAFP</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Fecha AFP</label><div class="fw-semibold">@e?.FechaAFP?.ToString("dd/MM/yyyy")</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Régimen pensión</label><div class="fw-semibold">@Model.RegimenPension</div></div>
+                    <div class="col-md-3"><label class="text-secondary">N° RUC</label><div class="fw-semibold">@e?.NumRUC</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Autogenerado salud</label><div class="fw-semibold">@e?.NumAutogenSalud</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Tipo sangre</label><div class="fw-semibold">@Model.TipoSangre</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Dcto. ley</label><div class="fw-semibold">@e?.DecLey</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header fw-semibold"><i class="bi bi-people me-2"></i>Datos sociales y familiares</div>
+            <div class="card-body">
+                <div class="row g-3 small">
+                    <div class="col-md-3"><label class="text-secondary">Jefe de hogar</label><div class="fw-semibold">@(e?.JefeHogar == true ? "Sí" : e?.JefeHogar == false ? "No" : "")</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Carga familiar</label><div class="fw-semibold">@e?.CargaFam</div></div>
+                    <div class="col-md-3"><label class="text-secondary">N° hijos</label><div class="fw-semibold">@e?.NumHijos</div></div>
+                    <div class="col-md-3"><label class="text-secondary">Vive con</label><div class="fw-semibold">@Model.ViveCon</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Obs. familiar</label><div class="fw-semibold">@e?.ObsFam</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Aspecto salud</label><div class="fw-semibold">@e?.AspecSalud</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Aspecto educación</label><div class="fw-semibold">@e?.AspecEducacion</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Aspecto recreación</label><div class="fw-semibold">@e?.AspecRecreacion</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Aspecto psicológico</label><div class="fw-semibold">@e?.AspecPsico</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Aspecto social</label><div class="fw-semibold">@e?.AspecSocial</div></div>
+                    <div class="col-md-12"><label class="text-secondary">Diagnóstico social</label><div class="fw-semibold">@e?.DiagnosSocial</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header fw-semibold"><i class="bi bi-file-earmark-text me-2"></i>Resoluciones y fechas institucionales</div>
+            <div class="card-body">
+                <div class="row g-3 small">
+                    <div class="col-md-4"><label class="text-secondary">Resol. ingreso Estado</label><div class="fw-semibold">@e?.NumResoIngreEsta</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Ingreso Estado</label><div class="fw-semibold">@e?.FechaIngreEstado?.ToString("dd/MM/yyyy")</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Fecha resol. ing. Estado</label><div class="fw-semibold">@e?.FechaResolIngreEsta?.ToString("dd/MM/yyyy")</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Resol. ingreso institución</label><div class="fw-semibold">@e?.NumResoIngreInstitu</div></div>
+                    <div class="col-md-4"><label class="text-secondary">Fecha ing. institución</label><div class="fw-semibold">@e?.FechaResoIngreInstitu?.ToString("dd/MM/yyyy")</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

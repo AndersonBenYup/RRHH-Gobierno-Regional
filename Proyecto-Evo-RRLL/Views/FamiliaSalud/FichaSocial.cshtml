@@ -1,0 +1,114 @@
+@model FichaSocialViewModel
+@{
+    ViewData["Title"] = "Ficha social";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">Ficha social</h3>
+        <span class="text-muted">Empleado @Model.IdEmpleado — @Model.NombreEmpleado</span>
+    </div>
+    <a asp-action="Index" asp-route-idEmpleado="@Model.IdEmpleado" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="FichaSocial" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="IdEmpleado" value="@Model.IdEmpleado" />
+
+    <div class="card mb-3">
+        <div class="card-header fw-bold">Dinámica familiar</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Tipo de familia</label>
+                    <select asp-for="Dinamica.idTipoFam" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var t in ViewBag.TiposFamilia as List<RRHH_TipoFamilia> ?? new List<RRHH_TipoFamilia>())
+                        {
+                            <option value="@t.idTipoFam">@t.TipoFamDescrip</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Relación de pareja</label>
+                    <select asp-for="Dinamica.idRelaPareja" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var p in ViewBag.RelacParejas as List<RRHH_RelacPareja> ?? new List<RRHH_RelacPareja>())
+                        {
+                            <option value="@p.idRelacPareja">@p.RelacParejaDescrip</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Relación padres-hijos</label>
+                    <select asp-for="Dinamica.idRelaPH" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var ph in ViewBag.RelacPHs as List<RRHH_RelacPH> ?? new List<RRHH_RelacPH>())
+                        {
+                            <option value="@ph.idRelacPH">@ph.RelacPHDescrip</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Relación entre hermanos</label>
+                    <select asp-for="Dinamica.idRelacHermano" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var h in ViewBag.RelacHermanos as List<RRHH_RelacHermano> ?? new List<RRHH_RelacHermano>())
+                        {
+                            <option value="@h.idRelacHermano">@h.RelacHermanoDescrip</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Observación</label>
+                    <textarea asp-for="Dinamica.Observacion" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header fw-bold">Aspecto socioeconómico</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Principales problemas</label>
+                    <textarea asp-for="AspSocio.PrincipProblemas" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Propuestas de mejora institucional</label>
+                    <textarea asp-for="AspSocio.PropMejoraInstitu" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Hobby</label>
+                    <input asp-for="AspSocio.hobby" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Actividades recreativas institucionales</label>
+                    <input asp-for="AspSocio.ActRecreaInstitu" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header fw-bold">Funcionalidad familiar</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3"><label class="form-label">Comunicación 1</label><input asp-for="FuncFam.Com1" class="form-control" /></div>
+                <div class="col-md-3"><label class="form-label">Comunicación 2</label><input asp-for="FuncFam.Com2" class="form-control" /></div>
+                <div class="col-md-3"><label class="form-label">Afectividad 1</label><input asp-for="FuncFam.Afec1" class="form-control" /></div>
+                <div class="col-md-3"><label class="form-label">Afectividad 2</label><input asp-for="FuncFam.Afec2" class="form-control" /></div>
+                <div class="col-md-3"><label class="form-label">Toma de decisiones 1</label><input asp-for="FuncFam.Decis1" class="form-control" /></div>
+                <div class="col-md-3"><label class="form-label">Toma de decisiones 2</label><input asp-for="FuncFam.Decis2" class="form-control" /></div>
+                <div class="col-md-2"><label class="form-label">Social 1</label><input asp-for="FuncFam.Soc1" class="form-control" /></div>
+                <div class="col-md-2"><label class="form-label">Social 2</label><input asp-for="FuncFam.Soc2" class="form-control" /></div>
+                <div class="col-md-2"><label class="form-label">Social 3</label><input asp-for="FuncFam.Soc3" class="form-control" /></div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Guardar ficha social</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Roles del usuario";
+    var usuario = ViewBag.Usuario as Usuario;
+    var opciones = ViewBag.Roles as List<OpcionCheck> ?? new List<OpcionCheck>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">Roles de @usuario?.Login</h3>
+        <span class="text-secondary small">@usuario?.Descripcion</span>
+    </div>
+    <a asp-action="Usuarios" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="UsuarioRoles" asp-route-id="@usuario?.IdUsuario" method="post">
+    <div class="card">
+        <div class="card-body">
+            <div class="row g-2">
+                @foreach (var r in opciones)
+                {
+                    <div class="col-md-4 col-lg-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="roles" value="@r.Valor" id="rol-@r.Valor" checked="@r.Seleccionado" />
+                            <label class="form-check-label" for="rol-@r.Valor">@r.Texto</label>
+                        </div>
+                    </div>
+                }
+                @if (opciones.Count == 0)
+                {
+                    <p class="text-secondary mb-0">No hay roles definidos. <a asp-action="RolNuevo">Crear uno</a>.</p>
+                }
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+        </div>
+    </div>
+</form>

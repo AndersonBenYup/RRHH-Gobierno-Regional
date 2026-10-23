@@ -1,0 +1,76 @@
+@model RRHH_Salud
+@{
+    ViewData["Title"] = "Salud del empleado";
+    var esNuevo = Model.idSalud == 0;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">@(esNuevo ? "Registrar" : "Editar") salud</h3>
+        <span class="text-muted">Empleado @ViewBag.IdEmpleado — @ViewBag.NombreEmpleado</span>
+    </div>
+    <a asp-action="Index" asp-route-idEmpleado="@((int)ViewBag.IdEmpleado)" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="Salud" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="IdEmpleado" value="@ViewBag.IdEmpleado" />
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="EnferCronica" value="true" id="EnferCronica" @(Model.EnferCronica == true ? "checked" : "") />
+                        <label class="form-check-label" for="EnferCronica">Enfermedad crónica</label>
+                    </div>
+                    <label class="form-label mt-2">Descripción</label>
+                    <textarea name="EnferCronicaDescrip" class="form-control" rows="3">@Model.EnferCronicaDescrip</textarea>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="FamDiscapacidad" value="true" id="FamDiscapacidad" @(Model.FamDiscapacidad == true ? "checked" : "") />
+                        <label class="form-check-label" for="FamDiscapacidad">Discapacidad familiar</label>
+                    </div>
+                    <label class="form-label mt-2">Descripción</label>
+                    <textarea name="FamDiscapDescrip" class="form-control" rows="3">@Model.FamDiscapDescrip</textarea>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="Alergico" value="true" id="Alergico" @(Model.Alergico == true ? "checked" : "") />
+                        <label class="form-check-label" for="Alergico">Alérgico</label>
+                    </div>
+                    <label class="form-label mt-2">Descripción</label>
+                    <textarea name="AlergicoDescrip" class="form-control" rows="3">@Model.AlergicoDescrip</textarea>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">¿Acude a algún servicio de salud?</label>
+                    <select name="idAcudeEnferm" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var a in ViewBag.Acudes as List<RRHH_AcudeEnferm> ?? new List<RRHH_AcudeEnferm>())
+                        {
+                            <option value="@a.idAcudeEnferm" selected="@(Model.idAcudeEnferm == a.idAcudeEnferm)">@a.AcudeEnfermDescrip</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            @if (!esNuevo)
+            {
+                <button type="submit" form="formEliminarSalud" class="btn btn-outline-danger">Eliminar registro</button>
+            }
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </div>
+</form>
+
+@if (!esNuevo)
+{
+    <form id="formEliminarSalud" asp-action="EliminarSalud" method="post"
+          onsubmit="return confirm('¿Eliminar el registro de salud?');">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="idEmpleado" value="@ViewBag.IdEmpleado" />
+    </form>
+}

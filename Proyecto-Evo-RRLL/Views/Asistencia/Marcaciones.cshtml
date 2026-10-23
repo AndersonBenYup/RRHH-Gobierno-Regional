@@ -1,0 +1,63 @@
+@model List<Marcacion>
+@{
+    ViewData["Title"] = "Marcaciones";
+    var horarios = ViewBag.Horarios as List<Horario> ?? new List<Horario>();
+    var filtro = new Dictionary<string, object?>
+    {
+        ["Desde"] = ViewBag.Desde as DateTime?,
+        ["Hasta"] = ViewBag.Hasta as DateTime?,
+        ["IdEmpleado"] = ViewBag.IdEmpleado as int?
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <h3 class="mb-0">Marcaciones</h3>
+    <a asp-action="MarcacionNuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva marcación</a>
+</div>
+
+<partial name="_FiltroAsistencia" model="@filtro" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Empleado</th>
+                <th>Marcación</th>
+                <th>Dispositivo</th>
+                <th>Horario</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="6" class="text-center text-secondary py-4">Sin registros.</td></tr>
+            }
+            @foreach (var m in Model)
+            {
+                var emp = (ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>()).FirstOrDefault(e => e.Id == m.IdEmpleado);
+                var hor = horarios.FirstOrDefault(h => h.idHorario == m.idHorario);
+                <tr>
+                    <td class="fw-semibold">@m.Fecha.ToString("dd/MM/yyyy")</td>
+                    <td>@emp.Nombre</td>
+                    <td>@m.NroMarcacion@m.TipoMarcacion</td>
+                    <td>@m.CodDispositivo</td>
+                    <td>@hor?.Descrip_Horario</td>
+                    <td>
+                        <a asp-action="MarcacionEditar" asp-route-fecha="@m.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")" asp-route-idEmpleado="@m.IdEmpleado" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="MarcacionEliminar" asp-route-fecha="@m.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")" asp-route-idEmpleado="@m.IdEmpleado" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar esta marcación?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-clipboard-check me-1"></i>Registro de Asistencia</a>
+    <a asp-action="RegDiario" class="btn btn-outline-secondary btn-sm"><i class="bi bi-calendar-day me-1"></i>Registro Diario</a>
+    <a asp-action="HorariosTemporal" class="btn btn-outline-secondary btn-sm"><i class="bi bi-stopwatch me-1"></i>Horarios Temporales</a>
+</div>

@@ -1,0 +1,91 @@
+@model Marcacion
+@{
+    ViewData["Title"] = "Marcación";
+    var esNuevo = Model.IdEmpleado == 0;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var horarios = ViewBag.Horarios as List<Horario> ?? new List<Horario>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>@(esNuevo ? "Nueva marcación" : "Editar marcación")</h3>
+    <a asp-action="Marcaciones" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="@(esNuevo ? "MarcacionNuevo" : "MarcacionEditar")" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Fecha y hora *</label>
+                    @if (esNuevo)
+                    {
+                        <input asp-for="Fecha" type="datetime-local" step="1" class="form-control" required />
+                    }
+                    else
+                    {
+                        <input asp-for="Fecha" type="datetime-local" step="1" class="form-control" required readonly />
+                    }
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Empleado *</label>
+                    @if (esNuevo)
+                    {
+                        <select asp-for="IdEmpleado" class="form-select" required>
+                            <option value="">(seleccionar)</option>
+                            @foreach (var e in empleados)
+                            {
+                                <option value="@e.Id">@e.Nombre</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="IdEmpleado" />
+                        <input class="form-control" value="@(empleados.FirstOrDefault(e => e.Id == Model.IdEmpleado).Nombre)" readonly />
+                    }
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">N° marcación</label>
+                    <input asp-for="NroMarcacion" type="number" min="1" max="9" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tipo</label>
+                    <select asp-for="TipoMarcacion" class="form-select">
+                        @foreach (var t in ViewBag.TiposMarcacion as List<TipoMarcacion> ?? new())
+                        {
+                            <option value="@t.Codigo">@(t.Descripcion ?? t.Codigo)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Dispositivo</label>
+                    <select asp-for="CodDispositivo" class="form-select">
+                        <option value="">-- Sin especificar --</option>
+                        @foreach (var d in ViewBag.Dispositivos as List<DispositivoMarcacion> ?? new())
+                        {
+                            <option value="@d.Codigo">@(d.Descripcion ?? d.Codigo)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Horario</label>
+                    <select asp-for="idHorario" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var h in horarios)
+                        {
+                            <option value="@h.idHorario">@h.Descrip_Horario</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

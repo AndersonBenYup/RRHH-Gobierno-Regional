@@ -1,0 +1,70 @@
+@model PeriodoLaboral
+@{
+    ViewData["Title"] = "Período laboral";
+    var idEmpleado = ViewBag.IdEmpleado as int? ?? Model.IdEmpleado;
+    var esNuevo = Model.NroPeriodo == 0;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>@(esNuevo ? "Nuevo período" : $"Editar período #{Model.NroPeriodo}")</h3>
+    <a asp-action="Index" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="@(esNuevo ? "PeriodoNuevo" : "PeriodoEditar")" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <div class="card">
+        <div class="card-body">
+            @if (!esNuevo)
+            {
+                <input type="hidden" asp-for="IdEmpleado" />
+                <input type="hidden" asp-for="NroPeriodo" />
+            }
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Empleado *</label>
+                    <select asp-for="IdEmpleado" class="form-select" required>
+                        <option value="">(seleccionar)</option>
+                        @foreach (var e in empleados)
+                        {
+                            <option value="@e.Id">@e.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">N° resolución de ingreso</label>
+                    <input asp-for="NumResoIngreInstitu" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fecha de ingreso</label>
+                    <input asp-for="FechaIngreso" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fecha de salida</label>
+                    <input asp-for="FechaSalida" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fecha resolución de ingreso</label>
+                    <input asp-for="FechaResoIngreInstitu" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch mt-4">
+                        <input class="form-check-input" type="checkbox" name="Judicial" value="true" id="Judicial" @(Model.Judicial == true ? "checked" : "") />
+                        <label asp-for="Judicial" class="form-check-label">Proceso judicial</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Observaciones</label>
+                    <textarea asp-for="Obs" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

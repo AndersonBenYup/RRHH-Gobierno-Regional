@@ -1,0 +1,44 @@
+@model List<RRHH_Feriado>
+@{
+    ViewData["Title"] = "Feriados";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Feriados</h3>
+        <span class="text-secondary small">@Model.Count registro(s)</span>
+    </div>
+    <a asp-action="Nuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo feriado</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Motivo</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="3" class="text-center text-secondary py-4">Sin feriados registrados.</td></tr>
+            }
+            @foreach (var f in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@f.Fecha?.ToString("dd/MM/yyyy")</td>
+                    <td>@f.Motivo</td>
+                    <td>
+                        <a asp-action="Editar" asp-route-id="@f.idFeriado" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Eliminar" asp-route-id="@f.idFeriado" method="post" class="d-inline"
+                              onsubmit="return confirm('¿Eliminar este feriado?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

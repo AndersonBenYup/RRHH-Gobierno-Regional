@@ -1,0 +1,144 @@
+@{
+    ViewData["Title"] = "Detalle de unidad orgánica";
+    var area = ViewBag.Area as EstructOrganiz;
+    var dependencia = ViewBag.DependeDe as string;
+    var jefe = ViewBag.Jefe as string;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var asignaciones = ViewBag.Asignaciones as List<Empleado_Area> ?? new List<Empleado_Area>();
+    var responsables = ViewBag.Responsables as List<ResponsableXUO> ?? new List<ResponsableXUO>();
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">@area?.AreaOrganizacional</h3>
+        <span class="text-secondary small">Año @area?.Year - unidad @area?.idAreaOrganiz</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Editar" asp-route-year="@area?.Year" asp-route-idAreaOrganiz="@area?.idAreaOrganiz" class="btn btn-outline-secondary"><i class="bi bi-pencil me-1"></i>Editar</a>
+        <a asp-action="Index" asp-route-year="@area?.Year" class="btn btn-outline-secondary">Volver</a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header fw-semibold"><i class="bi bi-info-circle me-2"></i>Información general</div>
+    <div class="card-body">
+        <div class="row g-3 small">
+            <div class="col-md-3"><label class="text-secondary">Sigla</label><div class="fw-semibold">@area?.Sigla</div></div>
+            <div class="col-md-3"><label class="text-secondary">Abreviatura</label><div class="fw-semibold">@area?.Abrev</div></div>
+            <div class="col-md-3"><label class="text-secondary">Depende de</label><div class="fw-semibold">@dependencia</div></div>
+            <div class="col-md-3"><label class="text-secondary">Jefe de unidad</label><div class="fw-semibold">@jefe</div></div>
+            <div class="col-md-3"><label class="text-secondary">N. trabajadores</label><div class="fw-semibold">@ViewBag.NroTrabajaUO</div></div>
+            <div class="col-md-12"><label class="text-secondary">Misión</label><div class="fw-semibold">@area?.Mision</div></div>
+            <div class="col-md-12"><label class="text-secondary">Visión</label><div class="fw-semibold">@area?.Vision</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header fw-semibold"><i class="bi bi-people me-2"></i>Empleados de la unidad</div>
+    <div class="card-body">
+        <form asp-action="AgregarEmpleado" asp-route-year="@area?.Year" asp-route-idAreaOrganiz="@area?.idAreaOrganiz" method="post" class="d-flex align-items-end gap-2 mb-3">
+            <div style="min-width:320px">
+                <label class="form-label">Agregar empleado</label>
+                <select name="idEmpleado" class="form-select" required>
+                    <option value="">(seleccione)</option>
+                    @foreach (var e in empleados)
+                    {
+                        <option value="@e.Id">@e.Nombre</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Agregar</button>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr><th>Empleado</th><th style="width:70px"></th></tr>
+                </thead>
+                <tbody>
+                    @if (asignaciones.Count == 0)
+                    {
+                        <tr><td colspan="2" class="text-center text-secondary py-3">Sin empleados asignados.</td></tr>
+                    }
+                    @foreach (var a in asignaciones)
+                    {
+                        var emp = empleados.FirstOrDefault(e => e.Id == a.IdEmpleado);
+                        <tr>
+                            <td>@emp.Nombre</td>
+                            <td>
+                                <form asp-action="QuitarEmpleado" asp-route-year="@area?.Year" asp-route-idAreaOrganiz="@area?.idAreaOrganiz" asp-route-idEmpleado="@a.IdEmpleado" method="post"
+                                      onsubmit="return confirm('¿Quitar este empleado de la unidad?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Quitar"><i class="bi bi-person-dash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header fw-semibold"><i class="bi bi-person-gear me-2"></i>Responsables de la unidad</div>
+    <div class="card-body">
+        <form asp-action="ResponsableNuevo" method="post" class="d-flex gap-2 align-items-end flex-wrap mb-3">
+            <input type="hidden" name="Year" value="@area?.Year" />
+            <input type="hidden" name="idAreaOrganiz" value="@area?.idAreaOrganiz" />
+            <div style="min-width:240px">
+                <label class="form-label">Responsable</label>
+                <select name="IdEmpleado" class="form-select">
+                    <option value="">(seleccione)</option>
+                    @foreach (var e in empleados)
+                    {
+                        <option value="@e.Id">@e.Nombre</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Inicio</label>
+                <input type="date" name="F_Inicio" class="form-control" />
+            </div>
+            <div>
+                <label class="form-label">Término</label>
+                <input type="date" name="F_Termino" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-person-plus me-1"></i>Asignar responsable</button>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th>Responsable</th>
+                        <th>Inicio</th>
+                        <th>Término</th>
+                        <th style="width:70px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (responsables.Count == 0)
+                    {
+                        <tr><td colspan="4" class="text-center text-secondary py-3">Sin responsables asignados.</td></tr>
+                    }
+                    @foreach (var r in responsables)
+                    {
+                        var emp = empleados.FirstOrDefault(e => e.Id == r.IdEmpleado);
+                        <tr>
+                            <td>@emp.Nombre</td>
+                            <td>@r.F_Inicio?.ToString("dd/MM/yyyy")</td>
+                            <td>@r.F_Termino?.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <form asp-action="ResponsableEliminar" asp-route-idResponsable="@r.IdResponsable" method="post"
+                                      onsubmit="return confirm('¿Quitar este responsable?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Quitar"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

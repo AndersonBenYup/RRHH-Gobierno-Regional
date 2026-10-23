@@ -1,0 +1,76 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = "_Layout";
+}
+
+<div class="auth-split">
+    <aside class="auth-brand-panel">
+        <div class="auth-brand-box">
+            <span class="auth-brand-tag"><i class="bi bi-person-badge-fill me-1"></i>RRHH</span>
+            <h1 class="auth-brand-title">Sistema de Gestión<br />de Recursos Humanos</h1>
+            <p class="auth-brand-subtitle">Centraliza la información de tu personal: ficha, asistencias, permisos, capacitación, salud y más, en un solo lugar.</p>
+            <ul class="auth-brand-features">
+                <li><i class="bi bi-people"></i>Fichas completas por empleado</li>
+                <li><i class="bi bi-clock-history"></i>Asistencias y marcaciones diarias</li>
+                <li><i class="bi bi-calendar-check"></i>Permisos, feriados e inconvenientes</li>
+                <li><i class="bi bi-shield-check"></i>Roles y bitácora de actividad</li>
+            </ul>
+        </div>
+        <div class="auth-brand-stats">
+            <div class="auth-brand-stat"><b>1</b><span>Ficha integrada</span></div>
+            <div class="auth-brand-stat"><b>9</b><span>Áreas funcionales</span></div>
+            <div class="auth-brand-stat"><b>24/7</b><span>Disponible</span></div>
+        </div>
+    </aside>
+
+    <section class="auth-form-panel">
+        <div class="auth-form-wrap" style="max-width:440px">
+            <div class="card auth-login-card shadow-lg border-0">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex flex-column align-items-center text-center mb-4">
+                        <span class="brand-logo mb-3"><i class="bi bi-person-badge-fill"></i></span>
+                        <h4 class="mb-0">Bienvenido</h4>
+                        <p class="text-secondary small mt-1 mb-0">Inicia sesión para continuar.</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Error))
+                    {
+                        <div class="alert alert-danger py-2 small"><i class="bi bi-exclamation-triangle me-1"></i>@Model.Error</div>
+                    }
+
+                    <form asp-action="Login" method="post">
+                        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Login" class="form-label fw-semibold"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input asp-for="Login" class="form-control" autofocus placeholder="Usuario" />
+                            </div>
+                            <span asp-validation-for="Login" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-4">
+                            <label asp-for="Clave" class="form-label fw-semibold"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input asp-for="Clave" class="form-control" placeholder="Clave" />
+                                <button type="button" class="btn btn-outline-secondary" data-toggle-password="#Clave">Mostrar</button>
+                            </div>
+                            <span asp-validation-for="Clave" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Entrar
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <p class="text-center text-secondary small mt-3 mb-0">¿Problemas para ingresar? Contacta al administrador del sistema.</p>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

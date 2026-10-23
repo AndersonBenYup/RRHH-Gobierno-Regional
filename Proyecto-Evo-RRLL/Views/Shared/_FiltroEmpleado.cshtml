@@ -1,0 +1,23 @@
+@{
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var action = ViewBag.FiltroAction as string ?? "";
+    var idActual = ViewBag.IdEmpleado as int?;
+}
+
+<form method="get" class="mb-3 d-flex align-items-end gap-2 flex-wrap">
+    <div style="min-width:320px">
+        <label class="form-label">Empleado</label>
+        <select name="idEmpleado" class="form-select" onchange="this.form.submit()">
+            <option value="">(todos)</option>
+            @foreach (var e in empleados)
+            {
+                <option value="@e.Id" selected="@(idActual == e.Id)">@e.Nombre</option>
+            }
+        </select>
+    </div>
+    @if (idActual is not null)
+    {
+        <a asp-action="@(string.IsNullOrEmpty(action) ? ViewContext.RouteData.Values["action"]?.ToString() : action)"
+           class="btn btn-outline-secondary">Limpiar</a>
+    }
+</form>

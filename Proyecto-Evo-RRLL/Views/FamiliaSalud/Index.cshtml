@@ -1,0 +1,63 @@
+@model FamiliaSaludViewModel
+@{
+    ViewData["Title"] = "Ficha familiar y salud";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">Ficha familiar y salud</h3>
+        <span class="text-muted">Empleado #@Model.IdEmpleado — @Model.NombreEmpleado</span>
+    </div>
+    <a asp-controller="Empleado" asp-action="Detalles" asp-route-id="@Model.IdEmpleado" class="btn btn-outline-secondary">Volver al empleado</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Salud</h5>
+                <p class="text-muted">Enfermedades, alergias, discapacidad familiar.</p>
+                <span class="badge @(Model.TieneSalud ? "bg-success" : "bg-secondary") mb-3">@(Model.TieneSalud ? "Registrado" : "Sin registrar")</span>
+                <div>
+                    <a asp-action="Salud" asp-route-idEmpleado="@Model.IdEmpleado" class="btn btn-sm btn-primary">@(Model.TieneSalud ? "Editar" : "Registrar")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Ficha social</h5>
+                <p class="text-muted">Dinámica familiar, aspectos socioeconómicos, funcionalidad.</p>
+                <span class="badge @(Model.TieneDinamica ? "bg-success" : "bg-secondary") mb-3">@(Model.TieneDinamica ? "Registrado" : "Sin registrar")</span>
+                <div>
+                    <a asp-action="FichaSocial" asp-route-idEmpleado="@Model.IdEmpleado" class="btn btn-sm btn-primary">@(Model.TieneDinamica ? "Editar" : "Registrar")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Asegurados</h5>
+                <p class="text-muted">Beneficiarios registrados del empleado.</p>
+                <span class="badge bg-primary mb-3">@Model.Asegurados registros</span>
+                <div>
+                    <a asp-action="Asegurados" asp-route-idEmpleado="@Model.IdEmpleado" class="btn btn-sm btn-primary">Gestionar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Familiares</h5>
+                <p class="text-muted">Grupo familiar vinculado al empleado.</p>
+                <span class="badge bg-primary mb-3">@Model.Familiares registros</span>
+                <div>
+                    <a asp-action="Familiares" asp-route-idEmpleado="@Model.IdEmpleado" class="btn btn-sm btn-primary">Ver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

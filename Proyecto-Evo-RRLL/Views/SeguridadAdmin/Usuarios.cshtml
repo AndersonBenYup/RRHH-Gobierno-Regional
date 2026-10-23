@@ -1,0 +1,74 @@
+@model List<UsuarioFila>
+@{
+    ViewData["Title"] = "Usuarios";
+    var busqueda = ViewBag.Busqueda as string;
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Usuarios del sistema</h3>
+        <span class="text-secondary small">@Model.Count registro(s)</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Roles" class="btn btn-outline-primary btn-sm"><i class="bi bi-shield-lock me-1"></i>Roles</a>
+        <a asp-action="UsuarioNuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo usuario</a>
+    </div>
+</div>
+
+<form method="get" class="mb-3 d-flex align-items-center gap-2">
+    <input type="search" name="q" class="form-control" style="max-width:320px" placeholder="Buscar por login o descripción..." value="@busqueda" />
+    <button type="submit" class="btn btn-outline-primary"><i class="bi bi-search me-1"></i>Buscar</button>
+    @if (!string.IsNullOrWhiteSpace(busqueda))
+    {
+        <a asp-action="Usuarios" class="btn btn-outline-secondary"><i class="bi bi-x-lg me-1"></i>Limpiar</a>
+    }
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>Login</th>
+                <th>Descripción</th>
+                <th>Empleado</th>
+                <th>Roles</th>
+                <th>Estado</th>
+                <th>Última modificación</th>
+                <th style="width:160px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center text-secondary py-4">Sin usuarios.</td></tr>
+            }
+            @foreach (var f in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@f.Usuario.Login</td>
+                    <td>@f.Usuario.Descripcion</td>
+                    <td>@f.Empleado</td>
+                    <td>@f.Roles</td>
+                    <td>
+                        @if (f.Usuario.Estado == true)
+                        {
+                            <span class="badge rounded-pill text-bg-success"><i class="bi bi-check-circle me-1"></i>Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge rounded-pill text-bg-secondary"><i class="bi bi-dash-circle me-1"></i>Inactivo</span>
+                        }
+                    </td>
+                    <td>@f.Usuario.Fecha?.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <a asp-action="UsuarioRoles" asp-route-id="@f.Usuario.IdUsuario" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Roles"><i class="bi bi-shield"></i></a>
+                        <a asp-action="UsuarioEditar" asp-route-id="@f.Usuario.IdUsuario" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="UsuarioEliminar" asp-route-id="@f.Usuario.IdUsuario" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar el usuario @(f.Usuario.Login)?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

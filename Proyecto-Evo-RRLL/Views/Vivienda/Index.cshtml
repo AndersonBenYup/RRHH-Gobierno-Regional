@@ -1,0 +1,63 @@
+@model ViviendaViewModel
+@{
+    ViewData["Title"] = "Vivienda";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">Vivienda del empleado</h3>
+        <span class="text-muted">Empleado @Model.IdEmpleado — @Model.NombreEmpleado</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-controller="Empleado" asp-action="Detalles" asp-route-id="@Model.IdEmpleado" class="btn btn-outline-secondary">Volver al empleado</a>
+    </div>
+</div>
+
+@if (Model.Registro is null)
+{
+    <div class="alert alert-info">
+        Sin vivienda registrada para este empleado.
+        <a asp-action="ViviendaForm" asp-route-idEmpleado="@Model.IdEmpleado" class="alert-link">Registrar vivienda</a>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-end mb-3">
+        <a asp-action="ViviendaForm" asp-route-idEmpleado="@Model.IdEmpleado" class="btn btn-primary">Editar</a>
+        <form asp-action="Eliminar" asp-route-idEmpleado="@Model.IdEmpleado" method="post" class="ms-2"
+              onsubmit="return confirm('¿Eliminar la vivienda registrada?');">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger">Eliminar</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="card-header fw-bold">Características de la vivienda</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4"><label class="text-muted">Tenencia</label><div class="fw-semibold">@Model.Tenencia</div></div>
+                <div class="col-md-4"><label class="text-muted">Tipo</label><div class="fw-semibold">@Model.Tipo</div></div>
+                <div class="col-md-4"><label class="text-muted">Material</label><div class="fw-semibold">@Model.Material</div></div>
+                <div class="col-md-4"><label class="text-muted">Conservación</label><div class="fw-semibold">@Model.Conservacion</div></div>
+                <div class="col-md-4"><label class="text-muted">Ubicación</label><div class="fw-semibold">@Model.Ubicacion</div></div>
+                <div class="col-md-4"><label class="text-muted">Alumbrado</label><div class="fw-semibold">@Model.Alumbrado</div></div>
+                <div class="col-md-4"><label class="text-muted">Agua</label><div class="fw-semibold">@Model.Agua</div></div>
+                <div class="col-md-4"><label class="text-muted">Excretas</label><div class="fw-semibold">@Model.Excretas</div></div>
+                <div class="col-md-4"><label class="text-muted">N° dormitorios</label><div class="fw-semibold">@Model.Registro.NumDormitorio</div></div>
+                <div class="col-md-3"><label class="text-muted">N° servicios higiénicos</label><div class="fw-semibold">@Model.Registro.NumServHig</div></div>
+                <div class="col-md-3"><label class="text-muted">N° compartidas</label><div class="fw-semibold">@Model.Registro.NumCompart</div></div>
+                <div class="col-md-3"><label class="text-muted">Personas por dormitorio</label><div class="fw-semibold">@Model.Registro.NumPerDorm</div></div>
+                <div class="col-md-3"><label class="text-muted">Observación</label><div class="fw-semibold">@Model.Registro.Observacion</div></div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-3">
+                    @foreach (var s in Model.Servicios)
+                    {
+                        <span class="badge @(s.Tiene ? "bg-success" : "bg-secondary")">@s.Servicio.Descripcion</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

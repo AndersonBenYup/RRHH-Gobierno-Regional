@@ -1,0 +1,93 @@
+@model List<RRHH_Salud>
+@{
+    ViewData["Title"] = "Salud";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var acude = ViewBag.AcudeEnferm as List<RRHH_AcudeEnferm> ?? new List<RRHH_AcudeEnferm>();
+    var acudeActual = idEmpleado is null
+        ? null
+        : Model.FirstOrDefault(m => m.IdEmpleado == idEmpleado);
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Salud del empleado</h3>
+        @if (idEmpleado is not null)
+        {
+            var emp = empleados.FirstOrDefault(e => e.Id == idEmpleado);
+            <span class="text-secondary small">Empleado: @emp.Nombre</span>
+        }
+    </div>
+    <a asp-action="SaludNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva ficha</a>
+</div>
+
+<partial name="_FiltroEmpleado" model="@idEmpleado" />
+
+@if (acudeActual is not null)
+{
+    <div class="card mb-3">
+        <div class="card-header fw-semibold"><i class="bi bi-heart-pulse me-2"></i>Ficha de salud de @(empleados.FirstOrDefault(e => e.Id == acudeActual.IdEmpleado).Nombre)</div>
+        <div class="card-body">
+            <div class="row g-3 small">
+                <div class="col-md-4"><label class="text-secondary">Enfermedad crónica</label><div class="fw-semibold">@(acudeActual.EnferCronica == true ? "Sí" : acudeActual.EnferCronica == false ? "No" : "")</div></div>
+                <div class="col-md-8"><label class="text-secondary">Descripción</label><div class="fw-semibold">@acudeActual.EnferCronicaDescrip</div></div>
+                <div class="col-md-4"><label class="text-secondary">Discapacidad en familia</label><div class="fw-semibold">@(acudeActual.FamDiscapacidad == true ? "Sí" : acudeActual.FamDiscapacidad == false ? "No" : "")</div></div>
+                <div class="col-md-8"><label class="text-secondary">Descripción</label><div class="fw-semibold">@acudeActual.FamDiscapDescrip</div></div>
+                <div class="col-md-4"><label class="text-secondary">Alérgico</label><div class="fw-semibold">@(acudeActual.Alergico == true ? "Sí" : acudeActual.Alergico == false ? "No" : "")</div></div>
+                <div class="col-md-8"><label class="text-secondary">Descripción</label><div class="fw-semibold">@acudeActual.AlergicoDescrip</div></div>
+                <div class="col-md-4"><label class="text-secondary">Acudir en caso de enfermedad</label><div class="fw-semibold">@(acude.FirstOrDefault(a => a.idAcudeEnferm == acudeActual.idAcudeEnferm)?.AcudeEnfermDescrip)</div></div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="d-flex gap-2">
+                        <a asp-action="SaludEditar" asp-route-id="@acudeActual.idSalud" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
+                        <form asp-action="SaludEliminar" asp-route-id="@acudeActual.idSalud" method="post" onsubmit="return confirm('¿Eliminar la ficha de salud?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>Empleado</th>
+                <th>Enfermedad crónica</th>
+                <th>Discap. familia</th>
+                <th>Alérgico</th>
+                <th>Acudir en caso de enfermedad</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="6" class="text-center text-secondary py-4">Sin fichas de salud.</td></tr>
+            }
+            @foreach (var f in Model)
+            {
+                var emp = empleados.FirstOrDefault(e => e.Id == f.IdEmpleado);
+                <tr>
+                    <td class="fw-semibold">@emp.Nombre</td>
+                    <td>@(f.EnferCronica == true ? $"Sí — {f.EnferCronicaDescrip}" : f.EnferCronica == false ? "No" : "")</td>
+                    <td>@(f.FamDiscapacidad == true ? $"Sí — {f.FamDiscapDescrip}" : f.FamDiscapacidad == false ? "No" : "")</td>
+                    <td>@(f.Alergico == true ? $"Sí — {f.AlergicoDescrip}" : f.Alergico == false ? "No" : "")</td>
+                    <td>@(acude.FirstOrDefault(a => a.idAcudeEnferm == f.idAcudeEnferm)?.AcudeEnfermDescrip)</td>
+                    <td>
+                        <a asp-action="SaludEditar" asp-route-id="@f.idSalud" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="SaludEliminar" asp-route-id="@f.idSalud" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar esta ficha de salud?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Asegurados" class="btn btn-outline-primary btn-sm"><i class="bi bi-people me-1"></i>Beneficiarios / Asegurados</a>
+    <a asp-action="AcudeEnferm" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list-check me-1"></i>Opción: a quién acudir</a>
+</div>

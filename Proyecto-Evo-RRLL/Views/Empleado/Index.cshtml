@@ -1,0 +1,108 @@
+@model EmpleadoViewModel
+@{
+    ViewData["Title"] = "Personal";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Empleados</h3>
+        <span class="text-secondary small">@Model.Total registro(s)</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Exportar" asp-route-q="@Model.Busqueda" class="btn btn-outline-secondary">
+            <i class="bi bi-download me-1"></i> Exportar CSV
+        </a>
+        <a asp-action="Nuevo" class="btn btn-primary"><i class="bi bi-person-plus me-1"></i>Nuevo empleado</a>
+    </div>
+</div>
+
+<form method="get" class="mb-3 d-flex align-items-center gap-2">
+    <input type="search" name="q" class="form-control" style="max-width:320px" placeholder="Buscar por nombre o documento..." value="@Model.Busqueda" />
+    <button type="submit" class="btn btn-outline-primary"><i class="bi bi-search me-1"></i>Buscar</button>
+    @if (!string.IsNullOrWhiteSpace(Model.Busqueda))
+    {
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg me-1"></i>Limpiar</a>
+    }
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th style="width:56px">Foto</th>
+                <th>Empleado</th>
+                <th>N° documento</th>
+                <th>Cargo</th>
+                <th>Área</th>
+                <th>Ingreso</th>
+                <th>Estado</th>
+                <th style="width:70px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Empleados.Count == 0)
+            {
+                <tr><td colspan="8" class="text-center text-secondary py-4">Sin empleados.</td></tr>
+            }
+            @foreach (var e in Model.Empleados)
+            {
+                <tr>
+                    <td>
+                        @if (e.TieneFoto)
+                        {
+                            <img src="@Url.Action("MostrarFoto", new { id = e.IdEmpleado })" alt="Foto" class="rounded-circle overflow-hidden object-fit-cover" style="width:40px;height:40px" />
+                        }
+                        else
+                        {
+                            <div class="rounded-circle bg-body-tertiary d-inline-flex align-items-center justify-content-center text-secondary" style="width:40px;height:40px;font-size:1rem">
+                                <i class="bi bi-person"></i>
+                            </div>
+                        }
+                    </td>
+                    <td class="fw-semibold">@e.Nombres</td>
+                    <td>@e.NumDoc</td>
+                    <td>@e.Cargo</td>
+                    <td>@e.Area</td>
+                    <td>@e.FechaIngreso?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @if (e.Estado == "A")
+                        {
+                            <span class="badge rounded-pill text-bg-success"><i class="bi bi-check-circle me-1"></i>Activo</span>
+                        }
+                        else if (e.Estado == "I")
+                        {
+                            <span class="badge rounded-pill text-bg-secondary"><i class="bi bi-dash-circle me-1"></i>Inactivo</span>
+                        }
+                        else
+                        {
+                            @e.Estado
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Detalles" asp-route-id="@e.IdEmpleado" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver ficha"><i class="bi bi-eye"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.TotalPaginas > 1)
+{
+    <nav aria-label="Paginación">
+        <ul class="pagination justify-content-center mb-0">
+            <li class="page-item @(Model.Pagina <= 1 ? "disabled" : null)">
+                <a class="page-link" asp-action="Index" asp-route-q="@Model.Busqueda" asp-route-pagina="@(Model.Pagina - 1)">&laquo;</a>
+            </li>
+            @for (var p = 1; p <= Model.TotalPaginas; p++)
+            {
+                <li class="page-item @(p == Model.Pagina ? "active" : null)">
+                    <a class="page-link" asp-action="Index" asp-route-q="@Model.Busqueda" asp-route-pagina="@p">@p</a>
+                </li>
+            }
+            <li class="page-item @(Model.Pagina >= Model.TotalPaginas ? "disabled" : null)">
+                <a class="page-link" asp-action="Index" asp-route-q="@Model.Busqueda" asp-route-pagina="@(Model.Pagina + 1)">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+}

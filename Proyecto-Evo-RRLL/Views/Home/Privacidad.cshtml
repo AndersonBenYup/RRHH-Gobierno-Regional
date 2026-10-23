@@ -1,0 +1,108 @@
+@{
+    ViewData["Title"] = "Política de Privacidad";
+}
+
+<div class="card">
+    <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+            <span class="brand-logo mb-3"><i class="bi bi-shield-lock"></i></span>
+            <h1 class="fs-3 fw-semibold">Política de Privacidad</h1>
+            <p class="text-secondary mb-0">Última actualización: @DateTime.Now.ToString("dd/MM/yyyy")</p>
+        </div>
+
+        <p class="text-secondary mb-4">
+            En <strong>RRHH</strong> (sistema de gestión de Recursos Humanos) tratamos los datos personales
+            del personal de la organización de forma confidencial y cumpliendo la normativa de protección
+            de datos aplicable. A continuación te explicamos cómo manejamos la información.
+        </p>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="privacy-section h-100">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-database"></i>
+                        <h2 class="fs-6 fw-semibold mb-0">Datos que recopilamos</h2>
+                    </div>
+                    <p class="text-secondary small mb-0">
+                        Datos personales y laborales necesarios para la gestión de personal: identificación,
+                        datos de contacto, historial laboral, asistencias, permisos, salud, vivienda, familia
+                        y demás información registrada en la ficha del empleado.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="privacy-section h-100">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-gear"></i>
+                        <h2 class="fs-6 fw-semibold mb-0">Uso de la información</h2>
+                    </div>
+                    <p class="text-secondary small mb-0">
+                        La información se utiliza exclusivamente para fines administrativos internos:
+                        gestión de personal, control de asistencia, procesos de selección, nómina y
+                        cumplimiento de obligaciones laborales. No se vende ni se comparte con terceros.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="privacy-section h-100">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-cookie"></i>
+                        <h2 class="fs-6 fw-semibold mb-0">Cookies</h2>
+                    </div>
+                    <p class="text-secondary small mb-0">
+                        Utilizamos cookies únicamente técnicas: para mantener tu sesión iniciada y recordar
+                        tu preferencia de tema (claro u oscuro). No usamos cookies de publicidad ni de rastreo.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="privacy-section h-100">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-shield-check"></i>
+                        <h2 class="fs-6 fw-semibold mb-0">Seguridad</h2>
+                    </div>
+                    <p class="text-secondary small mb-0">
+                        El acceso al sistema está protegido por autenticación con contraseña cifrada
+                        (hash). Los datos residen en la base de datos interna de la organización y solo
+                        los usuarios autorizados pueden consultarlos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="privacy-section h-100">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-person-check"></i>
+                        <h2 class="fs-6 fw-semibold mb-0">Tus derechos</h2>
+                    </div>
+                    <p class="text-secondary small mb-0">
+                        Los empleados pueden solicitar la consulta, rectificación, actualización o baja de
+                        sus datos personales. Para ejercer estos derechos, contacta con el área de Recursos
+                        Humanos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="privacy-section h-100">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-envelope"></i>
+                        <h2 class="fs-6 fw-semibold mb-0">Contacto</h2>
+                    </div>
+                    <p class="text-secondary small mb-0">
+                        Si tienes dudas sobre el tratamiento de tus datos, contáctanos:
+                        <a asp-controller="Home" asp-action="Ayuda" class="link-primary">página de ayuda</a>
+                        o mediante el administrador del sistema.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-muted small mt-4 mb-0">
+            Al usar este sistema declaras haber leído y aceptado esta política de privacidad.
+        </p>
+    </div>
+</div>

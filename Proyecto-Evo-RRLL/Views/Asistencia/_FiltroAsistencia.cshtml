@@ -1,0 +1,28 @@
+@model Dictionary<string, object?>
+@{
+    var accion = ViewBag.FiltroAction as string ?? ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var coach = Model;
+}
+
+<form method="get" class="mb-3 d-flex align-items-end gap-2 flex-wrap">
+    <div>
+        <label class="form-label">Desde</label>
+        <input type="date" name="desde" class="form-control" value="@(coach.TryGetValue("Desde", out var d) && d is DateTime dd ? dd.ToString("yyyy-MM-dd") : "")" />
+    </div>
+    <div>
+        <label class="form-label">Hasta</label>
+        <input type="date" name="hasta" class="form-control" value="@(coach.TryGetValue("Hasta", out var h) && h is DateTime hh ? hh.ToString("yyyy-MM-dd") : "")" />
+    </div>
+    <div style="min-width:280px">
+        <label class="form-label">Empleado</label>
+        <select name="idEmpleado" class="form-select">
+            <option value="">(todos)</option>
+            @foreach (var e in ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>())
+            {
+                <option value="@e.Id" selected="@(coach.TryGetValue("IdEmpleado", out var ie) && ie is int ee && ee == e.Id)">@e.Nombre</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+    <a asp-action="@accion" class="btn btn-outline-secondary"><i class="bi bi-x-lg me-1"></i>Limpiar</a>
+</form>

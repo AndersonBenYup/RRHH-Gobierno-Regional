@@ -1,0 +1,289 @@
+@model EmpleadoNuevoViewModel
+@{
+    ViewData["Title"] = "Nuevo empleado";
+    var areas = ViewBag.Areas as List<EstructOrganiz> ?? new List<EstructOrganiz>();
+    var anios = areas.Select(x => x.Year).Distinct().OrderByDescending(x => x).ToList();
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Nuevo empleado</h3>
+        <span class="text-secondary small">Complete los datos y registre</span>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="Nuevo" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="card mb-3">
+        <div class="card-header fw-semibold"><i class="bi bi-person-badge me-2"></i>Datos personales</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Nombres <span class="text-danger">*</span></label>
+                    <input asp-for="Persona.Nombres" class="form-control" />
+                    <span asp-validation-for="Persona.Nombres" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Apellido paterno <span class="text-danger">*</span></label>
+                    <input asp-for="Persona.Apellido_Paterno" class="form-control" />
+                    <span asp-validation-for="Persona.Apellido_Paterno" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Apellido materno</label>
+                    <input asp-for="Persona.Apellido_Materno" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tipo documento</label>
+                    <select asp-for="Persona.TipoDocID" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var t in ViewBag.TiposDocumento as List<TipoDocID> ?? new())
+                        {
+                            <option value="@t.Nombre">@t.Descripcion</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Número de documento</label>
+                    <input asp-for="Persona.NumDocID" class="form-control" />
+                    <span asp-validation-for="Persona.NumDocID" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Fecha de nacimiento</label>
+                    <input asp-for="Persona.FechaNacimiento" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sexo</label>
+                    <select asp-for="Empleado.Sexo" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        <option value="M" selected="@(Model.Empleado.Sexo == "M")">Masculino</option>
+                        <option value="F" selected="@(Model.Empleado.Sexo == "F")">Femenino</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Dirección</label>
+                    <input asp-for="Persona.Direccion" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Teléfono</label>
+                    <input asp-for="Persona.Telefono" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Celular</label>
+                    <input asp-for="Persona.NumCelular" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Email</label>
+                    <input asp-for="Persona.Email" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Foto</label>
+                    <input type="file" name="foto" accept="image/*" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header fw-semibold"><i class="bi bi-briefcase me-2"></i>Datos laborales</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Tipo trabajador</label>
+                    <select asp-for="Empleado.IdTipoTrabajador" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var t in ViewBag.TiposTrabajador as List<TipoTrabajador> ?? new())
+                        {
+                            <option value="@t.IdTipoTrabajador">@t.Descripcion</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Cargo</label>
+                    <select asp-for="Empleado.IdCargo" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var c in ViewBag.Cargos as List<Cargo> ?? new())
+                        {
+                            <option value="@c.IdCargo">@c.Descripcion</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Local</label>
+                    <select asp-for="Empleado.idLocal" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var l in ViewBag.Locales as List<Local> ?? new())
+                        {
+                            <option value="@l.idLocal">@l.NombreLocal</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Horario</label>
+                    <select asp-for="Empleado.idHorario" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var h in ViewBag.Horarios as List<Horario> ?? new())
+                        {
+                            <option value="@h.idHorario">@h.Descrip_Horario</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Área (año + área)</label>
+                    <select asp-for="Empleado.idAreaOrganiz" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var a in anios)
+                        {
+                            <optgroup label="Año @a">
+                                @foreach (var area in areas.Where(x => x.Year == a))
+                                {
+                                    <option value="@area.idAreaOrganiz">@area.AreaOrganizacional</option>
+                                }
+                            </optgroup>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Año de registro</label>
+                    <input asp-for="Empleado.Year" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Fecha de ingreso</label>
+                    <input asp-for="Empleado.FechaIngreso" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Estado</label>
+                    <select asp-for="Empleado.Estado" class="form-select">
+                        <option value="A" selected="@(Model.Empleado.Estado == "A")">Activo</option>
+                        <option value="I" selected="@(Model.Empleado.Estado == "I")">Inactivo</option>
+                        <option value="">(otro)</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Profesión</label>
+                    <input asp-for="Empleado.Profesion" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Grado de instrucción</label>
+                    <input asp-for="Empleado.GradoInstruccion" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Brevete</label>
+                    <input asp-for="Empleado.Brevete" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Discapacidad</label>
+                    <select asp-for="Empleado.IdDiscapacidad" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var d in ViewBag.Discapacidades as List<Discapacidad> ?? new())
+                        {
+                            <option value="@d.IdDiscapacidad">@d.Descrip_Discapacidad</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Exp. social</label>
+                    <input asp-for="Empleado.ExpSocial" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header fw-semibold"><i class="bi bi-shield-check me-2"></i>Seguridad social y pensiones</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">AFP</label>
+                    <select asp-for="Empleado.IdAFP" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var a in ViewBag.Afps as List<AFP> ?? new())
+                        {
+                            <option value="@a.IdAFP">@a.DescripAFP</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">N. AFP</label>
+                    <input asp-for="Empleado.NroAFP" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Régimen de pensión</label>
+                    <select asp-for="Empleado.IdRegimenPen" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var r in ViewBag.Regimenes as List<RegimenPension> ?? new())
+                        {
+                            <option value="@r.IdRegimenPen">@r.LeyRegimen</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tipo sangre</label>
+                    <select asp-for="Empleado.IdTipoSangre" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var s in ViewBag.TiposSangre as List<TipoSangre> ?? new())
+                        {
+                            <option value="@s.IdTipoSangre">@s.DescripTS</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header fw-semibold"><i class="bi bi-people me-2"></i>Datos sociales y familiares</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Estado civil</label>
+                    <select asp-for="Empleado.IdEstadoCivil" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var ec in ViewBag.EstadosCiviles as List<EstadoCivil> ?? new())
+                        {
+                            <option value="@ec.IdEstadoCivil">@ec.DescripEstCivil</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Nacionalidad</label>
+                    <select asp-for="Empleado.IdNacionalidad" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var n in ViewBag.Nacionalidades as List<Nacionalidad> ?? new())
+                        {
+                            <option value="@n.IdNacionalidad">@n.Descripcion</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Vive con</label>
+                    <select asp-for="Empleado.IdViveCon" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var v in ViewBag.ViveCon as List<ViveCon> ?? new())
+                        {
+                            <option value="@v.IdViveCon">@v.DescripViveCon</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Jefe de hogar</label>
+                    <select asp-for="Empleado.JefeHogar" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        <option value="true" selected="@(Model.Empleado.JefeHogar == true)">Sí</option>
+                        <option value="false" selected="@(Model.Empleado.JefeHogar == false)">No</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-person-plus me-1"></i>Registrar empleado</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

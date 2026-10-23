@@ -1,0 +1,200 @@
+@model HistorialLaboralModelo
+@{
+    ViewData["Title"] = "Historial Laboral";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var tiposResolucion = ViewBag.TiposResolucion as List<TipoResolucion> ?? new List<TipoResolucion>();
+    var tiposInstitucion = ViewBag.TiposInstitucion as List<TipoInstitucion> ?? new List<TipoInstitucion>();
+    var areas = ViewBag.Areas as List<EstructOrganiz> ?? new List<EstructOrganiz>();
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Historial Laboral</h3>
+        @if (idEmpleado is not null)
+        {
+            <span class="text-secondary small">Empleado: @ViewBag.NombreEmpleado</span>
+        }
+    </div>
+</div>
+
+<partial name="_FiltroEmpleado" model="@idEmpleado" />
+
+<ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabPeriodos" type="button" role="tab">Períodos</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabExp" type="button" role="tab">Experiencia</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabRotaciones" type="button" role="tab">Rotaciones</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabResoluciones" type="button" role="tab">Resoluciones</button></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="tabPeriodos" role="tabpanel">
+        <div class="d-flex justify-content-end mb-2">
+            <a asp-action="PeriodoNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo período</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" data-search-target>
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>N° resolución ingreso</th>
+                        <th>Ingreso</th>
+                        <th>Salida</th>
+                        <th>Judicial</th>
+                        <th>Empleado</th>
+                        <th style="width:110px">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Periodos.Count == 0)
+                    {
+                        <tr><td colspan="7" class="text-center text-secondary py-4">Sin registros.</td></tr>
+                    }
+                    @foreach (var p in Model.Periodos)
+                    {
+                        var emp = empleados.FirstOrDefault(e => e.Id == p.IdEmpleado);
+                        <tr>
+                            <td class="fw-semibold">@p.NroPeriodo</td>
+                            <td>@p.NumResoIngreInstitu</td>
+                            <td>@p.FechaIngreso?.ToString("dd/MM/yyyy")</td>
+                            <td>@p.FechaSalida?.ToString("dd/MM/yyyy")</td>
+                            <td>@(p.Judicial == true ? "Sí" : p.Judicial == false ? "No" : "-")</td>
+                            <td>@emp.Nombre</td>
+                            <td>
+                                <a asp-action="PeriodoEditar" asp-route-idEmpleado="@p.IdEmpleado" asp-route-nroPeriodo="@p.NroPeriodo" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="PeriodoEliminar" asp-route-idEmpleado="@p.IdEmpleado" asp-route-nroPeriodo="@p.NroPeriodo" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este período?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tabExp" role="tabpanel">
+        <div class="d-flex justify-content-end mb-2">
+            <a asp-action="ExpNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva experiencia</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" data-search-target>
+                <thead>
+                    <tr>
+                        <th>Institución</th>
+                        <th>Cargo</th>
+                        <th>Unidad orgánica</th>
+                        <th>Tipo</th>
+                        <th>Ingreso</th>
+                        <th>Egreso</th>
+                        <th style="width:110px">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Experiencias.Count == 0)
+                    {
+                        <tr><td colspan="7" class="text-center text-secondary py-4">Sin registros.</td></tr>
+                    }
+                    @foreach (var e in Model.Experiencias)
+                    {
+                        var tipo = tiposInstitucion.FirstOrDefault(t => t.IdTipoInstitucion == e.IdTipoInstitucion);
+                        <tr>
+                            <td class="fw-semibold">@e.NomInstitucion</td>
+                            <td>@e.Cargo</td>
+                            <td>@e.UnidadOrganica</td>
+                            <td>@tipo?.DescripTipoInstitucion</td>
+                            <td>@e.FechaIngreso?.ToString("dd/MM/yyyy")</td>
+                            <td>@e.FechaEgreso?.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <a asp-action="ExpEditar" asp-route-idEmpleado="@e.IdEmpleado" asp-route-idExpLab="@e.IdExpLab" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="ExpEliminar" asp-route-idEmpleado="@e.IdEmpleado" asp-route-idExpLab="@e.IdExpLab" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar esta experiencia?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tabRotaciones" role="tabpanel">
+        <div class="d-flex justify-content-end mb-2">
+            <a asp-action="RotacionNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva rotación</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" data-search-target>
+                <thead>
+                    <tr>
+                        <th>N° memo</th>
+                        <th>Fecha memo</th>
+                        <th>Área</th>
+                        <th>Año</th>
+                        <th style="width:110px">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Rotaciones.Count == 0)
+                    {
+                        <tr><td colspan="5" class="text-center text-secondary py-4">Sin registros.</td></tr>
+                    }
+                    @foreach (var r in Model.Rotaciones)
+                    {
+                        var area = areas.FirstOrDefault(a => a.Year == r.Year && a.idAreaOrganiz == r.idAreaOrganiz);
+                        <tr>
+                            <td class="fw-semibold">@r.NroMemo</td>
+                            <td>@r.FechaMemo?.ToString("dd/MM/yyyy")</td>
+                            <td>@area?.AreaOrganizacional</td>
+                            <td>@r.Year</td>
+                            <td>
+                                <a asp-action="RotacionEditar" asp-route-idEmpleado="@r.idEmpleado" asp-route-idRotacion="@r.idRotacion" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="RotacionEliminar" asp-route-idEmpleado="@r.idEmpleado" asp-route-idRotacion="@r.idRotacion" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar esta rotación?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tabResoluciones" role="tabpanel">
+        <div class="d-flex justify-content-end mb-2">
+            <a asp-action="ResolucionNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva resolución</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" data-search-target>
+                <thead>
+                    <tr>
+                        <th>N° resolución</th>
+                        <th>Tipo</th>
+                        <th>Fecha</th>
+                        <th style="width:110px">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Resoluciones.Count == 0)
+                    {
+                        <tr><td colspan="4" class="text-center text-secondary py-4">Sin registros.</td></tr>
+                    }
+                    @foreach (var r in Model.Resoluciones)
+                    {
+                        var tipo = tiposResolucion.FirstOrDefault(t => t.idTipoResolucion == r.idTipoResolucion);
+                        <tr>
+                            <td class="fw-semibold">@r.NumeroResolucion</td>
+                            <td>@tipo?.DescripTipoResolucion</td>
+                            <td>@r.FechaResolucion?.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <a asp-action="ResolucionEditar" asp-route-idEmpleado="@r.idEmpleado" asp-route-idResolucion="@r.idResolucion" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="ResolucionEliminar" asp-route-idEmpleado="@r.idEmpleado" asp-route-idResolucion="@r.idResolucion" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar esta resolución?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

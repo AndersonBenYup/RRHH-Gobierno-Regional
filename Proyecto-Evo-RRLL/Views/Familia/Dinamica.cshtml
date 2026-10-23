@@ -1,0 +1,69 @@
+@model List<RRHH_DinamicaFamiliar>
+@{
+    ViewData["Title"] = "Dinámica familiar";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var tiposFamilia = ViewBag.TiposFamilia as List<RRHH_TipoFamilia> ?? new List<RRHH_TipoFamilia>();
+    var relacPareja = ViewBag.RelacPareja as List<RRHH_RelacPareja> ?? new List<RRHH_RelacPareja>();
+    var relacPH = ViewBag.RelacPH as List<RRHH_RelacPH> ?? new List<RRHH_RelacPH>();
+    var relacHermano = ViewBag.RelacHermano as List<RRHH_RelacHermano> ?? new List<RRHH_RelacHermano>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">Dinámica familiar</h3>
+        @if (idEmpleado is not null)
+        {
+            var emp = empleados.FirstOrDefault(e => e.Id == idEmpleado);
+            <span class="text-secondary small">Empleado: @(emp.Nombre ?? "(sin asignar)")</span>
+        }
+    </div>
+    <a asp-action="DinamicaNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva evaluación</a>
+</div>
+
+<partial name="_FiltroEmpleado" model="@idEmpleado" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>Empleado</th>
+                <th>Tipo de familia</th>
+                <th>Relac. pareja</th>
+                <th>Relac. P.H.</th>
+                <th>Relac. hermano</th>
+                <th>Observación</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center text-secondary py-4">Sin registros de dinámica familiar.</td></tr>
+            }
+            @foreach (var d in Model)
+            {
+                var emp = empleados.FirstOrDefault(e => e.Id == d.IdEmpleado);
+                <tr>
+                    <td class="fw-semibold">@(emp.Nombre ?? $"(Empleado {d.IdEmpleado})")</td>
+                    <td>@(tiposFamilia.FirstOrDefault(t => t.idTipoFam == d.idTipoFam)?.TipoFamDescrip)</td>
+                    <td>@(relacPareja.FirstOrDefault(r => r.idRelacPareja == d.idRelaPareja)?.RelacParejaDescrip)</td>
+                    <td>@(relacPH.FirstOrDefault(r => r.idRelacPH == d.idRelaPH)?.RelacPHDescrip)</td>
+                    <td>@(relacHermano.FirstOrDefault(r => r.idRelacHermano == d.idRelacHermano)?.RelacHermanoDescrip)</td>
+                    <td>@d.Observacion</td>
+                    <td>
+                        <a asp-action="DinamicaEditar" asp-route-id="@d.idDinamica" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="DinamicaEliminar" asp-route-id="@d.idDinamica" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este registro?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Index" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Familiares</a>
+    <a asp-action="FuncFam" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-primary btn-sm"><i class="bi bi-sliders me-1"></i>Funcionalidad familiar</a>
+</div>

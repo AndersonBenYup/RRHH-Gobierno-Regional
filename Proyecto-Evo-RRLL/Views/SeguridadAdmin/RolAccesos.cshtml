@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "Permisos del rol";
+    var rol = ViewBag.Rol as Rol;
+    var opciones = ViewBag.Opciones as List<OpcionCheckTexto> ?? new List<OpcionCheckTexto>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">Permisos del rol: @rol?.Descripcion</h3>
+        <span class="text-secondary small">Seleccione las opciones del sistema a las que tendrá acceso</span>
+    </div>
+    <a asp-action="Roles" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="RolAccesos" asp-route-id="@rol?.IdRol" method="post">
+    <div class="card">
+        <div class="card-body">
+            <div class="row g-2">
+                @foreach (var o in opciones)
+                {
+                    <div class="col-md-4 col-lg-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="opciones" value="@o.Valor" id="opc-@o.Valor" checked="@o.Seleccionado" />
+                            <label class="form-check-label" for="opc-@o.Valor">@o.Texto</label>
+                        </div>
+                    </div>
+                }
+                @if (opciones.Count == 0)
+                {
+                    <p class="text-secondary mb-0">No hay opciones de sistema registradas.</p>
+                }
+            </div>
+        </div>
+        <div class="card-footer d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.querySelectorAll('[name=opciones]').forEach(c => c.checked = true);">Seleccionar todas</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.querySelectorAll('[name=opciones]').forEach(c => c.checked = false);">Limpiar</button>
+            <div class="ms-auto">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+            </div>
+        </div>
+    </div>
+</form>

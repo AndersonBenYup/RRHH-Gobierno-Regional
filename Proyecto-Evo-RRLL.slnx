@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Capa Datos/Capa Datos.csproj" />
+  <Project Path="Capa Entidades/Capa Entidad.csproj" />
+  <Project Path="Capa Logica/Capa Logica.csproj" />
+  <Project Path="Proyecto-Evo-RRLL/Proyecto-Evo-RRLL.csproj" />
+</Solution>

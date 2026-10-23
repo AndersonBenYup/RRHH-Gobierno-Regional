@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RRHH</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <div id="splashLoader" class="splash-loader">
+        <div class="splash-box">
+            <span class="brand-logo splash-logo"><i class="bi bi-person-badge-fill"></i></span>
+            <div class="splash-title">RRHH</div>
+            <div class="splash-bar"><span></span></div>
+        </div>
+    </div>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        var controlador = ViewContext.RouteData.Values["controller"]?.ToString();
+        var nombreUsuario = User.Identity?.Name ?? "";
+        var partesNombre = nombreUsuario.Split(new[] { ' ', '.', '_', '-' }, StringSplitOptions.RemoveEmptyEntries);
+        string inicialesUsuario;
+        if (partesNombre.Length >= 2)
+            inicialesUsuario = (partesNombre[0].Substring(0, 1) + partesNombre[1].Substring(0, 1)).ToUpper();
+        else if (partesNombre.Length == 1)
+            inicialesUsuario = (partesNombre[0].Length >= 2 ? partesNombre[0].Substring(0, 2) : partesNombre[0].Substring(0, 1)).ToUpper();
+        else
+            inicialesUsuario = "?";
+
+        <aside class="sidebar" id="sidebar">
+            <a class="sidebar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                <span class="brand-logo"><i class="bi bi-person-badge-fill"></i></span>
+                <span class="fw-bold">RRHH</span>
+            </a>
+            <div class="sidebar-section">PRINCIPAL</div>
+            <nav class="sidebar-nav">
+                <a class="sidebar-link @(controlador == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-speedometer2"></i><span>Inicio</span>
+                </a>
+                <a class="sidebar-link @(controlador == "Empleado" ? "active" : "")" asp-controller="Empleado" asp-action="Index">
+                    <i class="bi bi-people"></i><span>Personal</span>
+                </a>
+                <a class="sidebar-link @(controlador == "Salud" ? "active" : "")" asp-controller="Salud" asp-action="Index">
+                    <i class="bi bi-heart-pulse"></i><span>Salud</span>
+                </a>
+                <a class="sidebar-link @(controlador == "Familia" ? "active" : "")" asp-controller="Familia" asp-action="Index">
+                    <i class="bi bi-people-fill"></i><span>Familia</span>
+                </a>
+                <a class="sidebar-link @(controlador == "Asistencia" ? "active" : "")" asp-controller="Asistencia" asp-action="Index">
+                    <i class="bi bi-clock-history"></i><span>Asistencia</span>
+                </a>
+                <a class="sidebar-link @(controlador == "Feriado" ? "active" : "")" asp-controller="Feriado" asp-action="Index">
+                    <i class="bi bi-calendar-event"></i><span>Feriados</span>
+                </a>
+                <a class="sidebar-link @(controlador == "Capacitacion" ? "active" : "")" asp-controller="Capacitacion" asp-action="Index">
+                    <i class="bi bi-mortarboard"></i><span>Capacitación</span>
+                </a>
+                <a class="sidebar-link @(controlador == "Permiso" ? "active" : "")" asp-controller="Permiso" asp-action="Index">
+                    <i class="bi bi-calendar-check"></i><span>Permisos</span>
+                </a>
+                <a class="sidebar-link @(controlador == "HistorialLaboral" ? "active" : "")" asp-controller="HistorialLaboral" asp-action="Index">
+                    <i class="bi bi-briefcase"></i><span>Historial Laboral</span>
+                </a>
+                <a class="sidebar-link @(controlador == "Comportamiento" ? "active" : "")" asp-controller="Comportamiento" asp-action="Index">
+                    <i class="bi bi-clipboard-data"></i><span>Comportamiento</span>
+                </a>
+                <a class="sidebar-link @(controlador == "Vivienda" ? "active" : "")" asp-controller="Vivienda" asp-action="Index">
+                    <i class="bi bi-house"></i><span>Vivienda</span>
+                </a>
+                <a class="sidebar-link @(controlador == "EstructuraOrganiz" ? "active" : "")" asp-controller="EstructuraOrganiz" asp-action="Index">
+                    <i class="bi bi-diagram-3"></i><span>Estructura orgánica</span>
+                </a>
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <div class="sidebar-section">SEGURIDAD</div>
+                    <div class="sidebar-submenu">
+                        <a class="sidebar-link @(controlador == "SeguridadAdmin" ? "active" : "")" asp-controller="SeguridadAdmin" asp-action="Usuarios">
+                            <i class="bi bi-person-gear"></i><span>Usuarios y roles</span>
+                        </a>
+                        <a class="sidebar-link" asp-controller="SeguridadAdmin" asp-action="Actividad">
+                            <i class="bi bi-clock-history"></i><span>Bitácora de actividad</span>
+                        </a>
+                    </div>
+                }
+
+                <div class="sidebar-section">ADMINISTRACIÓN</div>
+                <div class="sidebar-submenu">
+                    <a class="sidebar-link @(controlador == "Catalogo" ? "active" : "")" data-bs-toggle="collapse" href="#menuCatalogo" role="button" aria-expanded="false" aria-controls="menuCatalogo">
+                        <i class="bi bi-grid-1x2"></i><span>Mantenimiento</span><i class="bi bi-chevron-down ms-auto submenu-caret"></i>
+                    </a>
+                    <div class="collapse @(controlador == "Catalogo" ? "show" : "")" id="menuCatalogo">
+                        <div class="submenu-list">
+                            @foreach (var catalogo in Proyecto_Evo_RRLL.Models.ViewModels.CatalogoNavegacion.Items)
+                            {
+                                <a class="sidebar-sublink @(controlador == "Catalogo" && (ViewContext.RouteData.Values["tabla"]?.ToString() ?? "") == catalogo.Key ? "active" : "")"
+                                   asp-controller="Catalogo" asp-action="Index" asp-route-tabla="@catalogo.Key">
+                                    <span>@catalogo.Value</span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="brand-logo small"><i class="bi bi-shield-check"></i></div>
+                    <div class="small lh-sm">
+                        <div class="fw-semibold">RRHH</div>
+                        <div class="text-secondary">Sistema de RR.HH.</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <header class="topbar">
+            <div class="d-flex align-items-center gap-3 w-100">
+                <button class="btn btn-link d-lg-none p-0 text-body" type="button" id="btnMenu" aria-label="Abrir menú">
+                    <i class="bi bi-list fs-2"></i>
+                </button>
+                <div class="flex-grow-1 d-none d-md-block page-title">@ViewData["Title"]</div>
+                <div class="d-flex align-items-center gap-2 ms-auto">
+                    <form class="d-flex me-2 d-none d-lg-inline-flex" role="search" onsubmit="return false;">
+                        <div class="input-group search-box">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input id="siteSearch" type="search" class="form-control" placeholder="Buscar en esta página..." aria-label="Buscar en esta página" />
+                        </div>
+                    </form>
+                    <button id="themeToggle" class="icon-btn" type="button" aria-label="Cambiar tema" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cambiar tema">
+                        <i id="themeIcon" class="bi bi-moon-stars"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="user-chip dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Mi cuenta">
+                            <span class="user-avatar">@inicialesUsuario</span>
+                            <span class="d-none d-sm-inline">@User.Identity?.Name</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            <li>
+                                <form asp-controller="Seguridad" asp-action="CerrarSesion" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </header>
+    }
+    else
+    {
+        <nav class="navbar navbar-dark bg-primary shadow-sm auth-navbar">
+            <div class="container">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="brand-logo"><i class="bi bi-person-badge-fill"></i></span>
+                    RRHH
+                </a>
+                <button id="themeToggle" class="btn btn-outline-light btn-sm" type="button" aria-label="Cambiar tema">
+                    <i id="themeIcon" class="bi bi-moon-stars"></i>
+                </button>
+            </div>
+        </nav>
+    }
+
+    <main id="contenido" role="main" class="main-content @(User.Identity?.IsAuthenticated == true ? "" : "no-topbar")">
+        <div class="container-fluid py-4 px-3 px-md-4">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <nav aria-label="breadcrumb" class="breadcrumb-bar">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+                    </ol>
+                </nav>
+            }
+            @if (TempData["MensajeExito"] is string exito)
+            {
+                <div class="alert alert-success alert-dismissible fade show alert-auto shadow-sm" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>@exito
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            }
+            @if (TempData["MensajeError"] is string error)
+            {
+                <div class="alert alert-danger alert-dismissible fade show alert-auto shadow-sm" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>@error
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            }
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container d-flex justify-content-between flex-wrap gap-2">
+            <span class="small">RRHH &copy; @DateTime.Now.Year</span>
+            <span class="d-flex gap-3 small">
+                <a asp-controller="Home" asp-action="Ayuda" class="link-body-emphasis text-decoration-none">
+                    <i class="bi bi-question-circle me-1"></i>Ayuda
+                </a>
+                <a asp-controller="Home" asp-action="Privacidad" class="link-body-emphasis text-decoration-none">
+                    <i class="bi bi-shield-lock me-1"></i>Política de privacidad
+                </a>
+            </span>
+            <span class="small">Última actualización: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+    </footer>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3 evo-toasts" id="toastHost" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="cookieBanner" class="cookie-banner bg-body-tertiary shadow-lg" role="region" aria-label="Aviso de cookies">
+        <div class="container py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <p class="mb-0 small"><i class="bi bi-cookie me-1"></i>Este sitio utiliza cookies para recordar tus preferencias (tema oscuro) y sesión. Al continuar navegando aceptas su uso.</p>
+            <button id="cookieAccept" type="button" class="btn btn-primary btn-sm">Aceptar</button>
+        </div>
+    </div>
+
+    <button id="backToTop" type="button" class="btn btn-primary back-to-top" aria-label="Volver arriba">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <div id="loadingSpinner" class="loading-spinner" aria-hidden="true">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

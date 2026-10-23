@@ -1,0 +1,39 @@
+@model List<(int Id, string Nombre)>
+@{
+    ViewData["Title"] = "Vivienda";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Vivienda</h3>
+        <span class="text-secondary small">Seleccione un empleado para ver o registrar su vivienda</span>
+    </div>
+</div>
+
+<partial name="_FiltroEmpleado" model="@((int?)null)" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Empleado</th>
+                <th style="width:120px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="2" class="text-center text-secondary py-4">Sin empleados.</td></tr>
+            }
+            @foreach (var e in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@e.Nombre</td>
+                    <td>
+                        <a asp-action="Index" asp-route-idEmpleado="@e.Id" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver vivienda"><i class="bi bi-house"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

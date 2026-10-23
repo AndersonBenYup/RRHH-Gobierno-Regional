@@ -1,0 +1,71 @@
+@model List<RRHH_Asegurado>
+@{
+    ViewData["Title"] = "Beneficiarios";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var personas = ViewBag.Personas as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var vinculos = ViewBag.Vinculos as List<VinculoAsegurado> ?? new List<VinculoAsegurado>();
+    var sexoPorPersona = ViewBag.SexoPorPersona as Dictionary<int, string?> ?? new Dictionary<int, string?>();
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Beneficiarios / Asegurados</h3>
+        @if (idEmpleado is not null)
+        {
+            var emp = empleados.FirstOrDefault(e => e.Id == idEmpleado);
+            <span class="text-secondary small">Empleado: @emp.Nombre</span>
+        }
+    </div>
+    <a asp-action="AseguradoNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo beneficiario</a>
+</div>
+
+<partial name="_FiltroEmpleado" model="@idEmpleado" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>Empleado</th>
+                <th>Beneficiario</th>
+                <th>Vínculo</th>
+                <th>Sexo</th>
+                <th>Inicio vínculo</th>
+                <th>Fin vínculo</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="8" class="text-center text-secondary py-4">Sin beneficiarios.</td></tr>
+            }
+            @foreach (var a in Model)
+            {
+                var emp = empleados.FirstOrDefault(e => e.Id == a.idEmpleado);
+                var per = personas.FirstOrDefault(p => p.Id == a.idPersona);
+                <tr>
+                    <td class="fw-semibold">@a.NroBeneficiario</td>
+                    <td>@emp.Nombre</td>
+                    <td>@per.Nombre</td>
+                    <td>@(vinculos.FirstOrDefault(v => v.IdVinculoAsegurado == a.IdVinculoAsegurado)?.Descripcion)</td>
+                    <td>@(a.idPersona is null ? null : sexoPorPersona.GetValueOrDefault(a.idPersona.Value))</td>
+                    <td>@a.FechaInicioVinculo?.ToString("dd/MM/yyyy")</td>
+                    <td>@a.FechaFinVinculo?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a asp-action="AseguradoEditar" asp-route-idEmpleado="@a.idEmpleado" asp-route-nroBeneficiario="@a.NroBeneficiario" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="AseguradoEliminar" asp-route-idEmpleado="@a.idEmpleado" asp-route-nroBeneficiario="@a.NroBeneficiario" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este beneficiario?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Index" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-primary btn-sm"><i class="bi bi-heart-pulse me-1"></i>Ficha de salud</a>
+    <a asp-action="AcudeEnferm" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list-check me-1"></i>Opción: a quién acudir</a>
+</div>

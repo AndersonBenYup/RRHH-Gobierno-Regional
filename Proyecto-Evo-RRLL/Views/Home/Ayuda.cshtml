@@ -1,0 +1,71 @@
+@{
+    ViewData["Title"] = "Ayuda";
+}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h1 class="h3 mb-4">Preguntas frecuentes</h1>
+
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        ¿Cómo inicio sesión?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Usa el menú de seguridad con el usuario <code>admin</code> y la contraseña <code>Admin.2026</code>. Si olvidaste la clave, contacta al administrador del sistema.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        ¿Cómo cambio el tema claro/oscuro?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        En la barra superior, junto a tu usuario, está el botón con el ícono de luna/sol. La preferencia se guarda en tu navegador y se recuerda la próxima vez que ingreses.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        ¿Para qué sirve el buscador de la barra superior?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Filtra en tiempo real las tablas y listados de la página actual (Personal, Asistencia, Mantenimiento, etc.). Escribe y verás solo los registros que coinciden.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        ¿Qué hago si los datos no coinciden con mi base de datos?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        La conexión se configura en <code>appsettings.json</code> (clave <code>RRHHNuevo</code>). Asegúrate de haberte ejecutado el script de esquema <code>bd-evo-RRLL.sql</code> y luego cargar los datos.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                        ¿El sistema acepta cambios de otros desarrolladores?
+                    </button>
+                </h2>
+                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Sí. La rama <code>testing</code> es para que el equipo haga sus pruebas; los cambios aprobados se fusionan a <code>main</code>. Así el sistema base queda siempre estable.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

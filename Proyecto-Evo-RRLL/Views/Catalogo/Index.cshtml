@@ -1,0 +1,99 @@
+@model CatalogoViewModel
+@{
+    ViewData["Title"] = $"Catálogos - {Model.Titulo}";
+    var puedeEditar = Model.Editable && User.IsInRole("Administrador");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>@Model.Titulo</h3>
+    <div class="d-flex gap-2">
+        @if (User.IsInRole("Administrador"))
+        {
+            <a asp-action="Exportar" asp-route-tabla="@Model.Tabla" class="btn btn-outline-secondary">
+                <i class="bi bi-download me-1"></i> Exportar CSV
+            </a>
+        }
+        @if (puedeEditar)
+        {
+            <a asp-action="Nuevo" asp-route-tabla="@Model.Tabla" class="btn btn-success">
+                <i class="bi bi-plus-lg me-1"></i> Nuevo
+            </a>
+        }
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <label class="form-label fw-bold">Seleccionar catálogo</label>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var item in CatalogoNavegacion.Items)
+            {
+                var activo = item.Key == Model.Tabla;
+                <a asp-action="Index" asp-route-tabla="@item.Key"
+                   class="btn btn-sm @(activo ? "btn-primary" : "btn-outline-secondary")">@item.Value</a>
+            }
+        </div>
+    </div>
+</div>
+
+@if (Model.Filas.Count == 0)
+{
+    <div class="alert alert-info">Sin registros.</div>
+}
+else
+{
+    var columnasVisibles = Model.Columnas.Where(c => !c.EsArchivo).Take(9).ToList();
+    var columnasOcultas = Model.Columnas.Count(c => !c.EsArchivo) - columnasVisibles.Count;
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle" data-search-target>
+            <thead>
+                <tr>
+                    @foreach (var col in columnasVisibles)
+                    {
+                        <th>@col.Nombre</th>
+                    }
+                    @if (puedeEditar)
+                    {
+                        <th style="width:120px">Acciones</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var fila in Model.Filas)
+                {
+                    var id = string.Join("|", Model.Claves.Select(c => fila[c]?.ToString() ?? ""));
+                    <tr>
+                        @foreach (var col in columnasVisibles)
+                        {
+                            <td class="@(col.EsClave ? "fw-semibold" : "")">@(fila[col.Nombre] ?? "&nbsp;")</td>
+                        }
+                        @if (puedeEditar)
+                        {
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a class="btn btn-sm btn-outline-primary" asp-action="Editar" asp-route-tabla="@Model.Tabla" asp-route-ids="@id"><i class="bi bi-pencil me-1"></i>Editar</a>
+                                    <form asp-action="Eliminar" asp-route-tabla="@Model.Tabla" asp-route-ids="@id" method="post"
+                                          onsubmit="return confirm('¿Seguro de eliminar este registro?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Eliminar</button>
+                                    </form>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <p class="text-muted">
+        @Model.Filas.Count registro(s) (@Model.Columnas.Count(c => !c.EsArchivo) columna(s) en total,
+        @if (columnasOcultas > 0)
+        {
+            <span>mostrando las primeras @columnasVisibles.Count — las restantes @columnasOcultas solo se muestran al editar.</span>
+        }
+        else
+        {
+            <span>todas visibles.</span>
+        })
+    </p>
+}

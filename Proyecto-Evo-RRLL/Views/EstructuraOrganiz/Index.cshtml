@@ -1,0 +1,73 @@
+@model List<AreaOrganizFila>
+@{
+    ViewData["Title"] = "Estructura orgánica";
+    var anios = ViewBag.Anios as List<int> ?? new List<int>();
+    var anio = ViewBag.Anio as int?;
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Unidades orgánicas</h3>
+        <span class="text-secondary small">@Model.Count registro(s) en @anio</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Locales" class="btn btn-outline-secondary"><i class="bi bi-building me-1"></i>Locales</a>
+        @if (anio is not null)
+        {
+            <a asp-action="Nuevo" asp-route-year="@anio" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva unidad</a>
+        }
+    </div>
+</div>
+
+<form method="get" class="mb-3">
+    <div style="max-width:220px">
+        <label class="form-label">Año</label>
+        <select name="year" class="form-select" onchange="this.form.submit()">
+            @foreach (var a in anios)
+            {
+                <option value="@a" selected="@(a == anio)">@a</option>
+            }
+        </select>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Área</th>
+                <th>Abrev.</th>
+                <th>Sigla</th>
+                <th>Depende de</th>
+                <th>Jefe</th>
+                <th>N. trabajadores</th>
+                <th style="width:150px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="8" class="text-center text-secondary py-4">Sin unidades orgánicas para @anio.</td></tr>
+            }
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@a.AreaOrganizacional</td>
+                    <td>@a.Abrev</td>
+                    <td>@a.Sigla</td>
+                    <td>@a.DependeDe</td>
+                    <td>@a.Jefe</td>
+                    <td>@a.NroTrabajaUO</td>
+                    <td>
+                        <a asp-action="Detalles" asp-route-year="@a.Year" asp-route-idAreaOrganiz="@a.IdAreaOrganiz" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver detalle"><i class="bi bi-eye"></i></a>
+                        <a asp-action="Editar" asp-route-year="@a.Year" asp-route-idAreaOrganiz="@a.IdAreaOrganiz" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Eliminar" asp-route-year="@a.Year" asp-route-idAreaOrganiz="@a.IdAreaOrganiz" method="post" class="d-inline"
+                              onsubmit="return confirm('¿Eliminar esta unidad orgánica?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

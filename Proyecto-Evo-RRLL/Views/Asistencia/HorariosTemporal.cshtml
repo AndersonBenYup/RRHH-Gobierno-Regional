@@ -1,0 +1,69 @@
+@model List<HorarioTemporal>
+@{
+    ViewData["Title"] = "Horarios Temporales";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var horarios = ViewBag.Horarios as List<Horario> ?? new List<Horario>();
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Horarios Temporales</h3>
+        @if (idEmpleado is not null)
+        {
+            var emp = (ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>()).FirstOrDefault(e => e.Id == idEmpleado);
+            <span class="text-secondary small">Empleado: @emp.Nombre</span>
+        }
+    </div>
+    <a asp-action="HorarioTemporalNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo horario</a>
+</div>
+
+<partial name="_FiltroEmpleado" model="@idEmpleado" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>Empleado</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Horario asignado</th>
+                <th>N° documento</th>
+                <th>Fecha registro</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="8" class="text-center text-secondary py-4">Sin registros.</td></tr>
+            }
+            @foreach (var h in Model)
+            {
+                var emp = (ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>()).FirstOrDefault(e => e.Id == h.idEmpleado);
+                var hor = horarios.FirstOrDefault(x => x.idHorario == h.HorarioAsignado);
+                <tr>
+                    <td class="fw-semibold">@h.N</td>
+                    <td>@emp.Nombre</td>
+                    <td>@h.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                    <td>@h.FechaFin?.ToString("dd/MM/yyyy")</td>
+                    <td>@hor?.Descrip_Horario</td>
+                    <td>@h.NroDocumento</td>
+                    <td>@h.FechaRegistro?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a asp-action="HorarioTemporalEditar" asp-route-idEmpleado="@h.idEmpleado" asp-route-n="@h.N" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="HorarioTemporalEliminar" asp-route-idEmpleado="@h.idEmpleado" asp-route-n="@h.N" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este horario?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-clipboard-check me-1"></i>Registro de Asistencia</a>
+    <a asp-action="Marcaciones" class="btn btn-outline-secondary btn-sm"><i class="bi bi-clock me-1"></i>Marcaciones</a>
+    <a asp-action="RegDiario" class="btn btn-outline-secondary btn-sm"><i class="bi bi-calendar-day me-1"></i>Registro Diario</a>
+</div>

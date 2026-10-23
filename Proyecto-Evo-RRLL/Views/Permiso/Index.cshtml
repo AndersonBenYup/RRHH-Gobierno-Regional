@@ -1,0 +1,75 @@
+@model List<Permiso>
+@{
+    ViewData["Title"] = "Permisos";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var motivos = ViewBag.Motivos as List<Motivo_Perm> ?? new List<Motivo_Perm>();
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Permisos</h3>
+        @if (idEmpleado is not null)
+        {
+            <span class="text-secondary small">Empleado: @ViewBag.NombreEmpleado</span>
+        }
+    </div>
+    <a asp-action="Nuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo permiso</a>
+</div>
+
+<partial name="_FiltroEmpleado" model="@idEmpleado" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>Motivo</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Hora salida</th>
+                <th>Hora retorno</th>
+                <th>Autorizado</th>
+                <th>Empleado</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="9" class="text-center text-secondary py-4">Sin registros.</td></tr>
+            }
+            @foreach (var p in Model)
+            {
+                var motivo = motivos.FirstOrDefault(m => m.idMotivo == p.idMotivo);
+                var emp = empleados.FirstOrDefault(e => e.Id == p.IdEmpleado);
+                <tr>
+                    <td class="fw-semibold">@p.NPermiso</td>
+                    <td>@motivo?.Descrip_Motivo</td>
+                    <td>@p.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                    <td>@p.FechaFin?.ToString("dd/MM/yyyy")</td>
+                    <td>@p.Hora_Sal</td>
+                    <td>@p.Hora_Ret</td>
+                    <td>
+                        @if (p.Autorizado == true) { <span class="badge bg-success">Sí</span> }
+                        else if (p.Autorizado == false) { <span class="badge bg-danger">No</span> }
+                        else { <span class="badge bg-secondary">-</span> }
+                    </td>
+                    <td>@emp.Nombre</td>
+                    <td>
+                        <a asp-action="Editar" asp-route-idEmpleado="@p.IdEmpleado" asp-route-npermiso="@p.NPermiso" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Eliminar" asp-route-idEmpleado="@p.IdEmpleado" asp-route-npermiso="@p.NPermiso" method="post" class="d-inline"
+                              onsubmit="return confirm('¿Eliminar este permiso?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-controller="Catalogo" asp-action="Index" asp-route-tabla="TipoPermiso" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list-check me-1"></i>Tipos de permiso</a>
+    <a asp-controller="Catalogo" asp-action="Index" asp-route-tabla="Motivo_Perm" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list-ul me-1"></i>Motivos de permiso</a>
+</div>

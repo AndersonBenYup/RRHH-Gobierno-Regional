@@ -1,0 +1,146 @@
+@model FamiliarFicha
+@{
+    ViewData["Title"] = "Familiar";
+    var esNuevo = Model.IdPersona == 0;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var personas = ViewBag.Personas as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var tipos = ViewBag.TiposFamiliar as List<TipoFamiliar> ?? new List<TipoFamiliar>();
+    var estados = ViewBag.EstadosCiviles as List<EstadoCivil> ?? new List<EstadoCivil>();
+    var discapacidades = ViewBag.Discapacidades as List<Discapacidad> ?? new List<Discapacidad>();
+    var sangres = ViewBag.TiposSangre as List<TipoSangre> ?? new List<TipoSangre>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>@(esNuevo ? "Nuevo familiar" : "Editar familiar")</h3>
+    <a asp-action="Index" asp-route-idEmpleado="@Model.IdEmpleado" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="@(esNuevo ? "FamiliarNuevo" : "FamiliarEditar")" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <div class="card">
+        <div class="card-body">
+            @if (!esNuevo)
+            {
+                <input type="hidden" asp-for="IdEmpleado" />
+                <input type="hidden" asp-for="IdPersona" />
+            }
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Empleado</label>
+                    <select asp-for="IdEmpleado" class="form-select">
+                        <option value="">(seleccionar)</option>
+                        @foreach (var e in empleados)
+                        {
+                            <option value="@e.Id">@e.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Persona / familiar *</label>
+                    <select asp-for="IdPersona" class="form-select" required>
+                        <option value="">(seleccionar persona)</option>
+                        @foreach (var p in personas)
+                        {
+                            <option value="@p.Id">@p.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tipo de familiar</label>
+                    <select asp-for="IdTipoFam" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var t in tipos)
+                        {
+                            <option value="@t.IdTipoFam">@t.DescripTipoFam</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sexo</label>
+                    <select asp-for="FamSexo" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        <option value="M" selected="@(Model.FamSexo == "M")">Masculino</option>
+                        <option value="F" selected="@(Model.FamSexo == "F")">Femenino</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Estado civil</label>
+                    <select asp-for="IdEstadoCivil" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var ec in estados)
+                        {
+                            <option value="@ec.IdEstadoCivil">@ec.DescripEstCivil</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tipo de sangre</label>
+                    <select asp-for="IdTipoSangre" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var s in sangres)
+                        {
+                            <option value="@s.IdTipoSangre">@s.DescripTS</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ocupación</label>
+                    <input asp-for="FamOcupacion" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Grado de instrucción</label>
+                    <input asp-for="FamGradoInstruc" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Lugar de trabajo</label>
+                    <input asp-for="FamLugTrab" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Autogenerado salud</label>
+                    <input asp-for="NumAutogenSalud" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Discapacidad</label>
+                    <select asp-for="IdDiscapacidad" class="form-select">
+                        <option value="">(sin asignar)</option>
+                        @foreach (var d in discapacidades)
+                        {
+                            <option value="@d.IdDiscapacidad">@d.Descrip_Discapacidad</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Procedencia</label>
+                    <input asp-for="Procedencia" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check form-switch mt-4">
+                        <input class="form-check-input" type="checkbox" name="ViveCasa" value="true" id="ViveCasa" @(Model.ViveCasa == true ? "checked" : "") />
+                        <label asp-for="ViveCasa" class="form-check-label">Vive en casa</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check form-switch mt-4">
+                        <input class="form-check-input" type="checkbox" disabled @(Model.LaboraInstitucion == true ? "checked" : "") title="Se calcula a partir de los vínculos laborales activos" />
+                        <label class="form-check-label">Labora en la institución</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Enfermedad</label>
+                    <input asp-for="Enfermedad" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tiempo de enfermedad</label>
+                    <input asp-for="TiempoEnfermedad" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

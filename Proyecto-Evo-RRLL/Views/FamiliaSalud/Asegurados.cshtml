@@ -1,0 +1,63 @@
+@model List<AseguradoFila>
+@{
+    ViewData["Title"] = "Asegurados";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">Asegurados (beneficiarios)</h3>
+        <span class="text-muted">Empleado @ViewBag.IdEmpleado — @ViewBag.NombreEmpleado</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="AseguradoCrear" asp-route-idEmpleado="@((int)ViewBag.IdEmpleado)" class="btn btn-success">Nuevo asegurado</a>
+        <a asp-action="Index" asp-route-idEmpleado="@((int)ViewBag.IdEmpleado)" class="btn btn-outline-secondary">Volver</a>
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">Sin asegurados registrados.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>N°</th>
+                    <th>Beneficiario</th>
+                    <th>Estado civil</th>
+                    <th>Vínculo</th>
+                    <th>Sexo</th>
+                    <th>Inicio vínculo</th>
+                    <th>Fin vínculo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@a.NroBeneficiario</td>
+                        <td>@a.Nombre</td>
+                        <td>@a.EstadoCivil</td>
+                        <td>@a.VinculoFamiliar</td>
+                        <td>@a.Sexo</td>
+                        <td>@a.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                        <td>@a.FechaFin?.ToString("dd/MM/yyyy")</td>
+                        <td style="width:160px">
+                            <div class="d-flex gap-2">
+                                <a asp-action="AseguradoEditar" asp-route-idEmpleado="@((int)ViewBag.IdEmpleado)" asp-route-nro="@a.NroBeneficiario" class="btn btn-sm btn-outline-primary">Editar</a>
+                                <form asp-action="AseguradoEliminar" asp-route-idEmpleado="@((int)ViewBag.IdEmpleado)" asp-route-nro="@a.NroBeneficiario" method="post"
+                                      onsubmit="return confirm('¿Eliminar el asegurado N° @a.NroBeneficiario?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,70 @@
+@model List<EstudiosRealizado>
+@{
+    ViewData["Title"] = "Estudios realizados";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var tipos = ViewBag.TiposEstudio as List<TipoEstudio> ?? new List<TipoEstudio>();
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Estudios</h3>
+        @if (idEmpleado is not null)
+        {
+            <span class="text-secondary small">Empleado: @ViewBag.NombreEmpleado</span>
+        }
+    </div>
+    <a asp-action="EstudioNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo estudio</a>
+</div>
+
+<partial name="_FiltroEmpleado" model="@idEmpleado" />
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle" data-search-target>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Centro de estudios</th>
+                <th>Especialidad</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Empleado</th>
+                <th style="width:110px">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="7" class="text-center text-secondary py-4">Sin registros.</td></tr>
+            }
+            @foreach (var e in Model)
+            {
+                var tipo = tipos.FirstOrDefault(t => t.IdTipoEstudios == e.IdTipoEstudios);
+                <tr>
+                    <td class="fw-semibold">@tipo?.DescripTipoEst</td>
+                    <td>@e.CentroEstudios</td>
+                    <td>@e.Especialidad</td>
+                    <td>@e.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                    <td>@e.FechaTermino?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @{ var emp = empleados.FirstOrDefault(x => x.Id == e.IdEmpleado); }
+                        @emp.Nombre
+                    </td>
+                    <td>
+                        <a asp-action="EstudioEditar" asp-route-idTipo="@e.IdTipoEstudios" asp-route-idEmpleado="@e.IdEmpleado" asp-route-correlativo="@e.Correlativo"
+                           class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="EstudioEliminar" asp-route-idTipo="@e.IdTipoEstudios" asp-route-idEmpleado="@e.IdEmpleado" asp-route-correlativo="@e.Correlativo"
+                              method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este estudio?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Index" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-mortarboard me-1"></i>Capacitaciones</a>
+    <a asp-action="Titulos" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-award me-1"></i>Títulos</a>
+</div>

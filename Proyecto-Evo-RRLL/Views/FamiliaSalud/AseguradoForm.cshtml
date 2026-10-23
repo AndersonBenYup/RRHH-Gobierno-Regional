@@ -1,0 +1,66 @@
+@model RRHH_Asegurado
+@{
+    ViewData["Title"] = ViewBag.EsEdicion ? "Editar asegurado" : "Nuevo asegurado";
+    var esEdicion = (bool)ViewBag.EsEdicion;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">@ViewData["Title"]</h3>
+        <span class="text-muted">Empleado @ViewBag.IdEmpleado — @ViewBag.NombreEmpleado</span>
+    </div>
+    <a asp-action="Asegurados" asp-route-idEmpleado="@((int)ViewBag.IdEmpleado)" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-action="@(esEdicion ? "AseguradoEditar" : "AseguradoCrear")" method="post">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="idEmpleado" />
+    <div class="card">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">N° beneficiario</label>
+                    <input asp-for="NroBeneficiario" type="number" class="form-control" readonly="@(esEdicion ? "" : null)" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Id Persona *</label>
+                    <input asp-for="idPersona" type="number" class="form-control" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Vínculo familiar</label>
+                    <select asp-for="IdVinculoAsegurado" class="form-select">
+                        <option value="">(sin especificar)</option>
+                        @foreach (var v in ViewBag.Vinculos as List<VinculoAsegurado> ?? new List<VinculoAsegurado>())
+                        {
+                            <option value="@v.IdVinculoAsegurado">@v.Descripcion</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">N° partida</label>
+                    <input asp-for="NroPartida" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Inicio de vínculo</label>
+                    <input asp-for="FechaInicioVinculo" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Fin de vínculo</label>
+                    <input asp-for="FechaFinVinculo" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Reevaluar</label>
+                    <input asp-for="Reevaluar" class="form-control" />
+                </div>
+                <div class="col-md-9">
+                    <label class="form-label">Otros motivos</label>
+                    <input asp-for="OtrosMotivos" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </div>
+</form>
