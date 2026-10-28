@@ -21,3 +21,6 @@ x86/
 ## Salidas de publicacion locales
 publish_test/
 *.bacpac
+
+# Archivos temporales de Office
+~$*
