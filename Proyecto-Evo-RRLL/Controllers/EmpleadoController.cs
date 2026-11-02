@@ -1,5 +1,6 @@
-using Capa_Logica;
+using Capa_Logica.Exportacion;
 using Proyecto_Evo_RRLL.Utilidades;
+using Capa_Logica;
 using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
@@ -109,11 +110,11 @@ public class EmpleadoController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Exportar(string? q)
+    public async Task<IActionResult> Exportar(string? q, [FromServices] ExportadorTablas exportador)
     {
         var (filtrados, personasPorId, cargosPorId, areasPorEmpleado) = await FiltrarEmpleadosAsync(q);
 
-        var filas = new List<string[]>
+        var filas = new List<string?[]>
         {
             new[] { "IdEmpleado", "Nombres", "NumDoc", "Cargo", "Area", "Estado", "FechaIngreso" }
         };
@@ -137,9 +138,9 @@ public class EmpleadoController : Controller
             });
         }
 
-        var contenido = string.Join("\r\n", filas.Select(f => string.Join(";", f.Select(CsvUtilidad.EscaparCsv))));
-        var nombreArchivo = $"empleados_{(string.IsNullOrWhiteSpace(q) ? "todos" : "filtro")}_{DateTime.Now:yyyyMMdd_HHmm}.csv";
-        return File(new System.Text.UTF8Encoding(true).GetBytes(contenido), "text/csv; charset=utf-8", nombreArchivo);
+        // SC-003: el formato lo resuelve ExportadorTablas (OCP).
+        var archivo = exportador.Exportar(filas, $"empleados_{(string.IsNullOrWhiteSpace(q) ? "todos" : "filtro")}");
+        return File(archivo.Contenido, archivo.TipoContenido, archivo.NombreArchivo);
     }
 
     private async Task<(List<Empleado> Filtrados, Dictionary<int, Persona> Personas, Dictionary<int, Cargo> Cargos, Dictionary<int, EmpleadoAreaActual> Areas)> FiltrarEmpleadosAsync(string? q)

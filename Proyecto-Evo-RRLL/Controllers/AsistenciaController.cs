@@ -1,3 +1,4 @@
+using Capa_Logica.Exportacion;
 using Capa_Logica;
 using Capa_Entidades.Contratos;
 using Capa_Entidades;
@@ -54,19 +55,52 @@ public class AsistenciaController : Controller
     [HttpGet]
     public async Task<IActionResult> Index(DateTime? desde, DateTime? hasta, string? q)
     {
-        var registros = await _asistenciaData.Listar();
-        var empleados = await _empleadoData.Listar();
-        var personas = await _personaData.Listar();
-
-        var desdeEf = desde ?? DateTime.Today.AddMonths(-1);
-        var hastaEf = hasta ?? DateTime.Today.AddDays(1);
-
         var vm = new AsistenciaViewModel { Desde = desde, Hasta = hasta ?? DateTime.Today, Busqueda = q };
+        vm.Registros = await ConstruirFilasAsync(desde, hasta, q, limite: 2000);
+        return View(vm);
+    }
 
-        foreach (var r in registros.Where(x => x.Fecha >= desdeEf && x.Fecha < hastaEf))
+    /// <summary>SC-003: exporta a CSV el registro de asistencia con los mismos filtros de la pantalla (sin límite de filas).</summary>
+    [HttpGet]
+    public async Task<IActionResult> Exportar(DateTime? desde, DateTime? hasta, string? q, [FromServices] ExportadorTablas exportador)
+    {
+        var filas = new List<string?[]>
         {
-            var empleado = empleados.FirstOrDefault(e => e.IdEmpleado == r.IdEmpleado);
-            var persona = empleado?.IdPersona is null ? null : personas.FirstOrDefault(p => p.IdPersona == empleado.IdPersona);
+            new[] { "Fecha", "IdEmpleado", "Empleado", "Entrada", "Salida almuerzo", "Entrada almuerzo", "Salida", "Estado" }
+        };
+        foreach (var r in await ConstruirFilasAsync(desde, hasta, q, limite: null))
+            filas.Add(new string?[]
+            {
+                r.Fecha.ToString("dd/MM/yyyy"), r.IdEmpleado.ToString(), r.Empleado,
+                r.HorEntrada, r.AlmSalida, r.AlmEntrada, r.HorSalida,
+                r.Estado switch { true => "Presente", false => "Ausente", _ => "" }
+            });
+
+        var (desdeEf, hastaEf) = Rango(desde, hasta);
+        var archivo = exportador.Exportar(filas, $"asistencia_{desdeEf:yyyyMMdd}_{hastaEf.AddDays(-1):yyyyMMdd}");
+        return File(archivo.Contenido, archivo.TipoContenido, archivo.NombreArchivo);
+    }
+
+    /// <summary>Por defecto, el último mes; <c>hasta</c> se incluye completo.</summary>
+    private static (DateTime Desde, DateTime HastaExclusivo) Rango(DateTime? desde, DateTime? hasta)
+        => ((desde ?? DateTime.Today.AddMonths(-1)).Date, (hasta ?? DateTime.Today).Date.AddDays(1));
+
+    /// <summary>
+    /// Filas del registro de asistencia. El rango de fechas se filtra en la BD (antes se traía toda la tabla);
+    /// el filtro por nombre o DNI se aplica después sobre ese rango.
+    /// </summary>
+    private async Task<List<AsistenciaFila>> ConstruirFilasAsync(DateTime? desde, DateTime? hasta, string? q, int? limite)
+    {
+        var (desdeEf, hastaEf) = Rango(desde, hasta);
+        var registros = await _asistenciaData.ListarEntreFechas(desdeEf, hastaEf);
+        var empleados = (await _empleadoData.Listar()).ToDictionary(e => e.IdEmpleado);
+        var personas = (await _personaData.Listar()).ToDictionary(p => p.IdPersona);
+
+        var filas = new List<AsistenciaFila>();
+        foreach (var r in registros.OrderByDescending(x => x.Fecha).ThenBy(x => x.IdEmpleado))
+        {
+            var empleado = empleados.GetValueOrDefault(r.IdEmpleado);
+            var persona = empleado?.IdPersona is null ? null : personas.GetValueOrDefault(empleado.IdPersona.Value);
             var nombre = persona is null
                 ? $"(Empleado {r.IdEmpleado})"
                 : $"{persona.Nombres} {persona.Apellido_Paterno} {persona.Apellido_Materno}".Trim();
@@ -76,7 +110,7 @@ public class AsistenciaController : Controller
                 && !(persona?.NumDocID?.Contains(q, StringComparison.OrdinalIgnoreCase) == true))
                 continue;
 
-            vm.Registros.Add(new AsistenciaFila
+            filas.Add(new AsistenciaFila
             {
                 Fecha = r.Fecha,
                 IdEmpleado = r.IdEmpleado,
@@ -88,12 +122,10 @@ public class AsistenciaController : Controller
                 Estado = r.Estado
             });
 
-            if (vm.Registros.Count >= 2000)
+            if (limite is not null && filas.Count >= limite)
                 break;
         }
-
-        vm.Registros = vm.Registros.OrderByDescending(x => x.Fecha).ThenBy(x => x.IdEmpleado).ToList();
-        return View(vm);
+        return filas;
     }
 
     // ---------- Marcaciones ----------
