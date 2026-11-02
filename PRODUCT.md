@@ -1,42 +1,90 @@
-# EVO RRHH · Contexto de producto
+# Product
 
-> Redactado durante SC-011 a partir del brief del proyecto y de la revisión del código.
-> Los puntos marcados como *supuesto* no se validaron con usuarios: confírmalos o corrígelos.
+<!-- impeccable:product-schema 1 -->
 
-## Qué es
+## Platform
 
-Sistema web interno de Recursos Humanos de un gobierno regional. Reemplaza una aplicación de escritorio
-VB.NET y concentra la ficha del personal, la asistencia y las marcaciones, los permisos, la capacitación,
-la salud, la familia y la vivienda, el historial laboral, la estructura orgánica y la seguridad (usuarios, roles y bitácora).
+web
 
-## Usuarios
+## Users
 
-- **Registradores de RR.HH.** (principal): cargan y corrigen datos todo el día. Necesitan formularios rápidos,
-  mensajes de error claros y tablas fáciles de recorrer.
-- **Administrador del sistema**: gestiona usuarios, roles, catálogos y desbloqueos.
-- *Supuesto:* trabajan en PC de oficina con monitores de 1366 px o más y luz de oficina; el móvil es una consulta ocasional.
+- **Registradores de RR.HH.** (usuario principal): pasan la jornada cargando y corrigiendo datos del personal.
+  Para eso necesitan formularios rápidos, mensajes de error claros y tablas fáciles de recorrer.
+- **Administrador del sistema:** gestiona usuarios, roles, catálogos y desbloqueos de cuenta.
+- No hay otros usuarios. Los jefes de área, los empleados y auditoría no entran al sistema (confirmado).
+- Trabajan en PC de oficina con monitores de 1366 px o más, en horario de oficina (confirmado).
+  El móvil se usa solo para alguna consulta ocasional.
 
-## Modo de la interfaz
+## Product Purpose
 
-**Operate.** Se trabaja sobre la información: la velocidad de lectura, la coherencia y los patrones conocidos
-pesan más que la expresividad.
+Sistema web interno de Recursos Humanos de un gobierno regional. Reemplaza una aplicación de escritorio en VB.NET
+y reúne en un solo lugar:
 
-## Tono
+- la ficha del personal;
+- la asistencia y las marcaciones;
+- los permisos y los feriados;
+- la capacitación;
+- la salud, la familia y la vivienda;
+- el historial laboral;
+- la estructura orgánica;
+- la seguridad: usuarios, roles y bitácora.
 
-Institucional, sobrio y confiable. Sin degradados, brillos ni adornos. Textos en español, en "usted" en las pantallas públicas
-(inicio de sesión) y directos en el resto. Los errores dicen qué pasó y cómo corregirlo.
+Tiene éxito cuando RR.HH. registra y consulta sin errores ni demoras, y cuando cada cambio queda trazado.
 
-## Principios de diseño
+## Positioning
 
-1. **Los datos primero:** tablas densas, cifras tabulares y encabezados discretos.
-2. **Un solo color de acción:** azul petróleo (`#0F4C5C`). El ocre solo marca la sección activa del menú y los iconos de apoyo.
-3. **Estados claros:** verde para correcto o activo, rojo para error o bloqueado y neutro para inactivo, siempre en fondo suave con texto oscuro.
-4. **Accesible:** contraste AA, foco visible y validación también sin JavaScript.
+Herramienta institucional de uso interno. No compite con otros productos: su valor es cubrir toda la ficha de cada
+empleado sobre la base de datos real de la institución (`RRHH_Normalizado`), con las reglas de negocio validadas tanto en el
+navegador como en el servidor.
 
-## Sistema visual (SC-011)
+## Operating Context
 
-- Tipografía: IBM Plex Sans (Google Fonts).
-- Superficies: gris piedra `#F5F4F1` de fondo, blanco para tarjetas y tablas, bordes `#DAD6CE`, radio de 6 a 8 px.
-- Barra lateral sólida `#0B3440`. Modo oscuro con los mismos roles de color (`data-bs-theme="dark"`).
-- Implementación: tokens y componentes en `Proyecto-Evo-RRLL/Estilos/app.css` (Tailwind 3.4 con prefijo `tw-` y sin preflight),
-  compilado con `npm run css:build` en `wwwroot/css/app.css`, que se carga después de Bootstrap y `site.css`.
+- Lo usa la oficina de RR.HH. todo el día. Las tareas típicas son buscar un empleado, abrir su ficha, registrar o corregir
+  un permiso, revisar la asistencia de un rango de fechas y exportarla a CSV.
+- Cada cambio entra como una solicitud de cambio numerada. Los commits llevan el prefijo `SC-NNN:` y la matriz de cambios
+  está en `docs/GESTION-DEL-CAMBIO.md`.
+- Cada push a `main` corre las pruebas y despliega a Azure (Web App `rrhh-gobierno-regional` y Azure SQL).
+
+## Capabilities and Constraints
+
+- **Stack:**
+  - ASP.NET Core MVC sobre .NET 10.
+  - EF Core 10 con SQL Server, en capas: Entidades, Datos, Lógica y Web.
+  - Bootstrap 5 junto a Tailwind 3.4, este último con prefijo `tw-` y sin preflight.
+- **CSP estricta:** solo recursos propios y Google Fonts; no se usan CDNs de scripts.
+- **Datos heredados:** hay registros antiguos que no cumplen las validaciones nuevas, y se corrigen al editarlos.
+  El esquema de la BD no se cambia sin una solicitud de cambio.
+- **Idioma:** español. En la BD el rol del administrador figura como `ADMINISTRADOR`.
+- **Pendiente:** permisos por opción del menú (`Rol_Acceso`).
+
+## Brand Commitments
+
+- Tono institucional, sobrio y confiable.
+- En las pantallas públicas (inicio de sesión) se trata al usuario de "usted"; en el resto, los textos son directos.
+- Los errores dicen qué pasó y cómo corregirlo.
+- Dirección "Institucional sobrio", elegida en SC-011: azul petróleo como color de acción e IBM Plex Sans.
+  El detalle está implementado en `Proyecto-Evo-RRLL/Estilos/app.css`.
+
+## Evidence on Hand
+
+- Datos reales en la BD local y en Azure. Por ejemplo, hay unos 26 000 permisos y 11 600 registros de asistencia exportables.
+- Documentación del proyecto en `docs/` (entregables, gestión del cambio, arquitectura) y en `temas-semanas/`
+  (exposiciones semanales).
+- No hay un logo oficial ni un manual de marca del gobierno regional en el repositorio. No hay que inventarlos ni
+  simular un escudo institucional.
+
+## Product Principles
+
+1. **Los datos primero:** las pantallas sirven para leer y corregir información rápido; la expresividad viene después.
+2. **Ningún dato inválido entra:** cada regla se valida en el navegador y se repite en el servidor.
+3. **Todo queda trazado:** los accesos y los cambios sensibles se registran en la bitácora.
+4. **Mínimo privilegio sobre datos sensibles:** solo se muestra lo que la tarea necesita.
+
+## Accessibility & Inclusion
+
+- **WCAG 2.x nivel AA**, como estándar exigido: contraste AA, foco visible, navegación con teclado y formularios que
+  validan también con JavaScript desactivado.
+- **Protección de datos personales (Ley 29733):**
+  - El DNI, la salud y la familia son datos sensibles.
+  - No se exponen en URLs, exportaciones ni pantallas públicas más allá de lo necesario.
+  - Las claves nunca se muestran ni se versionan.
