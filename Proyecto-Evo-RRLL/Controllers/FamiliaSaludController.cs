@@ -163,6 +163,9 @@ public class FamiliaSaludController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Salud(RRHH_Salud modelo)
     {
+        if (!ModelState.IsValid)
+            return DatosInvalidos(modelo.IdEmpleado ?? 0);
+
         var actual = (await _saludData.Listar()).FirstOrDefault(s => s.IdEmpleado == modelo.IdEmpleado);
 
         if (actual is null)
@@ -229,6 +232,9 @@ public class FamiliaSaludController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> FichaSocial(FichaSocialViewModel modelo)
     {
+        if (!ModelState.IsValid)
+            return DatosInvalidos(modelo.IdEmpleado);
+
         var idEmpleado = modelo.IdEmpleado;
 
         var guardo = await _secuencia.EjecutarTransaccionalAsync(async () =>
@@ -323,6 +329,9 @@ public class FamiliaSaludController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AseguradoCrear(RRHH_Asegurado modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAseguradoAsync(modelo, esEdicion: false);
+
         if (modelo.NroBeneficiario == 0)
             modelo.NroBeneficiario = (await _aseguradoData.Listar())
                 .Where(a => a.idEmpleado == modelo.idEmpleado).Select(a => a.NroBeneficiario).DefaultIfEmpty(0).Max() + 1;
@@ -348,6 +357,9 @@ public class FamiliaSaludController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AseguradoEditar(RRHH_Asegurado modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAseguradoAsync(modelo, esEdicion: true);
+
         var actual = await _aseguradoData.Obtener(modelo.idEmpleado, modelo.NroBeneficiario);
         if (actual is null)
             return NotFound();
@@ -410,5 +422,22 @@ public class FamiliaSaludController : Controller
         destino.Soc1 = origen.Soc1;
         destino.Soc2 = origen.Soc2;
         destino.Soc3 = origen.Soc3;
+    }
+
+    // SC-008: avisa los errores de validación y vuelve a la ficha del empleado.
+    private IActionResult DatosInvalidos(int idEmpleado)
+    {
+        TempData["MensajeError"] = "Revise los datos: " +
+            string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+        return RedirectToAction(nameof(Index), new { idEmpleado });
+    }
+
+    private async Task<IActionResult> FormularioAseguradoAsync(RRHH_Asegurado modelo, bool esEdicion)
+    {
+        ViewBag.IdEmpleado = modelo.idEmpleado;
+        ViewBag.NombreEmpleado = await NombreEmpleadoAsync(modelo.idEmpleado);
+        ViewBag.EsEdicion = esEdicion;
+        ViewBag.Vinculos = await _vinculoData.Listar();
+        return View("AseguradoForm", modelo);
     }
 }

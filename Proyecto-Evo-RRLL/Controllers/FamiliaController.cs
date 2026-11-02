@@ -155,6 +155,9 @@ public class FamiliaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> FamiliarEditar(FamiliarFicha modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioFamiliarAsync(modelo);
+
         var actual = await _familiarData.Obtener(modelo.IdEmpleado, modelo.IdPersona);
         if (actual is null)
             return NotFound();
@@ -261,6 +264,9 @@ public class FamiliaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DinamicaEditar(RRHH_DinamicaFamiliar modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioDinamicaAsync(modelo);
+
         var actual = await _dinamicaData.Obtener(modelo.idDinamica);
         if (actual is null)
             return NotFound();
@@ -348,6 +354,9 @@ public class FamiliaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> FuncFamEditar(RRHH_FuncFam modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioFuncFamAsync(modelo);
+
         var actual = await _funcFamData.Obtener(modelo.IdEmpleado);
         if (actual is null)
             return NotFound();
@@ -392,5 +401,36 @@ public class FamiliaController : Controller
             .OrderBy(x => x.Item2)
             .Select(x => (x.Item1, x.Item2))
             .ToList();
+    }
+
+    // SC-008: vuelven a mostrar cada formulario con los errores de validación.
+    private async Task<IActionResult> FormularioFamiliarAsync(FamiliarFicha modelo)
+    {
+        ViewBag.IdEmpleado = modelo.IdEmpleado;
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.Personas = await PersonasAsync();
+        ViewBag.TiposFamiliar = await _tipoFamiliarData.Listar();
+        ViewBag.EstadosCiviles = await _estadoCivilData.Listar();
+        ViewBag.Discapacidades = await _discapacidadData.Listar();
+        ViewBag.TiposSangre = await _tipoSangreData.Listar();
+        return View("FamiliarForm", modelo);
+    }
+
+    private async Task<IActionResult> FormularioDinamicaAsync(RRHH_DinamicaFamiliar modelo)
+    {
+        ViewBag.IdEmpleado = modelo.IdEmpleado;
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.TiposFamilia = await _tipoFamiliaData.Listar();
+        ViewBag.RelacPareja = await _relacParejaData.Listar();
+        ViewBag.RelacPH = await _relacPHData.Listar();
+        ViewBag.RelacHermano = await _relacHermanoData.Listar();
+        return View("DinamicaForm", modelo);
+    }
+
+    private async Task<IActionResult> FormularioFuncFamAsync(RRHH_FuncFam modelo)
+    {
+        ViewBag.IdEmpleado = modelo.IdEmpleado;
+        ViewBag.Empleados = await EmpleadosAsync();
+        return View("FuncFamForm", modelo);
     }
 }

@@ -69,6 +69,9 @@ public class CapacitacionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Nuevo(Capacitacion modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("Form", modelo, modelo.IdEmpleado);
+
         modelo.IdCapacitacion = 0;
         await _capacitacionData.Crear(modelo);
         return RedirectToAction(nameof(Index), new { idEmpleado = modelo.IdEmpleado });
@@ -90,6 +93,9 @@ public class CapacitacionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Editar(int id, Capacitacion modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("Form", modelo, modelo.IdEmpleado);
+
         if (id != modelo.IdCapacitacion)
             return NotFound();
 
@@ -149,6 +155,9 @@ public class CapacitacionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EstudioNuevo(EstudiosRealizado modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("EstudioForm", modelo, modelo.IdEmpleado);
+
         var guardo = await _secuencia.EjecutarConBloqueoAsync(
             async () =>
             {
@@ -195,6 +204,9 @@ public class CapacitacionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EstudioEditar(EstudiosRealizado modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("EstudioForm", modelo, modelo.IdEmpleado);
+
         var actual = await _estudiosData.Obtener(modelo.IdTipoEstudios, modelo.IdEmpleado, modelo.Correlativo);
         if (actual is null)
             return NotFound();
@@ -246,6 +258,9 @@ public class CapacitacionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> TituloNuevo(TitulosEmpleado modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("TituloForm", modelo, modelo.IdEmpleado);
+
         modelo.IdTitulo = 0;
         await _titulosData.Crear(modelo);
         return RedirectToAction(nameof(Titulos), new { idEmpleado = modelo.IdEmpleado });
@@ -267,6 +282,9 @@ public class CapacitacionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> TituloEditar(int id, TitulosEmpleado modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("TituloForm", modelo, modelo.IdEmpleado);
+
         var actual = await _titulosData.Obtener(id);
         if (actual is null)
             return NotFound();
@@ -298,4 +316,14 @@ public class CapacitacionController : Controller
 
     private async Task<string?> NombreEmpleadoAsync(int idEmpleado)
         => await _empleados.NombreEmpleadoAsync(idEmpleado);
+
+    // SC-008: vuelve a mostrar el formulario con los errores de validación.
+    private async Task<IActionResult> FormularioAsync(string vista, object modelo, int? idEmpleado)
+    {
+        ViewBag.IdEmpleado = idEmpleado;
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.TiposEstudio = await _tipoEstudioData.Listar();
+        ViewBag.EstadosEstudio = await _estadoEstudioData.Listar();
+        return View(vista, modelo);
+    }
 }

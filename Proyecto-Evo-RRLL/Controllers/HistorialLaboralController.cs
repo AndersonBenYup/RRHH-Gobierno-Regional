@@ -93,6 +93,9 @@ public class HistorialLaboralController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> PeriodoNuevo(PeriodoLaboral modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("PeriodoForm", modelo, modelo.IdEmpleado);
+
         var guardo = await _secuencia.EjecutarConBloqueoAsync(
             async () =>
             {
@@ -130,6 +133,9 @@ public class HistorialLaboralController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> PeriodoEditar(PeriodoLaboral modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("PeriodoForm", modelo, modelo.IdEmpleado);
+
         var actual = await _periodoData.Obtener(modelo.IdEmpleado, modelo.NroPeriodo);
         if (actual is null)
             return NotFound();
@@ -170,6 +176,9 @@ public class HistorialLaboralController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ExpNuevo(ExpLaboral modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("ExpForm", modelo, modelo.IdEmpleado);
+
         var guardo = await _secuencia.EjecutarConBloqueoAsync(
             async () =>
             {
@@ -209,6 +218,9 @@ public class HistorialLaboralController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ExpEditar(ExpLaboral modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("ExpForm", modelo, modelo.IdEmpleado);
+
         var actual = await _expData.Obtener(modelo.IdEmpleado, modelo.IdExpLab);
         if (actual is null)
             return NotFound();
@@ -249,6 +261,9 @@ public class HistorialLaboralController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RotacionNuevo(Rotacion modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("RotacionForm", modelo, modelo.idEmpleado);
+
         var guardo = await _secuencia.EjecutarConBloqueoAsync(
             async () =>
             {
@@ -288,6 +303,9 @@ public class HistorialLaboralController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RotacionEditar(Rotacion modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("RotacionForm", modelo, modelo.idEmpleado);
+
         var actual = await _rotacionData.Obtener(modelo.idEmpleado, modelo.idRotacion);
         if (actual is null)
             return NotFound();
@@ -326,6 +344,9 @@ public class HistorialLaboralController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ResolucionNuevo(Resolucion modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("ResolucionForm", modelo, modelo.idEmpleado);
+
         var guardo = await _secuencia.EjecutarConBloqueoAsync(
             async () =>
             {
@@ -365,6 +386,9 @@ public class HistorialLaboralController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ResolucionEditar(Resolucion modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("ResolucionForm", modelo, modelo.idEmpleado);
+
         var actual = await _resolucionData.Obtener(modelo.idEmpleado, modelo.idResolucion);
         if (actual is null)
             return NotFound();
@@ -394,4 +418,15 @@ public class HistorialLaboralController : Controller
 
     private async Task<string?> NombreEmpleadoAsync(int idEmpleado)
         => await _empleados.NombreEmpleadoAsync(idEmpleado);
+
+    // SC-008: vuelve a mostrar el formulario con los errores de validación.
+    private async Task<IActionResult> FormularioAsync(string vista, object modelo, int? idEmpleado)
+    {
+        ViewBag.IdEmpleado = idEmpleado;
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.TiposInstitucion = await _tipoInstitucionData.Listar();
+        ViewBag.TiposResolucion = await _tipoResolucionData.Listar();
+        ViewBag.Areas = await _estructOrganizData.Listar();
+        return View(vista, modelo);
+    }
 }

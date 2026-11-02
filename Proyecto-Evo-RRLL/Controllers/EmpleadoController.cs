@@ -226,6 +226,12 @@ public class EmpleadoController : Controller
         if (id != empleado.IdEmpleado)
             return NotFound();
 
+        if (!ModelState.IsValid)
+        {
+            await CargarCatalogosEdicion();
+            return View(empleado);
+        }
+
         var archivo = foto is not null && foto.Length > 0 ? await LeerArchivo(foto) : null;
         if (await _fichas.ActualizarAsync(empleado, archivo))
             return RedirectToAction(nameof(Detalles), new { id });
@@ -255,19 +261,8 @@ public class EmpleadoController : Controller
     public async Task<IActionResult> Nuevo(EmpleadoNuevoViewModel modelo, IFormFile? foto)
     {
         var persona = modelo.Persona;
-        if (string.IsNullOrWhiteSpace(persona.Nombres))
-            ModelState.AddModelError(nameof(modelo.Persona.Nombres), "El nombre es obligatorio.");
-        if (string.IsNullOrWhiteSpace(persona.Apellido_Paterno))
-            ModelState.AddModelError(nameof(modelo.Persona.Apellido_Paterno), "El apellido paterno es obligatorio.");
-        if (persona.TipoDocID is not null && string.IsNullOrWhiteSpace(persona.NumDocID))
-            ModelState.AddModelError(nameof(modelo.Persona.NumDocID), "Ingrese el número del documento.");
-
-        if (!string.IsNullOrWhiteSpace(persona.NumDocID))
-        {
-            var personas = await _personaData.Listar();
-            if (personas.Any(p => p.NumDocID == persona.NumDocID))
-                ModelState.AddModelError(nameof(modelo.Persona.NumDocID), "Ya existe una persona con ese número de documento.");
-        }
+        // SC-008: nombres, DNI de 8 dígitos y documento duplicado se validan en la Capa Lógica.
+        ModelState.AgregarErrores(await _personaData.Validar(persona), nameof(modelo.Persona));
 
         if (ModelState.IsValid)
         {

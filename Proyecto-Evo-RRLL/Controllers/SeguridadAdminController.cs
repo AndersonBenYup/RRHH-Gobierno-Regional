@@ -290,6 +290,9 @@ public class SeguridadAdminController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RolEditar(Rol modelo)
     {
+        if (!ModelState.IsValid)
+            return View("RolForm", modelo);
+
         var actual = await _rolData.Obtener(modelo.IdRol);
         if (actual is null)
             return NotFound();
