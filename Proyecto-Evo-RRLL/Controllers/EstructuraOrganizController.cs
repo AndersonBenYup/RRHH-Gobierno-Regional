@@ -1,5 +1,5 @@
 using Capa_Logica;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +17,7 @@ public class EstructuraOrganizController : Controller
     private readonly EmpleadoLogica _empleadoData;
     private readonly PersonaLogica _personaData;
     private readonly EstructOrganizDotacionLogica _dotacionData;
-    private readonly SecuenciaService _secuencia;
+    private readonly ISecuenciaService _secuencia;
     private readonly Services.EmpleadoServicio _empleados;
 
     public EstructuraOrganizController(
@@ -28,7 +28,7 @@ public class EstructuraOrganizController : Controller
         EmpleadoLogica empleadoData,
         PersonaLogica personaData,
         EstructOrganizDotacionLogica dotacionData,
-        SecuenciaService secuencia,
+        ISecuenciaService secuencia,
         Services.EmpleadoServicio empleados)
     {
         _areaData = areaData;

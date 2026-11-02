@@ -1,6 +1,6 @@
 using Capa_Logica;
 using Proyecto_Evo_RRLL.Utilidades;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

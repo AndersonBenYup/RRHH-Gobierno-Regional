@@ -1,13 +1,13 @@
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 
 namespace Proyecto_Evo_RRLL.Services;
 
 public class EmpleadoServicio
 {
-    private readonly EmpleadoData _empleadoData;
-    private readonly PersonaData _personaData;
+    private readonly Capa_Logica.EmpleadoLogica _empleadoData;
+    private readonly Capa_Logica.PersonaLogica _personaData;
 
-    public EmpleadoServicio(EmpleadoData empleadoData, PersonaData personaData)
+    public EmpleadoServicio(Capa_Logica.EmpleadoLogica empleadoData, Capa_Logica.PersonaLogica personaData)
     {
         _empleadoData = empleadoData;
         _personaData = personaData;

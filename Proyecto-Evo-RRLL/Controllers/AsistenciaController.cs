@@ -1,5 +1,5 @@
 using Capa_Logica;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ public class AsistenciaController : Controller
     private readonly TipoMarcacionLogica _tipoMarcacionData;
     private readonly DispositivoMarcacionLogica _dispositivoData;
     private readonly EstadoAsistenciaLogica _estadoAsistenciaData;
-    private readonly SecuenciaService _secuencia;
+    private readonly ISecuenciaService _secuencia;
     private readonly Services.EmpleadoServicio _empleados;
 
     public AsistenciaController(
@@ -34,7 +34,7 @@ public class AsistenciaController : Controller
         TipoMarcacionLogica tipoMarcacionData,
         DispositivoMarcacionLogica dispositivoData,
         EstadoAsistenciaLogica estadoAsistenciaData,
-        SecuenciaService secuencia,
+        ISecuenciaService secuencia,
         Services.EmpleadoServicio empleados)
     {
         _asistenciaData = asistenciaData;

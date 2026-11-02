@@ -1,6 +1,6 @@
 using System.Globalization;
 using System.Text;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Capa_Logica;
 using Proyecto_Evo_RRLL.Models.ViewModels;
@@ -21,7 +21,7 @@ public class EmpleadoFichaServicio
     private readonly ResolucionLogica _resolucionData;
     private readonly TipoResolucionLogica _tipoResolucionData;
     private readonly EmpleadoResumenFamiliarLogica _resumenFamiliarData;
-    private readonly SecuenciaService _secuencia;
+    private readonly ISecuenciaService _secuencia;
 
     public EmpleadoFichaServicio(
         EmpleadoLogica empleadoData,
@@ -32,7 +32,7 @@ public class EmpleadoFichaServicio
         ResolucionLogica resolucionData,
         TipoResolucionLogica tipoResolucionData,
         EmpleadoResumenFamiliarLogica resumenFamiliarData,
-        SecuenciaService secuencia)
+        ISecuenciaService secuencia)
     {
         _empleadoData = empleadoData;
         _personaData = personaData;
