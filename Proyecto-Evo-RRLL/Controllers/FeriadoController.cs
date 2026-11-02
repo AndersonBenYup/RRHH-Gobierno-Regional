@@ -35,6 +35,9 @@ public class FeriadoController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Nuevo(RRHH_Feriado modelo)
     {
+        if (!ModelState.IsValid)
+            return View("Form", modelo);
+
         var guardo = await _secuencia.EjecutarTransaccionalAsync(async () =>
         {
             modelo.idFeriado = 0;
@@ -63,6 +66,9 @@ public class FeriadoController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Editar(RRHH_Feriado modelo)
     {
+        if (!ModelState.IsValid)
+            return View("Form", modelo);
+
         var actual = await _feriadoData.Obtener(modelo.idFeriado);
         if (actual is null)
             return NotFound();

@@ -129,6 +129,9 @@ public class EstructuraOrganizController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Editar(EstructOrganiz modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync(modelo);
+
         var actual = await _areaData.Obtener(modelo.Year, modelo.idAreaOrganiz);
         if (actual is null)
             return NotFound();
@@ -212,6 +215,9 @@ public class EstructuraOrganizController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ResponsableNuevo(ResponsableXUO modelo)
     {
+        if (!ModelState.IsValid)
+            return ResponsableInvalido(modelo);
+
         modelo.IdResponsable = 0;
         await _responsableData.Crear(modelo);
         TempData["MensajeExito"] = "Responsable asignado.";
@@ -271,4 +277,18 @@ public class EstructuraOrganizController : Controller
 
     private async Task<List<(int Id, string Nombre)>> EmpleadosAsync()
         => await _empleados.EmpleadosAsync();
+
+    // SC-008: vuelve a mostrar el formulario con los errores de validación.
+    private async Task<IActionResult> FormularioAsync(EstructOrganiz modelo)
+    {
+        await CargarCatalogos(modelo.Year);
+        return View("Form", modelo);
+    }
+
+    private IActionResult ResponsableInvalido(ResponsableXUO modelo)
+    {
+        TempData["MensajeError"] = "Revise los datos del responsable: " +
+            string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+        return RedirectToAction(nameof(Detalles), new { year = modelo.Year, idAreaOrganiz = modelo.idAreaOrganiz });
+    }
 }

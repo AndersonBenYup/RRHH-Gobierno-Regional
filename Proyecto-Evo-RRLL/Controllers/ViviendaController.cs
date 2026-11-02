@@ -128,6 +128,9 @@ public class ViviendaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ViviendaForm(Vivienda modelo, int[] servicios)
     {
+        if (!ModelState.IsValid)
+            return await FormularioViviendaAsync(modelo, servicios);
+
         var actual = (await _viviendaData.Listar()).FirstOrDefault(v => v.IdEmpleado == modelo.IdEmpleado);
 
         if (actual is null)
@@ -223,5 +226,23 @@ public class ViviendaController : Controller
         destino.NumCompart = origen.NumCompart;
         destino.Observacion = origen.Observacion;
         destino.NumPerDorm = origen.NumPerDorm;
+    }
+
+    // SC-008: vuelve a mostrar el formulario de vivienda con los errores de validación.
+    private async Task<IActionResult> FormularioViviendaAsync(Vivienda modelo, int[] servicios)
+    {
+        ViewBag.IdEmpleado = modelo.IdEmpleado;
+        ViewBag.NombreEmpleado = await NombreEmpleadoAsync(modelo.IdEmpleado ?? 0);
+        ViewBag.Tipos = await _tipoVivData.Listar();
+        ViewBag.Tenencias = await _tenenciaVivData.Listar();
+        ViewBag.Ubicaciones = await _ubicacionVivData.Listar();
+        ViewBag.Aguas = await _aguaVivData.Listar();
+        ViewBag.Alumbrados = await _alumbradoVivData.Listar();
+        ViewBag.Conservaciones = await _conservacionVivData.Listar();
+        ViewBag.Excretas = await _excretasVivData.Listar();
+        ViewBag.Materiales = await _materialVivData.Listar();
+        ViewBag.Servicios = (await _servicioVivData.Listar())
+            .Select(s => (Servicio: s, Tiene: servicios.Contains(s.IdServicio))).ToList();
+        return View(modelo);
     }
 }

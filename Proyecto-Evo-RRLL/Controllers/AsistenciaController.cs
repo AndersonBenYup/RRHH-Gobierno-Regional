@@ -160,6 +160,9 @@ public class AsistenciaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> MarcacionEditar(Marcacion modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("MarcacionForm", modelo, modelo.IdEmpleado);
+
         var actual = await _marcacionData.Obtener(modelo.Fecha, modelo.IdEmpleado);
         if (actual is null)
             return NotFound();
@@ -242,6 +245,9 @@ public class AsistenciaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegDiarioEditar(RegAsisDiario modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("RegDiarioForm", modelo, modelo.IdEmpleado);
+
         var actual = await _regAsisData.Obtener(modelo.Fecha, modelo.IdEmpleado);
         if (actual is null)
             return NotFound();
@@ -292,6 +298,9 @@ public class AsistenciaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> HorarioTemporalNuevo(HorarioTemporal modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("HorarioTemporalForm", modelo, modelo.idEmpleado);
+
         var guardo = await _secuencia.EjecutarConBloqueoAsync(
             async () =>
             {
@@ -331,6 +340,9 @@ public class AsistenciaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> HorarioTemporalEditar(HorarioTemporal modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync("HorarioTemporalForm", modelo, modelo.idEmpleado);
+
         var actual = await _horarioTemporalData.Obtener(modelo.idEmpleado, modelo.N);
         if (actual is null)
             return NotFound();
@@ -374,4 +386,13 @@ public class AsistenciaController : Controller
 
     private async Task<List<(int Id, string Nombre)>> EmpleadosAsync()
         => await _empleados.EmpleadosAsync();
+
+    // SC-008: vuelve a mostrar el formulario con los errores de validación.
+    private async Task<IActionResult> FormularioAsync(string vista, object modelo, int? idEmpleado)
+    {
+        ViewBag.IdEmpleado = idEmpleado;
+        await CargarCatalogosMarcacion();
+        ViewBag.EstadosAsistencia = await _estadoAsistenciaData.Listar();
+        return View(vista, modelo);
+    }
 }

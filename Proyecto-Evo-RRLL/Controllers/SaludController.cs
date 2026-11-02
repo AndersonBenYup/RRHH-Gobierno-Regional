@@ -109,6 +109,9 @@ public class SaludController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaludEditar(RRHH_Salud modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioSaludAsync(modelo);
+
         var actual = await _saludData.Obtener(modelo.idSalud);
         if (actual is null)
             return NotFound();
@@ -172,6 +175,9 @@ public class SaludController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AseguradoNuevo(RRHH_Asegurado modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAseguradoAsync(modelo);
+
         var guardo = await _secuencia.EjecutarConBloqueoAsync(
             async () =>
             {
@@ -218,6 +224,9 @@ public class SaludController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AseguradoEditar(RRHH_Asegurado modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAseguradoAsync(modelo);
+
         var actual = await _aseguradoData.Obtener(modelo.idEmpleado, modelo.NroBeneficiario);
         if (actual is null)
             return NotFound();
@@ -299,6 +308,9 @@ public class SaludController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AcudeEnfermEditar(RRHH_AcudeEnferm modelo)
     {
+        if (!ModelState.IsValid)
+            return View("AcudeEnfermForm", modelo);
+
         var actual = await _acudeEnfermData.Obtener(modelo.idAcudeEnferm);
         if (actual is null)
             return NotFound();
@@ -340,5 +352,24 @@ public class SaludController : Controller
             .OrderBy(x => x.Item2)
             .Select(x => (x.Item1, x.Item2))
             .ToList();
+    }
+
+    // SC-008: vuelven a mostrar cada formulario con los errores de validación.
+    private async Task<IActionResult> FormularioSaludAsync(RRHH_Salud modelo)
+    {
+        ViewBag.IdEmpleado = modelo.IdEmpleado;
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.AcudeEnferm = await _acudeEnfermData.Listar();
+        return View("SaludForm", modelo);
+    }
+
+    private async Task<IActionResult> FormularioAseguradoAsync(RRHH_Asegurado modelo)
+    {
+        ViewBag.IdEmpleado = modelo.idEmpleado;
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.Personas = await PersonasAsync();
+        ViewBag.Vinculos = await _vinculoData.Listar();
+        ViewBag.MotivosBaja = await _motivoBajaData.Listar();
+        return View("AseguradoForm", modelo);
     }
 }

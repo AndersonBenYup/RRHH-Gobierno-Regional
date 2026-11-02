@@ -3,6 +3,7 @@ using Capa_Datos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Proyecto_Evo_RRLL.Utilidades;
 
 namespace Proyecto_Evo_RRLL.Controllers;
 
@@ -61,6 +62,11 @@ public class PermisoController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Nuevo(Permiso modelo)
     {
+        if (ModelState.IsValid)
+            ModelState.AgregarErrores(await _permisoData.Validar(modelo));
+        if (!ModelState.IsValid)
+            return await FormularioAsync(modelo);
+
         var guardo = await _secuencia.EjecutarConBloqueoAsync(
             async () =>
             {
@@ -80,8 +86,16 @@ public class PermisoController : Controller
         if (!guardo)
             ModelState.AddModelError("", "No se pudo registrar el permiso: intente nuevamente.");
         else
+        {
+            TempData["MensajeExito"] = "Permiso registrado.";
             return RedirectToAction(nameof(Index), new { idEmpleado = modelo.IdEmpleado });
+        }
 
+        return await FormularioAsync(modelo);
+    }
+
+    private async Task<IActionResult> FormularioAsync(Permiso modelo)
+    {
         ViewBag.IdEmpleado = modelo.IdEmpleado;
         ViewBag.Empleados = await EmpleadosAsync();
         ViewBag.Motivos = await _motivoData.Listar();
@@ -109,6 +123,11 @@ public class PermisoController : Controller
         if (actual is null)
             return NotFound();
 
+        if (ModelState.IsValid)
+            ModelState.AgregarErrores(await _permisoData.Validar(modelo));
+        if (!ModelState.IsValid)
+            return await FormularioAsync(modelo);
+
         actual.FechaInicio = modelo.FechaInicio;
         actual.FechaFin = modelo.FechaFin;
         actual.Hora_Sal = modelo.Hora_Sal;
@@ -124,6 +143,7 @@ public class PermisoController : Controller
         actual.Autorizado = modelo.Autorizado;
         await _permisoData.Actualizar(actual);
 
+        TempData["MensajeExito"] = "Permiso actualizado.";
         return RedirectToAction(nameof(Index), new { idEmpleado = modelo.IdEmpleado });
     }
 
