@@ -8,6 +8,7 @@ namespace Capa_Entidades
     public class Comportamiento
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int idComportamiento { get; set; }
     [Required(ErrorMessage = Mensajes.Obligatorio)]
     public DateTime? Fecha { get; set; }

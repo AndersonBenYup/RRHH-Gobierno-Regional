@@ -1,3 +1,4 @@
+using Capa_Entidades.Validacion;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,7 @@ namespace Capa_Entidades
     public class RRHH_RelacHermano
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int idRelacHermano { get; set; }
     [StringLength(12, ErrorMessage = "Máximo {1} caracteres.")]
     public string? RelacHermanoDescrip { get; set; }

@@ -8,6 +8,7 @@ namespace Capa_Entidades
     public class RRHH_AcudeEnferm
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int idAcudeEnferm { get; set; }
     [StringLength(16, ErrorMessage = "Máximo {1} caracteres.")]
     [Required(ErrorMessage = Mensajes.Obligatorio)]

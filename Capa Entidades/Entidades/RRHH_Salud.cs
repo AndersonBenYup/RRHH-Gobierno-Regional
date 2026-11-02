@@ -1,3 +1,4 @@
+using Capa_Entidades.Validacion;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,7 @@ namespace Capa_Entidades
     public class RRHH_Salud
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int idSalud { get; set; }
     public int? IdEmpleado { get; set; }
     public bool? EnferCronica { get; set; }
