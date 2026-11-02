@@ -1,15 +1,16 @@
 ﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
 public class BitacoraLogica
 {
-    private readonly BitacoraData _data;
+    private readonly IBitacoraRepositorio _bitacora;
 
-    public BitacoraLogica(BitacoraData data) => _data = data;
+    public BitacoraLogica(IBitacoraRepositorio bitacora) => _bitacora = bitacora;
 
-    public async Task Registrar(string usuario, string accion, string entidad, string? detalle = null) => await _data.Registrar(usuario, accion, entidad, detalle);
-    public async Task<List<Bitacora>> Ultimas(int cantidad) => await _data.Ultimas(cantidad);
+    public Task Registrar(string usuario, string accion, string entidad, string? detalle = null)
+        => _bitacora.Registrar(usuario, accion, entidad, detalle);
+
+    public Task<List<Bitacora>> Ultimas(int cantidad) => _bitacora.Ultimas(cantidad);
 }
-

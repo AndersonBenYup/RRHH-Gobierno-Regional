@@ -1,24 +1,29 @@
 ﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades.Validacion;
 using Capa_Logica.Reglas;
 
 namespace Capa_Logica;
 
-public class PermisoLogica
+public class PermisoLogica : LogicaBase<Permiso>
 {
-    private readonly PermisoData _data;
+    /// <summary>SC-005: tamaño de página del listado de permisos.</summary>
+    public const int TamanoPagina = 25;
 
-    public PermisoLogica(PermisoData data) => _data = data;
+    private readonly IPermisoRepositorio _permisos;
 
-    public async Task<List<Permiso>> Listar() => await _data.Listar();
-    public async Task<Permiso?> Obtener(int IdEmpleadoParam, int NPermisoParam) => await _data.Obtener(IdEmpleadoParam, NPermisoParam);
+    public PermisoLogica(IPermisoRepositorio permisos) : base(permisos) => _permisos = permisos;
+
+    public Task<Permiso?> Obtener(int IdEmpleadoParam, int NPermisoParam) => Repositorio.Obtener(IdEmpleadoParam, NPermisoParam);
+
+    /// <summary>SC-005: filtro por empleado y paginación resueltos en la BD.</summary>
+    public Task<Pagina<Permiso>> ListarPaginado(int? idEmpleado, int pagina, int tamanoPagina = TamanoPagina)
+        => _permisos.ListarPaginado(idEmpleado, pagina, tamanoPagina);
+
+    /// <summary>SC-005: siguiente número correlativo del empleado calculado en la BD.</summary>
+    public Task<int> SiguienteNumero(int idEmpleado) => _permisos.SiguienteNumero(idEmpleado);
+
     /// <summary>SC-008: reglas de negocio (fechas, horas y solapamiento) que se revisan antes de guardar.</summary>
     public async Task<List<ErrorValidacion>> Validar(Permiso permiso)
-        => ReglasPermiso.Validar(permiso, await _data.ListarPorEmpleado(permiso.IdEmpleado));
-
-    public async Task Crear(Permiso registro) => await _data.Crear(registro);
-    public async Task Actualizar(Permiso registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(Permiso registro) => await _data.Eliminar(registro);
+        => ReglasPermiso.Validar(permiso, await _permisos.ListarPorEmpleado(permiso.IdEmpleado));
 }
-

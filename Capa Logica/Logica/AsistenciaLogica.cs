@@ -1,19 +1,18 @@
 ﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class AsistenciaLogica
+public class AsistenciaLogica : LogicaBase<Asistencia>
 {
-    private readonly AsistenciaData _data;
+    private readonly IAsistenciaRepositorio _asistencias;
 
-    public AsistenciaLogica(AsistenciaData data) => _data = data;
+    public AsistenciaLogica(IAsistenciaRepositorio asistencias) : base(asistencias) => _asistencias = asistencias;
 
-    public async Task<List<Asistencia>> Listar() => await _data.Listar();
-    public async Task<int> ContarEntreFechas(DateTime desde, DateTime hasta) => await _data.ContarEntreFechas(desde, hasta);
-    public async Task<Asistencia?> Obtener(DateTime FechaParam, int IdEmpleadoParam) => await _data.Obtener(FechaParam, IdEmpleadoParam);
-    public async Task Crear(Asistencia registro) => await _data.Crear(registro);
-    public async Task Actualizar(Asistencia registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(Asistencia registro) => await _data.Eliminar(registro);
+    public Task<Asistencia?> Obtener(DateTime FechaParam, int IdEmpleadoParam) => Repositorio.Obtener(FechaParam, IdEmpleadoParam);
+    public Task<int> ContarEntreFechas(DateTime desde, DateTime hasta) => _asistencias.ContarEntreFechas(desde, hasta);
+
+    /// <summary>SC-003: asistencias de un rango, filtradas en la BD (antes se traía toda la tabla).</summary>
+    public Task<List<Asistencia>> ListarEntreFechas(DateTime desde, DateTime hastaExclusivo)
+        => _asistencias.ListarEntreFechas(desde, hastaExclusivo);
 }
-

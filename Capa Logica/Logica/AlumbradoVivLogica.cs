@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class AlumbradoVivLogica
+public class AlumbradoVivLogica : LogicaBase<AlumbradoViv>
 {
-    private readonly AlumbradoVivData _data;
+    public AlumbradoVivLogica(IRepositorio<AlumbradoViv> repositorio) : base(repositorio) { }
 
-    public AlumbradoVivLogica(AlumbradoVivData data) => _data = data;
-
-    public async Task<List<AlumbradoViv>> Listar() => await _data.Listar();
-    public async Task<AlumbradoViv?> Obtener(int IdAlumbradoParam) => await _data.Obtener(IdAlumbradoParam);
-    public async Task Crear(AlumbradoViv registro) => await _data.Crear(registro);
-    public async Task Actualizar(AlumbradoViv registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(AlumbradoViv registro) => await _data.Eliminar(registro);
+    public Task<AlumbradoViv?> Obtener(int IdAlumbradoParam) => Repositorio.Obtener(IdAlumbradoParam);
 }
-

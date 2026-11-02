@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class ExpLaboralLogica
+public class ExpLaboralLogica : LogicaBase<ExpLaboral>
 {
-    private readonly ExpLaboralData _data;
+    public ExpLaboralLogica(IRepositorio<ExpLaboral> repositorio) : base(repositorio) { }
 
-    public ExpLaboralLogica(ExpLaboralData data) => _data = data;
-
-    public async Task<List<ExpLaboral>> Listar() => await _data.Listar();
-    public async Task<ExpLaboral?> Obtener(int IdEmpleadoParam, int IdExpLabParam) => await _data.Obtener(IdEmpleadoParam, IdExpLabParam);
-    public async Task Crear(ExpLaboral registro) => await _data.Crear(registro);
-    public async Task Actualizar(ExpLaboral registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(ExpLaboral registro) => await _data.Eliminar(registro);
+    public Task<ExpLaboral?> Obtener(int IdEmpleadoParam, int IdExpLabParam) => Repositorio.Obtener(IdEmpleadoParam, IdExpLabParam);
 }
-

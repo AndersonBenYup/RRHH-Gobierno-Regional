@@ -1,14 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class EstructOrganizDotacionLogica
+public class EstructOrganizDotacionLogica : LogicaBase<EstructOrganizDotacion>
 {
-    private readonly EstructOrganizDotacionData _data;
+    public EstructOrganizDotacionLogica(IRepositorio<EstructOrganizDotacion> repositorio) : base(repositorio) { }
 
-    public EstructOrganizDotacionLogica(EstructOrganizDotacionData data) => _data = data;
-
-    public async Task<List<EstructOrganizDotacion>> Listar() => await _data.Listar();
-    public async Task<EstructOrganizDotacion?> Obtener(int YearParam, int idAreaOrganizParam) => await _data.Obtener(YearParam, idAreaOrganizParam);
+    public Task<EstructOrganizDotacion?> Obtener(int YearParam, int idAreaOrganizParam) => Repositorio.Obtener(YearParam, idAreaOrganizParam);
 }
