@@ -26,9 +26,12 @@
             <label class="form-label">Empleado</label>
             <input type="text" name="q" class="form-control" value="@Model.Busqueda" placeholder="Nombre o DNI..." />
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 d-flex flex-wrap gap-1">
             <button type="submit" class="btn btn-primary"><i class="bi bi-funnel me-1"></i>Filtrar</button>
             <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg me-1"></i>Limpiar</a>
+            @* SC-003: exporta con los mismos filtros que se ven en pantalla *@
+            <a asp-action="Exportar" asp-route-desde="@Model.Desde?.ToString("yyyy-MM-dd")" asp-route-hasta="@Model.Hasta?.ToString("yyyy-MM-dd")" asp-route-q="@Model.Busqueda"
+               class="btn btn-outline-success"><i class="bi bi-filetype-csv me-1"></i>Exportar CSV</a>
         </div>
     </div>
 </form>

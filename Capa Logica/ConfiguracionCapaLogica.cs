@@ -15,6 +15,10 @@ public static class ConfiguracionCapaLogica
                         && t.Name.EndsWith("Logica", StringComparison.Ordinal));
         foreach (var tipo in tipos)
             servicios.AddScoped(tipo);
+
+        // SC-003: exportadores (OCP). Un formato nuevo solo necesita otra línea aquí.
+        servicios.AddSingleton<Exportacion.IExportadorTabla, Exportacion.ExportadorCsv>();
+        servicios.AddSingleton<Exportacion.ExportadorTablas>();
         return servicios;
     }
 }
