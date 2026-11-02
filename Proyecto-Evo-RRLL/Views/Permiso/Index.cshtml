@@ -20,7 +20,7 @@
 <partial name="_FiltroEmpleado" model="@idEmpleado" />
 
 <div class="table-responsive">
-    <table class="table table-hover align-middle" data-search-target>
+    <table class="table table-hover align-middle">
         <thead>
             <tr>
                 <th>N°</th>
@@ -68,6 +68,11 @@
         </tbody>
     </table>
 </div>
+
+@if (ViewBag.Paginador is Proyecto_Evo_RRLL.Models.ViewModels.PaginadorModelo paginador)
+{
+    <partial name="_Paginador" model="paginador" />
+}
 
 <div class="d-flex gap-2 mt-3">
     <a asp-controller="Catalogo" asp-action="Index" asp-route-tabla="TipoPermiso" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list-check me-1"></i>Tipos de permiso</a>
