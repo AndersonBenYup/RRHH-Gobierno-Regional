@@ -8,6 +8,7 @@ namespace Capa_Entidades
     {
     [Key]
     public int IdTipoFam { get; set; }
+    [StringLength(10, ErrorMessage = "Máximo {1} caracteres.")]
     public string? DescripTipoFam { get; set; }
     }
 }

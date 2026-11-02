@@ -17,10 +17,14 @@ namespace Capa_Entidades
     public int? idLocal { get; set; }
     public int? IdRegimenPen { get; set; }
     public int? IdAFP { get; set; }
+    [StringLength(20, ErrorMessage = "Máximo {1} caracteres.")]
     public string? NroAFP { get; set; }
     public DateTime? FechaAFP { get; set; }
+    [StringLength(16, ErrorMessage = "Máximo {1} caracteres.")]
     public string? CtaCorriente { get; set; }
+    [StringLength(10, ErrorMessage = "Máximo {1} caracteres.")]
     public string? DecLey { get; set; }
+    [StringLength(20, ErrorMessage = "Máximo {1} caracteres.")]
     public string? ExpSocial { get; set; }
     public byte? CargaFam { get; set; }
     public bool? JefeHogar { get; set; }

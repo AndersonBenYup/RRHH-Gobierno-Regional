@@ -8,6 +8,7 @@ namespace Capa_Entidades
     {
     [Key]
     public int IdConservacion { get; set; }
+    [StringLength(17, ErrorMessage = "Máximo {1} caracteres.")]
     public string? DescripConserva { get; set; }
     }
 }

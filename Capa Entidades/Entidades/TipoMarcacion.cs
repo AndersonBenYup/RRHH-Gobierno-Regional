@@ -7,7 +7,9 @@ namespace Capa_Entidades
     public class TipoMarcacion
     {
     [Key]
+    [StringLength(1, ErrorMessage = "Máximo {1} caracteres.")]
     public string Codigo { get; set; } = "";
+    [StringLength(50, ErrorMessage = "Máximo {1} caracteres.")]
     public string? Descripcion { get; set; }
     }
 }

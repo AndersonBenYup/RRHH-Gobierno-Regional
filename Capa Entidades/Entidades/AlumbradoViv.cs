@@ -8,6 +8,7 @@ namespace Capa_Entidades
     {
     [Key]
     public int IdAlumbrado { get; set; }
+    [StringLength(20, ErrorMessage = "Máximo {1} caracteres.")]
     public string? DescripAlumbrado { get; set; }
     }
 }

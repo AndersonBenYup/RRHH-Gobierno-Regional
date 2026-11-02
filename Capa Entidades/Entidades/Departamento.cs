@@ -7,7 +7,9 @@ namespace Capa_Entidades
     public class Departamento
     {
     [Key]
+    [StringLength(2, ErrorMessage = "Máximo {1} caracteres.")]
     public string CodDepartamento { get; set; } = "";
+    [StringLength(120, ErrorMessage = "Máximo {1} caracteres.")]
     public string? Nombre { get; set; }
     }
 }
