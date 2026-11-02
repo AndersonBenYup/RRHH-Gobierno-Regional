@@ -3,6 +3,7 @@ using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Proyecto_Evo_RRLL.Models.ViewModels;
 using Proyecto_Evo_RRLL.Utilidades;
 
 namespace Proyecto_Evo_RRLL.Controllers;
@@ -34,19 +35,18 @@ public class PermisoController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(int? idEmpleado)
+    public async Task<IActionResult> Index(int? idEmpleado, int pagina = 1)
     {
-        var permisos = (await _permisoData.Listar())
-            .Where(p => idEmpleado is null || p.IdEmpleado == idEmpleado)
-            .OrderByDescending(p => p.FechaInicio);
-
-        var motivos = await _motivoData.Listar();
+        // SC-005: el filtro y la página se resuelven en SQL Server (OFFSET/FETCH); antes se traía toda la tabla.
+        var resultado = await _permisoData.ListarPaginado(idEmpleado, pagina);
 
         ViewBag.IdEmpleado = idEmpleado;
         ViewBag.NombreEmpleado = idEmpleado is null ? null : await NombreEmpleadoAsync(idEmpleado.Value);
         ViewBag.Empleados = await EmpleadosAsync();
-        ViewBag.Motivos = motivos;
-        return View(permisos.ToList());
+        ViewBag.Motivos = await _motivoData.Listar();
+        ViewBag.Paginador = new PaginadorModelo(resultado.NumeroPagina, resultado.TotalPaginas, resultado.Total,
+            nameof(Index), new Dictionary<string, string?> { ["idEmpleado"] = idEmpleado?.ToString() });
+        return View(resultado.Registros);
     }
 
     [HttpGet]
@@ -68,15 +68,7 @@ public class PermisoController : Controller
             return await FormularioAsync(modelo);
 
         var guardo = await _secuencia.EjecutarConBloqueoAsync(
-            async () =>
-            {
-                var lista = await _permisoData.Listar();
-                return lista
-                    .Where(p => p.IdEmpleado == modelo.IdEmpleado)
-                    .Select(p => p.NPermiso)
-                    .DefaultIfEmpty(0)
-                    .Max() + 1;
-            },
+            () => _permisoData.SiguienteNumero(modelo.IdEmpleado), // SC-005: MAX + 1 en la BD
             async id =>
             {
                 modelo.NPermiso = id;
