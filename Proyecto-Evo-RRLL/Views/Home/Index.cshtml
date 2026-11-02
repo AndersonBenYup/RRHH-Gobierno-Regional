@@ -1,4 +1,4 @@
-@model DashboardViewModel
+﻿@model DashboardViewModel
 @{
     ViewData["Title"] = "Inicio";
     var hora = DateTime.Now.Hour;
@@ -25,7 +25,7 @@
                 <div class="stat-chip c-primary"><i class="bi bi-people"></i></div>
                 <div>
                     <div class="text-secondary small text-uppercase">Empleados</div>
-                    <div class="fs-3 fw-bold">@Model.Empleados</div>
+                    <div class="fs-3 fw-bold" data-contar="@Model.Empleados">@Model.Empleados</div>
                 </div>
                 <i class="bi bi-arrow-right stat-arrow"></i>
             </div>
@@ -37,7 +37,7 @@
                 <div class="stat-chip c-success"><i class="bi bi-person-vcard"></i></div>
                 <div>
                     <div class="text-secondary small text-uppercase">Personas</div>
-                    <div class="fs-3 fw-bold">@Model.Personas</div>
+                    <div class="fs-3 fw-bold" data-contar="@Model.Personas">@Model.Personas</div>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
                 <div class="stat-chip c-info"><i class="bi bi-clock-history"></i></div>
                 <div>
                     <div class="text-secondary small text-uppercase">Asistencias hoy</div>
-                    <div class="fs-3 fw-bold">@Model.asistenciasHoy</div>
+                    <div class="fs-3 fw-bold" data-contar="@Model.asistenciasHoy">@Model.asistenciasHoy</div>
                 </div>
                 <i class="bi bi-arrow-right stat-arrow"></i>
             </div>
@@ -60,7 +60,7 @@
                 <div class="stat-chip c-violet"><i class="bi bi-diagram-3"></i></div>
                 <div>
                     <div class="text-secondary small text-uppercase">Áreas</div>
-                    <div class="fs-3 fw-bold">@Model.Areas</div>
+                    <div class="fs-3 fw-bold" data-contar="@Model.Areas">@Model.Areas</div>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                 <div class="stat-chip c-danger"><i class="bi bi-briefcase"></i></div>
                 <div>
                     <div class="text-secondary small text-uppercase">Cargos</div>
-                    <div class="fs-3 fw-bold">@Model.Cargos</div>
+                    <div class="fs-3 fw-bold" data-contar="@Model.Cargos">@Model.Cargos</div>
                 </div>
                 <i class="bi bi-arrow-right stat-arrow"></i>
             </div>
@@ -83,7 +83,7 @@
                 <div class="stat-chip c-success"><i class="bi bi-person-check"></i></div>
                 <div>
                     <div class="text-secondary small text-uppercase">Empleados activos</div>
-                    <div class="fs-3 fw-bold">@Model.EmpleadosActivos</div>
+                    <div class="fs-3 fw-bold" data-contar="@Model.EmpleadosActivos">@Model.EmpleadosActivos</div>
                 </div>
                 <i class="bi bi-arrow-right stat-arrow"></i>
             </div>
@@ -95,12 +95,27 @@
                 <div class="stat-chip c-warning"><i class="bi bi-calendar-heart"></i></div>
                 <div>
                     <div class="text-secondary small text-uppercase">Feriados del mes</div>
-                    <div class="fs-3 fw-bold">@Model.FeriadosDelMes</div>
+                    <div class="fs-3 fw-bold" data-contar="@Model.FeriadosDelMes">@Model.FeriadosDelMes</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@* SC-011: el inicio se anima solo la primera vez de la sesión (y nunca con "reducir movimiento").
+   Este script corre antes de que se pinten los indicadores, así que no se ve el número final saltar a 0. *@
+<script>
+    (function () {
+        var animar = false;
+        try {
+            var reducir = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+            animar = !reducir && !sessionStorage.getItem('evo-inicio-animado');
+            sessionStorage.setItem('evo-inicio-animado', '1');
+        } catch (e) { }
+        window.evoAnimarInicio = animar;
+        if (animar) document.querySelectorAll('[data-contar]').forEach(function (el) { el.textContent = '0'; });
+    })();
+</script>
 
 @if (Model.FeriadosMes.Count > 0)
 {
@@ -120,7 +135,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <h6 class="fw-semibold mb-3"><i class="bi bi-diagram-3 me-2 text-primary"></i>Empleados por área</h6>
-                <div class="chart-box"><canvas id="chartAreas"></canvas></div>
+                <div class="chart-box cargando"><canvas id="chartAreas" role="img" aria-label="Gráfico de barras: empleados por área"></canvas></div>
             </div>
         </div>
     </div>
@@ -128,7 +143,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <h6 class="fw-semibold mb-3"><i class="bi bi-person-badge me-2 text-warning"></i>Empleados por estado</h6>
-                <div class="chart-box"><canvas id="chartEstados"></canvas></div>
+                <div class="chart-box cargando"><canvas id="chartEstados" role="img" aria-label="Gráfico de dona: empleados por estado"></canvas></div>
             </div>
         </div>
     </div>
@@ -136,7 +151,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <h6 class="fw-semibold mb-3"><i class="bi bi-clock-history me-2 text-success"></i>Asistencias últimos 7 días</h6>
-                <div class="chart-box"><canvas id="chartAsistencia"></canvas></div>
+                <div class="chart-box cargando"><canvas id="chartAsistencia" role="img" aria-label="Gráfico de línea: asistencias de los últimos 7 días"></canvas></div>
             </div>
         </div>
     </div>
@@ -165,12 +180,38 @@
                 return {
                     etiqueta: oscuro ? '#E4E6E3' : '#5E646B',
                     grilla: oscuro ? 'rgba(255,255,255,.08)' : 'rgba(31,35,40,.08)',
-                    tooltip: oscuro ? '#1A2327' : '#1F2328'
+                    tooltip: oscuro ? '#1A2327' : '#1F2328',
+                    azul: oscuro ? '#5FB3C4' : '#0F4C5C',
+                    superficie: oscuro ? '#161E21' : '#FFFFFF' // = --evo-surface: separa los sectores de la dona
                 };
             }
 
             Chart.defaults.font.family = '"IBM Plex Sans", system-ui, sans-serif';
+            // SC-011: entrada corta (300 ms). Las barras crecen desde 0 y la dona se dibuja girando.
+            Chart.defaults.animation = window.evoAnimarInicio ? { duration: 300, easing: 'easeOutQuart' } : false;
             var t = tema();
+
+            // Indicadores: cuentan desde 0 hasta el valor real en 300 ms
+            if (window.evoAnimarInicio) {
+                var contadores = document.querySelectorAll('[data-contar]');
+                var t0 = performance.now(), DURACION = 300;
+                var listo = false;
+                function pintar(k) {
+                    var e = 1 - Math.pow(1 - k, 3);
+                    contadores.forEach(function (el) {
+                        var fin = parseInt(el.dataset.contar, 10) || 0;
+                        el.textContent = String(k === 1 ? fin : Math.round(fin * e));
+                    });
+                }
+                requestAnimationFrame(function paso(ahora) {
+                    if (listo) return;
+                    var k = Math.max(0, Math.min(1, (ahora - t0) / DURACION));
+                    pintar(k);
+                    if (k < 1) requestAnimationFrame(paso); else listo = true;
+                });
+                // Respaldo: si el navegador no pinta cuadros (pestaña en segundo plano), el valor real queda igual
+                setTimeout(function () { listo = true; pintar(1); }, DURACION + 150);
+            }
 
             // Empleados por área (barra horizontal)
             var chartAreas = new Chart(document.getElementById('chartAreas'), {
@@ -209,7 +250,8 @@
                     datasets: [{
                         data: estadosData,
                         backgroundColor: estadosData.map(function (_, i) { return paleta[i % paleta.length]; }),
-                        borderWidth: 2
+                        borderWidth: 2,
+                        borderColor: t.superficie
                     }]
                 },
                 options: {
@@ -252,6 +294,8 @@
                 }
             });
 
+            document.querySelectorAll('.chart-box.cargando').forEach(function (c) { c.classList.remove('cargando'); });
+
             // Recolorear los gráficos al cambiar de tema, sin recargar la página
             document.addEventListener('evo:theme', function () {
                 var t = tema();
@@ -260,17 +304,19 @@
                 chartAreas.options.scales.x.ticks.color = t.etiqueta;
                 chartAreas.options.scales.x.grid.color = t.grilla;
                 chartAreas.options.scales.y.ticks.color = t.etiqueta;
-                chartAreas.update();
+                chartAreas.update('none');
 
                 chartEstados.options.plugins.tooltip.backgroundColor = t.tooltip;
                 chartEstados.options.plugins.legend.labels.color = t.etiqueta;
-                chartEstados.update();
+                chartEstados.data.datasets[0].borderColor = t.superficie;
+                chartEstados.data.datasets[0].backgroundColor[0] = t.azul;
+                chartEstados.update('none');
 
                 chartAsistencia.options.plugins.tooltip.backgroundColor = t.tooltip;
                 chartAsistencia.options.scales.x.ticks.color = t.etiqueta;
                 chartAsistencia.options.scales.y.ticks.color = t.etiqueta;
                 chartAsistencia.options.scales.y.grid.color = t.grilla;
-                chartAsistencia.update();
+                chartAsistencia.update('none');
             });
         })();
     </script>
