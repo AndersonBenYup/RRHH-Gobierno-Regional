@@ -48,7 +48,7 @@ Plantilla en GitHub: `.github/ISSUE_TEMPLATE/solicitud-de-cambio.md`.
 | SC-008 | Correctivo | Validar todos los formularios en frontend y backend: DataAnnotations, `ModelState` y reglas de negocio (retoma SC-001) | Todos los módulos | Alta | Cerrada · `v1.1.0` |
 | SC-009 | Preventivo | Endurecer la seguridad: clave fuera del repositorio, cabeceras HTTP, política de contraseñas y bloqueo de cuenta (completa SC-002) | Seguridad | Alta | Cerrada · `v1.2.0` |
 | SC-010 | Preventivo | Pruebas automatizadas con xUnit y paso `dotnet test` en el pipeline de Azure | Todas las capas / CI | Media | Cerrada · `v1.4.0` |
-| SC-011 | Perfectivo | Rediseño visual coherente en todos los módulos con Tailwind CSS junto a Bootstrap (corrige el alcance de SC-007) | Vistas | Media | Registrada |
+| SC-011 | Perfectivo | Rediseño visual coherente en todos los módulos con Tailwind CSS junto a Bootstrap (corrige el alcance de SC-007) | Vistas | Media | Cerrada · `v1.5.0` |
 
 **Evidencia de cierre de SC-004:** `appsettings.json` no tiene cadena de conexión; en Azure la Web App define la *Connection string* `RRHHNormalizado` y el *App setting* `Seguridad__AdminClave`. `Program.cs` se detiene con un mensaje claro si falta la cadena.
 
@@ -79,6 +79,14 @@ Plantilla en GitHub: `.github/ISSUE_TEMPLATE/solicitud-de-cambio.md`.
 - `.github/workflows/main_rrhh-gobierno-regional.yml`: restaura y compila la solución, ejecuta `dotnet test` (75 pruebas, sin SQL Server) y sube el reporte `.trx`. Si falla, no se publica ni se despliega. Los PR a `main` también ejecutan las pruebas.
 - Se actualizó `System.Security.Cryptography.Pkcs` a 9.0.21 (vulnerabilidad alta en la 9.0.11).
 - `docs/CAMBIOS-ARQUITECTURA.md` reescrito según el código actual.
+
+**Evidencia de cierre de SC-011 (`v1.5.0`):**
+- Tailwind 3.4 junto a Bootstrap (prefijo `tw-`, sin preflight): `Estilos/app.css` → `npm run css:build` → `wwwroot/css/app.css` (versionado; la app no necesita Node).
+- Sistema visual institucional: azul petróleo y gris piedra, IBM Plex Sans, sin degradados; tablas, formularios con errores de validación, badges, paginador, barra lateral y modo oscuro coherentes. Contexto en `PRODUCT.md`.
+- Login rediseñado y centrado; gráficos del inicio con la paleta institucional; se eliminó la pantalla de carga que dejaba un logo encima del contenido; los formularios ya no repiten cada error dos veces.
+- `node_modules` deja de estar en git (1590 archivos incompletos).
+- Revisado en escritorio (1366 px), móvil (390 px, sin desborde horizontal) y modo oscuro.
+
 
 
 
