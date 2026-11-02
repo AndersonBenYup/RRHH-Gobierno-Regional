@@ -8,6 +8,7 @@ namespace Capa_Entidades
     public class Local
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int idLocal { get; set; }
     [StringLength(50, ErrorMessage = "Máximo {1} caracteres.")]
     [Required(ErrorMessage = Mensajes.Obligatorio)]

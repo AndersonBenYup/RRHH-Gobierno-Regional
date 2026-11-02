@@ -1,3 +1,4 @@
+using Capa_Entidades.Validacion;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,7 @@ namespace Capa_Entidades
     public class Persona
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int IdPersona { get; set; }
     [StringLength(1, ErrorMessage = "Máximo {1} caracteres.")]
     public string? TipoPersona { get; set; }

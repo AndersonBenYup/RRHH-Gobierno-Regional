@@ -9,8 +9,10 @@ namespace Capa_Entidades
     {
     [Key]
     [Range(1, int.MaxValue, ErrorMessage = Mensajes.SeleccioneEmpleado)]
+    [Required(ErrorMessage = Mensajes.SeleccioneEmpleado)]
     public int IdEmpleado { get; set; }
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int IdExpLab { get; set; }
     [StringLength(120, ErrorMessage = "Máximo {1} caracteres.")]
     [Required(ErrorMessage = Mensajes.Obligatorio)]

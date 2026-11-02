@@ -9,8 +9,10 @@ namespace Capa_Entidades
     {
     [Key]
     [Range(1, int.MaxValue, ErrorMessage = Mensajes.SeleccioneEmpleado)]
+    [Required(ErrorMessage = Mensajes.SeleccioneEmpleado)]
     public int IdEmpleado { get; set; }
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int NroPeriodo { get; set; }
     [StringLength(30, ErrorMessage = "Máximo {1} caracteres.")]
     public string? NumResoIngreInstitu { get; set; }

@@ -8,9 +8,11 @@ namespace Capa_Entidades
     public class RegAsisDiario
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public DateTime Fecha { get; set; }
     [Key]
     [Range(1, int.MaxValue, ErrorMessage = Mensajes.SeleccioneEmpleado)]
+    [Required(ErrorMessage = Mensajes.SeleccioneEmpleado)]
     public int IdEmpleado { get; set; }
     public short? MinNormales { get; set; }
     public int? SegundosTarde { get; set; }

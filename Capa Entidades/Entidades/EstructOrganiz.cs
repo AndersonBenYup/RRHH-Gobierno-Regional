@@ -8,8 +8,10 @@ namespace Capa_Entidades
     public class EstructOrganiz
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int Year { get; set; }
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int idAreaOrganiz { get; set; }
     [StringLength(200, ErrorMessage = "Máximo {1} caracteres.")]
     [Required(ErrorMessage = Mensajes.Obligatorio)]

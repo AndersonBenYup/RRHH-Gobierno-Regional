@@ -8,6 +8,7 @@ namespace Capa_Entidades
     public class RRHH_Feriado
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int idFeriado { get; set; }
     [Required(ErrorMessage = Mensajes.Obligatorio)]
     public DateTime? Fecha { get; set; }

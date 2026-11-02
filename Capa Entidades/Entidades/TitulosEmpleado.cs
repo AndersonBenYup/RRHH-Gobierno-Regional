@@ -8,6 +8,7 @@ namespace Capa_Entidades
     public class TitulosEmpleado
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int IdTitulo { get; set; }
     [Required(ErrorMessage = Mensajes.Obligatorio)]
     [Range(1, int.MaxValue, ErrorMessage = Mensajes.SeleccioneEmpleado)]

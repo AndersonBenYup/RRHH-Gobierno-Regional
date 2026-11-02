@@ -10,7 +10,11 @@ using Proyecto_Evo_RRLL.Filtros;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews(options => options.Filters.Add<RegistrarExcepcionFilter>());
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<RegistrarExcepcionFilter>();
+    MensajesValidacionEspanol.Configurar(options); // SC-008
+});
 
 // SC-004: la cadena viene de la configuracion del entorno (en Azure: Connection string "RRHHNormalizado").
 var cadenaConexion = builder.Configuration.GetConnectionString("RRHHNormalizado");

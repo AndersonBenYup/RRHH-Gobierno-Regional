@@ -8,6 +8,7 @@ namespace Capa_Entidades
     public class Rol
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int IdRol { get; set; }
     [StringLength(30, ErrorMessage = "Máximo {1} caracteres.")]
     [Required(ErrorMessage = Mensajes.Obligatorio)]
