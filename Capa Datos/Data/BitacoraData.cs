@@ -30,6 +30,25 @@ public class BitacoraData
         }
     }
 
+    /// <summary>SC-009: fechas de un evento de un usuario desde una fecha (para contar intentos fallidos).</summary>
+    public async Task<List<DateTime>> Fechas(string usuario, string accion, DateTime desde)
+    {
+        var u = usuario.Trim();
+        return await _contexto.Set<Bitacora>().AsNoTracking()
+            .Where(b => b.Usuario == u && b.Accion == accion && b.Fecha > desde)
+            .Select(b => b.Fecha)
+            .ToListAsync();
+    }
+
+    /// <summary>SC-009: fecha del último evento de un usuario entre las acciones indicadas.</summary>
+    public async Task<DateTime?> UltimaFecha(string usuario, string[] acciones)
+    {
+        var u = usuario.Trim();
+        return await _contexto.Set<Bitacora>().AsNoTracking()
+            .Where(b => b.Usuario == u && b.Accion != null && acciones.Contains(b.Accion))
+            .MaxAsync(b => (DateTime?)b.Fecha);
+    }
+
     public async Task<List<Bitacora>> Ultimas(int cantidad)
     {
         try

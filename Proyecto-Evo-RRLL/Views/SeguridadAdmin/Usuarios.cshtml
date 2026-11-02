@@ -34,7 +34,7 @@
                 <th>Roles</th>
                 <th>Estado</th>
                 <th>Última modificación</th>
-                <th style="width:160px">Acciones</th>
+                <th style="width:200px">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -50,7 +50,11 @@
                     <td>@f.Empleado</td>
                     <td>@f.Roles</td>
                     <td>
-                        @if (f.Usuario.Estado == true)
+                        @if (f.BloqueadaHasta is not null)
+                        {
+                            <span class="badge rounded-pill text-bg-danger" title="Bloqueada por intentos fallidos"><i class="bi bi-lock-fill me-1"></i>Bloqueada hasta @f.BloqueadaHasta.Value.ToString("HH:mm")</span>
+                        }
+                        else if (f.Usuario.Estado == true)
                         {
                             <span class="badge rounded-pill text-bg-success"><i class="bi bi-check-circle me-1"></i>Activo</span>
                         }
@@ -61,6 +65,12 @@
                     </td>
                     <td>@f.Usuario.Fecha?.ToString("dd/MM/yyyy HH:mm")</td>
                     <td>
+                        @if (f.BloqueadaHasta is not null)
+                        {
+                            <form asp-action="UsuarioDesbloquear" asp-route-id="@f.Usuario.IdUsuario" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-warning" data-bs-toggle="tooltip" title="Desbloquear"><i class="bi bi-unlock"></i></button>
+                            </form>
+                        }
                         <a asp-action="UsuarioRoles" asp-route-id="@f.Usuario.IdUsuario" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Roles"><i class="bi bi-shield"></i></a>
                         <a asp-action="UsuarioEditar" asp-route-id="@f.Usuario.IdUsuario" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
                         <form asp-action="UsuarioEliminar" asp-route-id="@f.Usuario.IdUsuario" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar el usuario @(f.Usuario.Login)?');">

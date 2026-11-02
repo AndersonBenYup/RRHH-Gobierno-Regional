@@ -32,7 +32,11 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Clave @(esNuevo ? "*" : "(dejar vacío para no cambiar)")</label>
-                    <input type="password" name="clave" class="form-control" @(esNuevo ? "required" : "") placeholder="••••••••" />
+                    <input type="password" name="clave" class="form-control" @(esNuevo ? "required" : "") minlength="8"
+                           pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*\d).{8,}" title="@Capa_Logica.Seguridad.PoliticaClave.Descripcion"
+                           autocomplete="new-password" placeholder="••••••••" />
+                    <div class="form-text">@Capa_Logica.Seguridad.PoliticaClave.Descripcion</div>
+                    @Html.ValidationMessage("clave", null, new { @class = "text-danger small d-block" })
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Empleado</label>

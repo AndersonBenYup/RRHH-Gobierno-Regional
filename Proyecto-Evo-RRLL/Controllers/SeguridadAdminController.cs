@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Capa_Logica;
+using Capa_Logica.Seguridad;
 using Capa_Datos;
 using Capa_Entidades;
 using Proyecto_Evo_RRLL.Models.ViewModels;
@@ -21,6 +22,7 @@ public class SeguridadAdminController : Controller
     private readonly SecuenciaService _secuencia;
     private readonly Services.EmpleadoServicio _empleados;
     private readonly BitacoraLogica _bitacora;
+    private readonly BloqueoCuentaLogica _bloqueo;
 
     public SeguridadAdminController(
         UsuarioLogica usuarioData,
@@ -32,7 +34,8 @@ public class SeguridadAdminController : Controller
         PersonaLogica personaData,
         SecuenciaService secuencia,
         Services.EmpleadoServicio empleados,
-        BitacoraLogica bitacora)
+        BitacoraLogica bitacora,
+        BloqueoCuentaLogica bloqueo)
     {
         _usuarioData = usuarioData;
         _usuarioRolData = usuarioRolData;
@@ -44,6 +47,7 @@ public class SeguridadAdminController : Controller
         _secuencia = secuencia;
         _empleados = empleados;
         _bitacora = bitacora;
+        _bloqueo = bloqueo;
     }
 
     // ---------- Usuarios ----------
@@ -75,11 +79,13 @@ public class SeguridadAdminController : Controller
                 .Where(x => x is not null)
                 .Select(x => x!);
 
+            var bloqueo = string.IsNullOrWhiteSpace(u.Login) ? EstadoBloqueo.Libre : await _bloqueo.Estado(u.Login);
             vm.Add(new UsuarioFila
             {
                 Usuario = u,
                 Empleado = nombre,
-                Roles = string.Join(", ", rolesUs)
+                Roles = string.Join(", ", rolesUs),
+                BloqueadaHasta = bloqueo.BloqueadaHasta
             });
         }
 
@@ -98,8 +104,9 @@ public class SeguridadAdminController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UsuarioNuevo(Usuario modelo, string clave)
     {
-        if (string.IsNullOrWhiteSpace(clave))
-            ModelState.AddModelError("clave", "La clave es obligatoria.");
+        // SC-009: política de contraseñas.
+        foreach (var error in PoliticaClave.Validar(clave, modelo.Login))
+            ModelState.AddModelError("clave", error);
 
         if (string.IsNullOrWhiteSpace(modelo.Login) == false
             && await _usuarioData.ObtenerPorLogin(modelo.Login.Trim()) is not null)
@@ -152,6 +159,11 @@ public class SeguridadAdminController : Controller
             && await _usuarioData.ObtenerPorLogin(modelo.Login.Trim()) is not null)
             ModelState.AddModelError("", "Ya existe un usuario con ese login.");
 
+        // SC-009: si se cambia la clave, debe cumplir la política.
+        if (!string.IsNullOrWhiteSpace(clave))
+            foreach (var error in PoliticaClave.Validar(clave, modelo.Login))
+                ModelState.AddModelError("clave", error);
+
         if (ModelState.IsValid)
         {
             actual.Login = modelo.Login?.Trim();
@@ -184,6 +196,22 @@ public class SeguridadAdminController : Controller
             TempData["MensajeExito"] = "Usuario eliminado.";
             await _bitacora.Registrar(User.Identity?.Name ?? "?", "Eliminar", "Usuario", $"id={id}, login={actual.Login}");
         }
+        return RedirectToAction(nameof(Usuarios));
+    }
+
+    // SC-009: el administrador desbloquea una cuenta bloqueada por intentos fallidos.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UsuarioDesbloquear(int id)
+    {
+        var usuario = await _usuarioData.Obtener(id);
+        if (usuario?.Login is null)
+            return NotFound();
+
+        var admin = User.Identity?.Name ?? "?";
+        await _bloqueo.Desbloquear(usuario.Login.Trim(), admin);
+        await _bitacora.Registrar(admin, "Desbloquear", "Usuario", $"id={id}, login={usuario.Login.Trim()}");
+        TempData["MensajeExito"] = $"Cuenta {usuario.Login.Trim()} desbloqueada.";
         return RedirectToAction(nameof(Usuarios));
     }
 
