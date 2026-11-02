@@ -1,0 +1,33 @@
+@model Proyecto_Evo_RRLL.Models.ViewModels.PaginadorModelo
+@* SC-005: paginación del servidor. Solo dibuja una ventana de páginas, no todas. *@
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+    <span class="text-secondary small">
+        @Model.Total.ToString("N0") registro(s) · página @Model.Pagina de @Model.TotalPaginas
+    </span>
+    @if (Model.TotalPaginas > 1)
+    {
+        <nav aria-label="Paginación">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(Model.Pagina <= 1 ? "disabled" : null)">
+                    <a class="page-link" asp-action="@Model.Accion" asp-all-route-data="Model.RutaPara(Model.Pagina - 1)" aria-label="Anterior">&laquo;</a>
+                </li>
+                @foreach (var p in Model.Ventana())
+                {
+                    if (p == 0)
+                    {
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    }
+                    else
+                    {
+                        <li class="page-item @(p == Model.Pagina ? "active" : null)" aria-current="@(p == Model.Pagina ? "page" : null)">
+                            <a class="page-link" asp-action="@Model.Accion" asp-all-route-data="Model.RutaPara(p)">@p</a>
+                        </li>
+                    }
+                }
+                <li class="page-item @(Model.Pagina >= Model.TotalPaginas ? "disabled" : null)">
+                    <a class="page-link" asp-action="@Model.Accion" asp-all-route-data="Model.RutaPara(Model.Pagina + 1)" aria-label="Siguiente">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
