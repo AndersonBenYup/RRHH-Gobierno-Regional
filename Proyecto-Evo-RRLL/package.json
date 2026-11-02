@@ -1,0 +1,12 @@
+{
+  "name": "evo-rrhh-estilos",
+  "private": true,
+  "description": "SC-011: compila Estilos/app.css (Tailwind) en wwwroot/css/app.css. El CSS compilado se versiona, así que la app no necesita Node para ejecutarse.",
+  "scripts": {
+    "css:build": "tailwindcss -i ./Estilos/app.css -o ./wwwroot/css/app.css --minify",
+    "css:watch": "tailwindcss -i ./Estilos/app.css -o ./wwwroot/css/app.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}
