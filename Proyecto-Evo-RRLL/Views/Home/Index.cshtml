@@ -146,10 +146,12 @@
     <script src="~/lib/chart.js/chart.umd.min.js"></script>
     <script>
         (function () {
-            var azul = '#4f46e5';   // = --evo-primary (índigo de toda la app)
-            var azulSuave = '#6366f1';
-            var verde = '#10b981';
-            var paleta = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16', '#f97316', '#64748b'];
+            // SC-011: paleta institucional (azul petróleo, verde, ocre, rojo y neutros).
+            var oscuroInicial = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+            var azul = oscuroInicial ? '#5FB3C4' : '#0F4C5C';   // = --evo-primary
+            var azulSuave = oscuroInicial ? '#7CC3D1' : '#1B7186';
+            var verde = '#2F7D4F';
+            var paleta = [azul, '#2F7D4F', '#B7791F', '#B4232C', '#5C9AA9', '#7C8087', '#8A6D3B', '#3E6B57', '#A35A48', '#BFD8DE'];
 
             var areasNombres = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AreasNombres));
             var areasData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EmpleadosPorArea));
@@ -161,12 +163,13 @@
             function tema() {
                 var oscuro = document.documentElement.getAttribute('data-bs-theme') === 'dark';
                 return {
-                    etiqueta: oscuro ? '#e2e8f0' : '#475569',
-                    grilla: oscuro ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)',
-                    tooltip: oscuro ? '#1e293b' : 'rgba(0,0,0,.8)'
+                    etiqueta: oscuro ? '#E4E6E3' : '#5E646B',
+                    grilla: oscuro ? 'rgba(255,255,255,.08)' : 'rgba(31,35,40,.08)',
+                    tooltip: oscuro ? '#1A2327' : '#1F2328'
                 };
             }
 
+            Chart.defaults.font.family = '"IBM Plex Sans", system-ui, sans-serif';
             var t = tema();
 
             // Empleados por área (barra horizontal)
