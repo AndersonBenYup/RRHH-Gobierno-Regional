@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
+  SOLUCION: Proyecto-Evo-RRLL.slnx
   PROYECTO_WEB: Proyecto-Evo-RRLL/Proyecto-Evo-RRLL.csproj
 
 jobs:
@@ -24,10 +28,21 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore
-        run: dotnet restore ${{ env.PROYECTO_WEB }}
+        run: dotnet restore ${{ env.SOLUCION }}
 
       - name: Build
-        run: dotnet build ${{ env.PROYECTO_WEB }} --configuration Release --no-restore
+        run: dotnet build ${{ env.SOLUCION }} --configuration Release --no-restore
+
+      # SC-010: si alguna prueba falla, el job se detiene y no se despliega a Azure.
+      - name: Test
+        run: dotnet test ${{ env.SOLUCION }} --configuration Release --no-build --logger "trx;LogFileName=resultados.trx" --results-directory "${{ github.workspace }}/pruebas"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-pruebas
+          path: "${{ github.workspace }}/pruebas"
 
       - name: Publish
         run: dotnet publish ${{ env.PROYECTO_WEB }} -c Release --no-build -o "${{ github.workspace }}/publicado"
@@ -41,6 +56,7 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
+    if: github.event_name != 'pull_request'
     permissions:
       id-token: write
       contents: read
