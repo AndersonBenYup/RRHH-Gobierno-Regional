@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Capa_Logica;
 using Capa_Logica.Seguridad;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Proyecto_Evo_RRLL.Models.ViewModels;
 
@@ -19,7 +19,7 @@ public class SeguridadAdminController : Controller
     private readonly SistemaOpcionLogica _sistemaOpcionData;
     private readonly EmpleadoLogica _empleadoData;
     private readonly PersonaLogica _personaData;
-    private readonly SecuenciaService _secuencia;
+    private readonly ISecuenciaService _secuencia;
     private readonly Services.EmpleadoServicio _empleados;
     private readonly BitacoraLogica _bitacora;
     private readonly BloqueoCuentaLogica _bloqueo;
@@ -32,7 +32,7 @@ public class SeguridadAdminController : Controller
         SistemaOpcionLogica sistemaOpcionData,
         EmpleadoLogica empleadoData,
         PersonaLogica personaData,
-        SecuenciaService secuencia,
+        ISecuenciaService secuencia,
         Services.EmpleadoServicio empleados,
         BitacoraLogica bitacora,
         BloqueoCuentaLogica bloqueo)
