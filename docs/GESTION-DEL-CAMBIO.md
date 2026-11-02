@@ -39,14 +39,14 @@ Plantilla en GitHub: `.github/ISSUE_TEMPLATE/solicitud-de-cambio.md`.
 | Código | Tipo | Descripción | Módulo | Prioridad | Estado |
 |---|---|---|---|---|---|
 | SC-001 | Correctivo | Validar fechas, horas y solapamiento al registrar permisos (`PermisoLogica` hoy no valida) | Permisos | Alta | Cerrada en SC-008 · `v1.1.0` |
-| SC-002 | Preventivo | Bloquear la cuenta tras intentos fallidos de inicio de sesión (`SeguridadController.Login` no los limita) | Seguridad | Alta | Parcial: se completa en SC-009 |
+| SC-002 | Preventivo | Bloquear la cuenta tras intentos fallidos de inicio de sesión (`SeguridadController.Login` no los limita) | Seguridad | Alta | Cerrada en SC-009 · `v1.2.0` |
 | SC-003 | Perfectivo | Exportar el registro de asistencia a CSV reutilizando `ExportadorTablas` / `ExportadorCsv` | Asistencia | Media | En cola (Semana 3) |
 | SC-004 | Adaptativo | Leer la cadena de conexión desde variable de entorno en producción (la clave del admin ya se lee de `Seguridad__AdminClave`) | Configuración | Alta | Cerrada |
 | SC-005 | Perfectivo | Filtrar y paginar permisos en la BD (`PermisoController.Index` trae toda la tabla y filtra en memoria) | Permisos | Baja | Semana 3 |
 | SC-006 | Perfectivo | Arquitectura en capas con contratos: cambiar de BD solo toca `Capa Datos` | Todas las capas | Media | Reabierta (Semana 3): hay capas, faltan interfaces |
 | SC-007 | Perfectivo | Rediseño de la interfaz (login, inicio y layout) con Tailwind CSS | Vistas | Media | Cerrada con corrección: se hizo con Bootstrap + `site.css`, sin Tailwind |
 | SC-008 | Correctivo | Validar todos los formularios en frontend y backend: DataAnnotations, `ModelState` y reglas de negocio (retoma SC-001) | Todos los módulos | Alta | Cerrada · `v1.1.0` |
-| SC-009 | Preventivo | Endurecer la seguridad: clave fuera del repositorio, cabeceras HTTP, política de contraseñas y bloqueo de cuenta (completa SC-002) | Seguridad | Alta | Aprobado (Semana 2) |
+| SC-009 | Preventivo | Endurecer la seguridad: clave fuera del repositorio, cabeceras HTTP, política de contraseñas y bloqueo de cuenta (completa SC-002) | Seguridad | Alta | Cerrada · `v1.2.0` |
 | SC-010 | Preventivo | Pruebas automatizadas con xUnit y paso `dotnet test` en el pipeline de Azure | Todas las capas / CI | Media | Aprobado (Semana 4) |
 | SC-011 | Perfectivo | Rediseño visual coherente en todos los módulos con Tailwind CSS junto a Bootstrap (corrige el alcance de SC-007) | Vistas | Media | Registrada |
 
@@ -59,6 +59,16 @@ Plantilla en GitHub: `.github/ISSUE_TEMPLATE/solicitud-de-cambio.md`.
 - Vistas con `asp-validation-for`, validación en el navegador (jquery.validate en español, rangos de fechas/horas, DNI) y la misma regla en el servidor (probado con JavaScript desactivado).
 - `Scripts/sc-008-auditoria-datos.sql` (solo lectura). En la BD local encontró 40 pares de permisos cruzados, 41 capacitaciones y 11 estudios con fechas invertidas, 5 RUC mal formados y 3 feriados sin motivo.
 - Pruebas: `Capa Logica.Tests` (xUnit), 41 en verde.
+
+**Evidencia de cierre de SC-009 (`v1.2.0`, completa SC-002):**
+- La clave del administrador ya no está en el repositorio (`appsettings.Development.json`, README ni la página de Ayuda, que la mostraba a cualquiera). Solo se lee de `Seguridad:AdminClave` (user-secrets en local, App setting en Azure).
+- Bloqueo de cuenta: 5 intentos fallidos en 15 minutos la bloquean 15 minutos (`ReglasBloqueo`, `BloqueoCuentaLogica`). Los intentos quedan en la bitácora (`LoginFallido`, `CuentaBloqueada`, `LoginBloqueado`, `DesbloquearCuenta`); no hubo cambio de esquema, así que no hace falta un script previo al despliegue. El administrador desbloquea desde *Mantenimiento › Usuarios*.
+- Política de contraseñas (`PoliticaClave`): mínimo 8 caracteres, letra y número, sin incluir el login.
+- Cabeceras CSP, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` y `Permissions-Policy`; cookies `HttpOnly`, `SameSite=Strict` y solo HTTPS en producción.
+- Correcciones encontradas al probar: el límite global contaba los archivos estáticos (un usuario recibía 429 a las ~10 páginas), el límite de login era uno solo para todos los usuarios (ahora es por IP) y el rol `ADMINISTRADOR` de la BD no coincidía con `[Authorize(Roles = "Administrador")]`.
+- Pendiente (fuera del alcance): permisos por opción con `Rol_Acceso`.
+- Pruebas: `ReglasBloqueoTests` y `PoliticaClaveTests` (57 pruebas en verde en total).
+
 
 
 ## Análisis de impacto
