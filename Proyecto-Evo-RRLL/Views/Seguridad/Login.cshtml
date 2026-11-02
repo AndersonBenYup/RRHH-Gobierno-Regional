@@ -48,7 +48,7 @@
             </div>
         }
 
-        <form asp-action="Login" method="post" novalidate>
+        <form asp-action="Login" method="post" novalidate class="@(string.IsNullOrEmpty(Model.Error) ? null : "acceso-sacudida")">
             <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
             <div asp-validation-summary="ModelOnly" class="text-danger tw-mb-3 tw-text-sm"></div>
 
@@ -65,7 +65,7 @@
                 </div>
                 <span asp-validation-for="Clave" class="text-danger small"></span>
             </div>
-            <button type="submit" class="btn btn-primary tw-w-full tw-py-2">Entrar</button>
+            <button type="submit" class="btn btn-primary tw-w-full tw-py-2" data-cargando="Entrando…">Entrar</button>
         </form>
 
         <p class="tw-mb-0 tw-mt-8 tw-text-sm tw-text-piedra-600 dark:tw-text-[#9BA6AB]">

@@ -14,8 +14,17 @@
         initCopyButtons();
         initToasts();
         initSidebar();
+        initIndicadorMenu();
+        initCargaTablas();
+        initBotonesCarga();
         initTooltips();
     });
+
+    // SC-011: con "reducir movimiento" activado no se desplaza nada; solo quedan los fundidos.
+    function reducirMovimiento() {
+        return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+    window.evoReducirMovimiento = reducirMovimiento;
 
     /* ---------- Splash de carga ---------- */
     function initSplash() {
@@ -41,7 +50,10 @@
         aplicar(tema);
 
         toggle.addEventListener('click', function () {
-            aplicar(root.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark');
+            var nuevo = root.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+            // Fundido corto de toda la página. No anima cada elemento, así que no pesa en las tablas grandes.
+            if (document.startViewTransition) document.startViewTransition(function () { aplicar(nuevo); });
+            else aplicar(nuevo);
         });
 
         function aplicar(t) {
@@ -323,17 +335,17 @@
         });
     }
 
-    /* ---------- Toasts (aviso global) ---------- */
+    /* ---------- Toasts (aviso global) ----------
+       Los mensajes de TempData llegan como alerta (.alert-auto). Con JavaScript se muestran como toast;
+       sin él, la alerta queda visible en la página. */
     function initToasts() {
         document.querySelectorAll('.alert-auto').forEach(function (alerta) {
             var tipo = alerta.classList.contains('alert-success') ? 'success'
                 : alerta.classList.contains('alert-danger') ? 'danger'
                 : alerta.classList.contains('alert-warning') ? 'warning' : 'info';
-            setTimeout(function () {
-                evoToast(alerta.textContent.trim(), tipo);
-                alerta.classList.add('fade');
-                setTimeout(function () { if (alerta.parentNode) alerta.remove(); }, 350);
-            }, 300);
+            var texto = alerta.textContent.trim();
+            alerta.remove();
+            evoToast(texto, tipo);
         });
     }
 
@@ -347,30 +359,48 @@
             warning: 'bi-exclamation-circle-fill',
             info: 'bi-info-circle-fill'
         };
-        var tintas = {
-            success: 'text-success',
-            danger: 'text-danger',
-            warning: 'text-warning',
-            info: 'text-primary'
-        };
-        var delay = delayPersonalizado || (tipo === 'danger' ? 6000 : 3500);
+        var restante = delayPersonalizado || (tipo === 'danger' ? 7000 : 4000);
 
         var el = document.createElement('div');
-        el.className = 'toast';
-        el.setAttribute('role', 'status');
-        el.innerHTML =
-            '<div class="d-flex">' +
-            '  <div class="toast-body"><i class="bi ' + (iconos[tipo] || iconos.info) + ' me-2 ' + (tintas[tipo] || tintas.info) + '"></i>' + mensaje + '</div>' +
-            '  <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>' +
-            '</div>';
+        el.className = 'evo-toast evo-toast-' + tipo + ' entrando';
+        el.setAttribute('role', tipo === 'danger' ? 'alert' : 'status');
+        var icono = document.createElement('i');
+        icono.className = 'bi ' + (iconos[tipo] || iconos.info) + ' evo-toast-icono';
+        icono.setAttribute('aria-hidden', 'true');
+        var texto = document.createElement('div');
+        texto.className = 'evo-toast-texto';
+        texto.textContent = mensaje; // texto plano: el mensaje puede incluir datos ingresados por el usuario
+        var cerrarBtn = document.createElement('button');
+        cerrarBtn.type = 'button';
+        cerrarBtn.className = 'btn-close';
+        cerrarBtn.setAttribute('aria-label', 'Cerrar aviso');
+        el.appendChild(icono);
+        el.appendChild(texto);
+        el.appendChild(cerrarBtn);
         host.appendChild(el);
-        if (window.bootstrap && window.bootstrap.Toast) {
-            var t = new window.bootstrap.Toast(el, { delay: delay });
-            el.addEventListener('hidden.bs.toast', function () { el.remove(); });
-            t.show();
-        } else {
-            setTimeout(function () { el.remove(); }, delay);
+        void el.offsetHeight; // fija el estado inicial para que la entrada tenga transición
+        el.classList.remove('entrando');
+
+        // El tiempo se pausa con el mouse o el foco encima y con la pestaña oculta
+        var timer = null, inicio = 0, cerrado = false;
+        function correr() { if (cerrado || timer) return; inicio = Date.now(); timer = setTimeout(cerrar, restante); }
+        function pausar() { if (!timer) return; clearTimeout(timer); timer = null; restante -= Date.now() - inicio; }
+        function cerrar() {
+            if (cerrado) return;
+            cerrado = true;
+            clearTimeout(timer);
+            document.removeEventListener('visibilitychange', alCambiarVisibilidad);
+            el.classList.add('saliendo');
+            setTimeout(function () { el.remove(); }, 160);
         }
+        function alCambiarVisibilidad() { if (document.hidden) pausar(); else correr(); }
+        el.addEventListener('mouseenter', pausar);
+        el.addEventListener('mouseleave', correr);
+        el.addEventListener('focusin', pausar);
+        el.addEventListener('focusout', correr);
+        cerrarBtn.addEventListener('click', cerrar);
+        document.addEventListener('visibilitychange', alCambiarVisibilidad);
+        if (!document.hidden) correr();
     };
 
     /* ---------- Menú móvil (sidebar) ---------- */
@@ -394,6 +424,139 @@
         sidebar.querySelectorAll('a.sidebar-link, a.sidebar-sublink').forEach(function (enlace) {
             enlace.addEventListener('click', function () {
                 if (window.innerWidth < 992) cerrar();
+            });
+        });
+    }
+
+    /* ---------- SC-011: indicador del menú lateral ----------
+       Una sola pieza de fondo marca la sección activa. Al llegar a otra sección parte desde la
+       posición de la página anterior (guardada en sessionStorage) y se desliza hasta la nueva. */
+    function initIndicadorMenu() {
+        var nav = document.querySelector('.sidebar-nav');
+        var activo = nav && nav.querySelector('.sidebar-link.active');
+        var CLAVE = 'evo-menu-indicador';
+        if (!activo) { try { sessionStorage.removeItem(CLAVE); } catch (e) { } return; }
+
+        var ind = document.createElement('span');
+        ind.className = 'sidebar-indicador';
+        ind.setAttribute('aria-hidden', 'true');
+        nav.insertBefore(ind, nav.firstChild);
+        nav.classList.add('con-indicador');
+
+        function medir() {
+            var a = activo.getBoundingClientRect(), n = nav.getBoundingClientRect();
+            return { x: a.left - n.left, y: a.top - n.top, w: a.width, h: a.height };
+        }
+        function colocar(m) {
+            ind.style.width = m.w + 'px';
+            ind.style.height = m.h + 'px';
+            ind.style.transform = 'translate(' + m.x + 'px,' + m.y + 'px)';
+        }
+        function guardar(m) { try { sessionStorage.setItem(CLAVE, JSON.stringify(m)); } catch (e) { } }
+
+        var actual = medir(), previo = null;
+        try { previo = JSON.parse(sessionStorage.getItem(CLAVE) || 'null'); } catch (e) { }
+        if (previo && Math.abs(previo.y - actual.y) > 1 && !reducirMovimiento()) {
+            ind.style.transition = 'none';
+            colocar(previo);
+            ind.style.opacity = '1';
+            void ind.offsetHeight;
+            ind.style.transition = '';
+            requestAnimationFrame(function () { colocar(actual); });
+        } else {
+            colocar(actual);
+            ind.style.opacity = '1';
+        }
+        guardar(actual);
+
+        // Si se abre o cierra un submenú, o cambia el ancho, el indicador sigue al enlace
+        function recolocar() { var m = medir(); colocar(m); guardar(m); }
+        nav.addEventListener('shown.bs.collapse', recolocar);
+        nav.addEventListener('hidden.bs.collapse', recolocar);
+        window.addEventListener('resize', recolocar, { passive: true });
+    }
+
+    /* ---------- SC-011: skeleton de tablas ----------
+       Al filtrar (formulario GET) o cambiar de página, la tabla actual se cubre con filas de muestra
+       hasta que llega la página nueva. Solo agrega una capa encima: no recorre ni modifica las filas. */
+    function initCargaTablas() {
+        var tablas = document.querySelectorAll('main .table-responsive');
+        if (tablas.length === 0) return;
+        var espera = null;
+
+        function cubrir(wrap) {
+            if (wrap.querySelector('.evo-skeleton')) return;
+            var capa = document.createElement('div');
+            capa.className = 'evo-skeleton';
+            capa.setAttribute('aria-hidden', 'true');
+            var cab = document.createElement('div');
+            cab.className = 'evo-skeleton-cabecera';
+            capa.appendChild(cab);
+            var anchos = [['22%', '30%', '14%', '18%'], ['18%', '26%', '20%', '12%'], ['24%', '22%', '16%', '20%']];
+            var filas = Math.max(3, Math.min(16, Math.floor((wrap.clientHeight - 38) / 41)));
+            for (var i = 0; i < filas; i++) {
+                var fila = document.createElement('div');
+                fila.className = 'evo-skeleton-fila';
+                anchos[i % anchos.length].forEach(function (w) {
+                    var barra = document.createElement('span');
+                    barra.className = 'evo-skeleton-barra';
+                    barra.style.width = w;
+                    fila.appendChild(barra);
+                });
+                capa.appendChild(fila);
+            }
+            wrap.classList.add('cargando');
+            wrap.setAttribute('aria-busy', 'true');
+            wrap.appendChild(capa);
+            void capa.offsetHeight;
+            capa.classList.add('visible');
+        }
+        function quitar() {
+            clearTimeout(espera);
+            tablas.forEach(function (wrap) {
+                var capa = wrap.querySelector('.evo-skeleton');
+                if (capa) capa.remove();
+                wrap.classList.remove('cargando');
+                wrap.removeAttribute('aria-busy');
+            });
+        }
+        // Espera 150 ms: si la página llega antes, no aparece ningún parpadeo
+        function programar() { clearTimeout(espera); espera = setTimeout(function () { tablas.forEach(cubrir); }, 150); }
+
+        document.addEventListener('submit', function (e) {
+            var form = e.target;
+            if (e.defaultPrevented || !form.closest || !form.closest('main')) return;
+            if ((form.getAttribute('method') || 'get').toLowerCase() !== 'get') return;
+            programar();
+        });
+        document.addEventListener('click', function (e) {
+            var a = e.target.closest && e.target.closest('main .pagination a.page-link[href]');
+            if (!a || e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+            programar();
+        });
+        // Al volver con el botón Atrás la página sale de la caché con la capa puesta
+        window.addEventListener('pageshow', function (e) { if (e.persisted) quitar(); });
+    }
+
+    /* ---------- SC-011: botones con estado de carga ----------
+       <button type="submit" data-cargando="Entrando…"> muestra un spinner al enviar el formulario. */
+    function initBotonesCarga() {
+        document.addEventListener('submit', function (e) {
+            if (e.defaultPrevented) return;
+            var btn = e.target.querySelector && e.target.querySelector('button[type="submit"][data-cargando]');
+            if (!btn || btn.classList.contains('btn-cargando')) return;
+            btn.dataset.textoOriginal = btn.innerHTML;
+            btn.classList.add('btn-cargando');
+            btn.setAttribute('aria-disabled', 'true');
+            btn.innerHTML = '<span class="spinner-border me-2" aria-hidden="true"></span>';
+            btn.appendChild(document.createTextNode(btn.dataset.cargando));
+        });
+        window.addEventListener('pageshow', function (e) {
+            if (!e.persisted) return;
+            document.querySelectorAll('.btn-cargando[data-cargando]').forEach(function (btn) {
+                btn.innerHTML = btn.dataset.textoOriginal;
+                btn.classList.remove('btn-cargando');
+                btn.removeAttribute('aria-disabled');
             });
         });
     }
