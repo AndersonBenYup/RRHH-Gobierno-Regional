@@ -12,8 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews(options => options.Filters.Add<RegistrarExcepcionFilter>());
 
-builder.Services.AddDbContext<EvoRRLDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("RRHHNormalizado")));
+// SC-004: la cadena viene de la configuracion del entorno (en Azure: Connection string "RRHHNormalizado").
+var cadenaConexion = builder.Configuration.GetConnectionString("RRHHNormalizado");
+if (string.IsNullOrWhiteSpace(cadenaConexion))
+    throw new InvalidOperationException(
+        "Falta la cadena de conexion 'RRHHNormalizado'. Configurela en appsettings.Development.json, " +
+        "en la variable de entorno ConnectionStrings__RRHHNormalizado o como Connection string de la Web App en Azure.");
+
+builder.Services.AddDbContext<EvoRRLDbContext>(options => options.UseSqlServer(cadenaConexion));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

@@ -38,13 +38,19 @@ Plantilla en GitHub: `.github/ISSUE_TEMPLATE/solicitud-de-cambio.md`.
 
 | Código | Tipo | Descripción | Módulo | Prioridad | Estado |
 |---|---|---|---|---|---|
-| SC-001 | Correctivo | Validar fechas, horas y solapamiento al registrar permisos (`PermisoLogica` hoy no valida) | Permisos | Alta | Aprobado |
-| SC-002 | Preventivo | Bloquear la cuenta tras intentos fallidos de inicio de sesión (`SeguridadController.Login` no los limita) | Seguridad | Alta | Aprobado |
-| SC-003 | Perfectivo | Exportar el registro de asistencia a CSV reutilizando `ExportadorTablas` / `ExportadorCsv` | Asistencia | Media | Aprobado |
-| SC-004 | Adaptativo | Leer la cadena de conexión desde variable de entorno en producción (la clave del admin ya se lee de `Seguridad__AdminClave`) | Configuración | Media | Diferido |
-| SC-005 | Perfectivo | Filtrar y paginar permisos en la BD (`PermisoController.Index` trae toda la tabla y filtra en memoria) | Permisos | Baja | En evaluación |
-| SC-006 | Perfectivo | Arquitectura en capas con contratos: cambiar de BD solo toca `Capa Datos` | Todas las capas | Media | Implementado |
-| SC-007 | Perfectivo | Rediseño de la interfaz (login, inicio y layout) con Tailwind CSS | Vistas | Media | Implementado |
+| SC-001 | Correctivo | Validar fechas, horas y solapamiento al registrar permisos (`PermisoLogica` hoy no valida) | Permisos | Alta | Integrada a SC-008 |
+| SC-002 | Preventivo | Bloquear la cuenta tras intentos fallidos de inicio de sesión (`SeguridadController.Login` no los limita) | Seguridad | Alta | Parcial: se completa en SC-009 |
+| SC-003 | Perfectivo | Exportar el registro de asistencia a CSV reutilizando `ExportadorTablas` / `ExportadorCsv` | Asistencia | Media | En cola (Semana 3) |
+| SC-004 | Adaptativo | Leer la cadena de conexión desde variable de entorno en producción (la clave del admin ya se lee de `Seguridad__AdminClave`) | Configuración | Alta | Cerrada |
+| SC-005 | Perfectivo | Filtrar y paginar permisos en la BD (`PermisoController.Index` trae toda la tabla y filtra en memoria) | Permisos | Baja | Semana 3 |
+| SC-006 | Perfectivo | Arquitectura en capas con contratos: cambiar de BD solo toca `Capa Datos` | Todas las capas | Media | Reabierta (Semana 3): hay capas, faltan interfaces |
+| SC-007 | Perfectivo | Rediseño de la interfaz (login, inicio y layout) con Tailwind CSS | Vistas | Media | Cerrada con corrección: se hizo con Bootstrap + `site.css`, sin Tailwind |
+| SC-008 | Correctivo | Validar todos los formularios en frontend y backend: DataAnnotations, `ModelState` y reglas de negocio (retoma SC-001) | Todos los módulos | Alta | Aprobado con condiciones (Semana 1) |
+| SC-009 | Preventivo | Endurecer la seguridad: clave fuera del repositorio, cabeceras HTTP, política de contraseñas y bloqueo de cuenta (completa SC-002) | Seguridad | Alta | Aprobado (Semana 2) |
+| SC-010 | Preventivo | Pruebas automatizadas con xUnit y paso `dotnet test` en el pipeline de Azure | Todas las capas / CI | Media | Aprobado (Semana 4) |
+| SC-011 | Perfectivo | Rediseño visual coherente en todos los módulos con Tailwind CSS junto a Bootstrap (corrige el alcance de SC-007) | Vistas | Media | Registrada |
+
+**Evidencia de cierre de SC-004:** `appsettings.json` no tiene cadena de conexión; en Azure la Web App define la *Connection string* `RRHHNormalizado` y el *App setting* `Seguridad__AdminClave`. `Program.cs` se detiene con un mensaje claro si falta la cadena.
 
 ## Análisis de impacto
 
