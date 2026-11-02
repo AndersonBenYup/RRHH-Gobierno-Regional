@@ -30,6 +30,7 @@
                             <option value="@t.IdTipoTrabajador">@t.Descripcion</option>
                         }
                     </select>
+                    <span asp-validation-for="IdTipoTrabajador" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Cargo</label>
@@ -40,6 +41,7 @@
                             <option value="@c.IdCargo">@c.Descripcion</option>
                         }
                     </select>
+                    <span asp-validation-for="IdCargo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Local</label>
@@ -50,6 +52,7 @@
                             <option value="@l.idLocal">@l.NombreLocal</option>
                         }
                     </select>
+                    <span asp-validation-for="idLocal" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Horario</label>
@@ -60,6 +63,7 @@
                             <option value="@h.idHorario">@h.Descrip_Horario</option>
                         }
                     </select>
+                    <span asp-validation-for="idHorario" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Área (año + área)</label>
@@ -75,14 +79,17 @@
                             </optgroup>
                         }
                     </select>
+                    <span asp-validation-for="idAreaOrganiz" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Año de registro</label>
                     <input asp-for="Year" class="form-control" />
+                    <span asp-validation-for="Year" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Fecha de ingreso</label>
                     <input asp-for="FechaIngreso" type="date" class="form-control" />
+                    <span asp-validation-for="FechaIngreso" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Estado</label>
@@ -91,26 +98,32 @@
                         <option value="I" selected="@(Model.Estado == "I")">Inactivo</option>
                         <option value="">(otro)</option>
                     </select>
+                    <span asp-validation-for="Estado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Profesión</label>
                     <input asp-for="Profesion" class="form-control" />
+                    <span asp-validation-for="Profesion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Grado de instrucción</label>
                     <input asp-for="GradoInstruccion" class="form-control" />
+                    <span asp-validation-for="GradoInstruccion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Brevete</label>
                     <input asp-for="Brevete" class="form-control" />
+                    <span asp-validation-for="Brevete" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Libreta militar</label>
                     <input asp-for="NumLibretaMilitar" class="form-control" />
+                    <span asp-validation-for="NumLibretaMilitar" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Cuenta corriente</label>
                     <input asp-for="CtaCorriente" class="form-control" />
+                    <span asp-validation-for="CtaCorriente" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Discapacidad</label>
@@ -121,10 +134,12 @@
                             <option value="@d.IdDiscapacidad">@d.Descrip_Discapacidad</option>
                         }
                     </select>
+                    <span asp-validation-for="IdDiscapacidad" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Exp. social</label>
                     <input asp-for="ExpSocial" class="form-control" />
+                    <span asp-validation-for="ExpSocial" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>
@@ -143,14 +158,17 @@
                             <option value="@a.IdAFP">@a.DescripAFP</option>
                         }
                     </select>
+                    <span asp-validation-for="IdAFP" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">N° AFP</label>
                     <input asp-for="NroAFP" class="form-control" />
+                    <span asp-validation-for="NroAFP" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Fecha AFP</label>
                     <input asp-for="FechaAFP" type="date" class="form-control" />
+                    <span asp-validation-for="FechaAFP" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Régimen de pensión</label>
@@ -161,14 +179,17 @@
                             <option value="@r.IdRegimenPen">@r.LeyRegimen</option>
                         }
                     </select>
+                    <span asp-validation-for="IdRegimenPen" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">N° RUC</label>
                     <input asp-for="NumRUC" class="form-control" />
+                    <span asp-validation-for="NumRUC" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Autogenerado salud</label>
                     <input asp-for="NumAutogenSalud" class="form-control" />
+                    <span asp-validation-for="NumAutogenSalud" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Tipo sangre</label>
@@ -179,10 +200,12 @@
                             <option value="@s.IdTipoSangre">@s.DescripTS</option>
                         }
                     </select>
+                    <span asp-validation-for="IdTipoSangre" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Dcto. ley</label>
                     <input asp-for="DecLey" class="form-control" />
+                    <span asp-validation-for="DecLey" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>
@@ -199,6 +222,7 @@
                         <option value="M" selected="@(Model.Sexo == "M")">Masculino</option>
                         <option value="F" selected="@(Model.Sexo == "F")">Femenino</option>
                     </select>
+                    <span asp-validation-for="Sexo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Estado civil</label>
@@ -209,6 +233,7 @@
                             <option value="@ec.IdEstadoCivil">@ec.DescripEstCivil</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEstadoCivil" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Nacionalidad</label>
@@ -219,6 +244,7 @@
                             <option value="@n.IdNacionalidad">@n.Descripcion</option>
                         }
                     </select>
+                    <span asp-validation-for="IdNacionalidad" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Foto</label>
@@ -239,10 +265,12 @@
                         <option value="true" selected="@(Model.JefeHogar == true)">Sí</option>
                         <option value="false" selected="@(Model.JefeHogar == false)">No</option>
                     </select>
+                    <span asp-validation-for="JefeHogar" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Carga familiar</label>
                     <input asp-for="CargaFam" class="form-control" />
+                    <span asp-validation-for="CargaFam" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">N° hijos</label>
@@ -257,34 +285,42 @@
                             <option value="@v.IdViveCon">@v.DescripViveCon</option>
                         }
                     </select>
+                    <span asp-validation-for="IdViveCon" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Observación familiar</label>
                     <input asp-for="ObsFam" class="form-control" />
+                    <span asp-validation-for="ObsFam" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Aspecto salud</label>
                     <input asp-for="AspecSalud" class="form-control" />
+                    <span asp-validation-for="AspecSalud" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Aspecto educación</label>
                     <input asp-for="AspecEducacion" class="form-control" />
+                    <span asp-validation-for="AspecEducacion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Aspecto recreación</label>
                     <input asp-for="AspecRecreacion" class="form-control" />
+                    <span asp-validation-for="AspecRecreacion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Aspecto psicológico</label>
                     <input asp-for="AspecPsico" class="form-control" />
+                    <span asp-validation-for="AspecPsico" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Aspecto social</label>
                     <input asp-for="AspecSocial" class="form-control" />
+                    <span asp-validation-for="AspecSocial" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-12">
                     <label class="form-label">Diagnóstico social</label>
                     <input asp-for="DiagnosSocial" class="form-control" />
+                    <span asp-validation-for="DiagnosSocial" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

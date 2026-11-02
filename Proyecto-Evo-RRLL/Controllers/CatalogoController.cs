@@ -22,7 +22,7 @@ public class CatalogoController : Controller
     [HttpGet]
     public async Task<IActionResult> Index(string tabla)
     {
-        if (!CatalogoNavegacion.Items.ContainsKey(tabla))
+        if (string.IsNullOrEmpty(tabla) || !CatalogoNavegacion.Items.ContainsKey(tabla))
             return NotFound();
 
         var columnas = _repositorio.Columnas(tabla);

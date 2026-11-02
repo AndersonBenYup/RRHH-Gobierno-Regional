@@ -34,6 +34,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Persona / familiar *</label>
@@ -44,6 +45,7 @@
                             <option value="@p.Id">@p.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdPersona" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Tipo de familiar</label>
@@ -54,6 +56,7 @@
                             <option value="@t.IdTipoFam">@t.DescripTipoFam</option>
                         }
                     </select>
+                    <span asp-validation-for="IdTipoFam" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Sexo</label>
@@ -62,6 +65,7 @@
                         <option value="M" selected="@(Model.FamSexo == "M")">Masculino</option>
                         <option value="F" selected="@(Model.FamSexo == "F")">Femenino</option>
                     </select>
+                    <span asp-validation-for="FamSexo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Estado civil</label>
@@ -72,6 +76,7 @@
                             <option value="@ec.IdEstadoCivil">@ec.DescripEstCivil</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEstadoCivil" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Tipo de sangre</label>
@@ -82,22 +87,27 @@
                             <option value="@s.IdTipoSangre">@s.DescripTS</option>
                         }
                     </select>
+                    <span asp-validation-for="IdTipoSangre" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Ocupación</label>
                     <input asp-for="FamOcupacion" class="form-control" />
+                    <span asp-validation-for="FamOcupacion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Grado de instrucción</label>
                     <input asp-for="FamGradoInstruc" class="form-control" />
+                    <span asp-validation-for="FamGradoInstruc" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Lugar de trabajo</label>
                     <input asp-for="FamLugTrab" class="form-control" />
+                    <span asp-validation-for="FamLugTrab" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Autogenerado salud</label>
                     <input asp-for="NumAutogenSalud" class="form-control" />
+                    <span asp-validation-for="NumAutogenSalud" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Discapacidad</label>
@@ -108,10 +118,12 @@
                             <option value="@d.IdDiscapacidad">@d.Descrip_Discapacidad</option>
                         }
                     </select>
+                    <span asp-validation-for="IdDiscapacidad" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Procedencia</label>
                     <input asp-for="Procedencia" class="form-control" />
+                    <span asp-validation-for="Procedencia" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <div class="form-check form-switch mt-4">
@@ -128,10 +140,12 @@
                 <div class="col-md-3">
                     <label class="form-label">Enfermedad</label>
                     <input asp-for="Enfermedad" class="form-control" />
+                    <span asp-validation-for="Enfermedad" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Tiempo de enfermedad</label>
                     <input asp-for="TiempoEnfermedad" class="form-control" />
+                    <span asp-validation-for="TiempoEnfermedad" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

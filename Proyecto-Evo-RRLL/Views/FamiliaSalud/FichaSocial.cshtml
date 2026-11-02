@@ -29,6 +29,7 @@
                             <option value="@t.idTipoFam">@t.TipoFamDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="Dinamica.idTipoFam" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Relación de pareja</label>
@@ -39,6 +40,7 @@
                             <option value="@p.idRelacPareja">@p.RelacParejaDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="Dinamica.idRelaPareja" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Relación padres-hijos</label>
@@ -49,6 +51,7 @@
                             <option value="@ph.idRelacPH">@ph.RelacPHDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="Dinamica.idRelaPH" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Relación entre hermanos</label>
@@ -59,10 +62,12 @@
                             <option value="@h.idRelacHermano">@h.RelacHermanoDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="Dinamica.idRelacHermano" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-12">
                     <label class="form-label">Observación</label>
                     <textarea asp-for="Dinamica.Observacion" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Dinamica.Observacion" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>
@@ -75,18 +80,22 @@
                 <div class="col-md-6">
                     <label class="form-label">Principales problemas</label>
                     <textarea asp-for="AspSocio.PrincipProblemas" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="AspSocio.PrincipProblemas" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Propuestas de mejora institucional</label>
                     <textarea asp-for="AspSocio.PropMejoraInstitu" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="AspSocio.PropMejoraInstitu" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Hobby</label>
                     <input asp-for="AspSocio.hobby" class="form-control" />
+                    <span asp-validation-for="AspSocio.hobby" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Actividades recreativas institucionales</label>
                     <input asp-for="AspSocio.ActRecreaInstitu" class="form-control" />
+                    <span asp-validation-for="AspSocio.ActRecreaInstitu" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>
@@ -112,3 +121,7 @@
         </div>
     </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

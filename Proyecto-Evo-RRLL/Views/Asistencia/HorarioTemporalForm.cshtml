@@ -31,6 +31,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="idEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Horario asignado</label>
@@ -41,26 +42,32 @@
                             <option value="@h.idHorario">@h.Descrip_Horario</option>
                         }
                     </select>
+                    <span asp-validation-for="HorarioAsignado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha inicio</label>
                     <input asp-for="FechaInicio" type="date" class="form-control" />
+                    <span asp-validation-for="FechaInicio" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha fin</label>
-                    <input asp-for="FechaFin" type="date" class="form-control" />
+                    <input asp-for="FechaFin" data-fecha-desde="FechaInicio" type="date" class="form-control" />
+                    <span asp-validation-for="FechaFin" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">N° documento</label>
                     <input asp-for="NroDocumento" class="form-control" />
+                    <span asp-validation-for="NroDocumento" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Sisgedo</label>
                     <input asp-for="Sisgedo" class="form-control" />
+                    <span asp-validation-for="Sisgedo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Fecha de registro</label>
                     <input asp-for="FechaRegistro" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="FechaRegistro" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

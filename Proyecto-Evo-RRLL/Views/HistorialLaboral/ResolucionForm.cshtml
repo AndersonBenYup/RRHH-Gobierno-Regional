@@ -31,6 +31,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="idEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Tipo de resolución</label>
@@ -41,14 +42,17 @@
                             <option value="@t.idTipoResolucion">@t.DescripTipoResolucion</option>
                         }
                     </select>
+                    <span asp-validation-for="idTipoResolucion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">N° resolución</label>
                     <input asp-for="NumeroResolucion" class="form-control" />
+                    <span asp-validation-for="NumeroResolucion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Fecha</label>
                     <input asp-for="FechaResolucion" type="date" class="form-control" />
+                    <span asp-validation-for="FechaResolucion" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>
