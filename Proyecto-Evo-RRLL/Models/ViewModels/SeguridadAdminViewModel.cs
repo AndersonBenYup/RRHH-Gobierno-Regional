@@ -9,6 +9,9 @@ public class UsuarioFila
     public string Empleado { get; set; } = "";
 
     public string Roles { get; set; } = "";
+
+    /// <summary>SC-009: fin del bloqueo por intentos fallidos (null si la cuenta no está bloqueada).</summary>
+    public DateTime? BloqueadaHasta { get; set; }
 }
 
 public class RolFila

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Capa_Logica;
+using Capa_Logica.Seguridad;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,12 +16,26 @@ public class SeguridadController : Controller
 {
     private readonly UsuarioLogica _usuarioData;
     private readonly BitacoraLogica _bitacora;
+    private readonly BloqueoCuentaLogica _bloqueo;
 
-    public SeguridadController(UsuarioLogica usuarioData, BitacoraLogica bitacora)
+    public SeguridadController(UsuarioLogica usuarioData, BitacoraLogica bitacora, BloqueoCuentaLogica bloqueo)
     {
         _usuarioData = usuarioData;
         _bitacora = bitacora;
+        _bloqueo = bloqueo;
     }
+
+    internal static string NombreRol(string? descripcion)
+    {
+        var nombre = descripcion?.Trim();
+        if (string.IsNullOrEmpty(nombre))
+            return "SinRol";
+        return nombre.Equals("Administrador", StringComparison.OrdinalIgnoreCase) ? "Administrador" : nombre;
+    }
+
+    private string MensajeBloqueo(EstadoBloqueo estado)
+        => $"La cuenta está bloqueada por {ConstantesSeguridad.MaxIntentosFallidos} intentos fallidos. " +
+           $"Intente de nuevo en {estado.MinutosRestantes(_bloqueo.Ahora)} minuto(s) o pida al administrador que la desbloquee.";
 
     [HttpGet]
     [AllowAnonymous]
@@ -39,22 +54,37 @@ public class SeguridadController : Controller
         if (!ModelState.IsValid)
             return View(modelo);
 
-        var usuario = await _usuarioData.ObtenerPorLogin(modelo.Login.Trim());
-        if (usuario is null || usuario.Estado != true || string.IsNullOrEmpty(usuario.PasswordHash))
+        var login = modelo.Login.Trim();
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+        // SC-009: una cuenta bloqueada no se verifica (ni siquiera con la clave correcta) hasta que pase el bloqueo.
+        var estado = await _bloqueo.Estado(login);
+        if (estado.Bloqueada)
         {
-            modelo.Error = "Usuario o clave incorrectos.";
+            await _bloqueo.RegistrarIntentoBloqueado(login, ip);
+            modelo.Error = MensajeBloqueo(estado);
             return View(modelo);
         }
 
-        var verificador = new PasswordHasher<Usuario>();
-        var resultado = verificador.VerifyHashedPassword(new Usuario(), usuario.PasswordHash, modelo.Clave);
-        if (resultado == PasswordVerificationResult.Failed)
+        var usuario = await _usuarioData.ObtenerPorLogin(login);
+        var claveCorrecta = usuario is not null && usuario.Estado == true && !string.IsNullOrEmpty(usuario.PasswordHash)
+            && new PasswordHasher<Usuario>().VerifyHashedPassword(new Usuario(), usuario.PasswordHash, modelo.Clave)
+                != PasswordVerificationResult.Failed;
+
+        if (!claveCorrecta)
         {
-            modelo.Error = "Usuario o clave incorrectos.";
+            estado = await _bloqueo.RegistrarFallo(login, ip);
+            var restantes = ConstantesSeguridad.MaxIntentosFallidos - estado.FallosRecientes;
+            modelo.Error = estado.Bloqueada
+                ? MensajeBloqueo(estado)
+                : restantes <= 2
+                    ? $"Usuario o clave incorrectos. Le quedan {restantes} intento(s) antes de que la cuenta se bloquee."
+                    : "Usuario o clave incorrectos.";
             return View(modelo);
         }
-        TempData["MensajeExito"] = $"Bienvenido, {usuario.Login!.Trim()}.";
-        await _bitacora.Registrar(usuario.Login.Trim(), "IniciarSesion", "Seguridad", "Acceso correcto al sistema");
+
+        TempData["MensajeExito"] = $"Bienvenido, {usuario!.Login!.Trim()}.";
+        await _bitacora.Registrar(usuario.Login.Trim(), ConstantesSeguridad.AccionLoginCorrecto, ConstantesSeguridad.EntidadSeguridad, "Acceso correcto al sistema");
 
         var roles = await _usuarioData.ObtenerRoles(usuario.IdUsuario);
 
@@ -64,7 +94,9 @@ public class SeguridadController : Controller
             new(ClaimTypes.Name, usuario.Login!.Trim()),
             new(ClaimTypes.GivenName, usuario.Descripcion ?? usuario.Login!.Trim())
         };
-        claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r.Descripcion ?? "SinRol")));
+        // SC-009: [Authorize(Roles = "Administrador")] distingue mayúsculas; en la BD el rol puede estar como
+        // "ADMINISTRADOR", así que se normaliza para que el administrador no quede sin acceso.
+        claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, NombreRol(r.Descripcion))));
 
         var identidad = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identidad);
