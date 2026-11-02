@@ -15,15 +15,19 @@ namespace Capa_Entidades
     public int? IdConservacion { get; set; }
     public int? IdUbicacion { get; set; }
     public int? IdAlumbrado { get; set; }
+    [StringLength(50, ErrorMessage = "Máximo {1} caracteres.")]
     public string? OtroAlumbrado { get; set; }
     public int? IdAgua { get; set; }
+    [StringLength(50, ErrorMessage = "Máximo {1} caracteres.")]
     public string? OtroAgua { get; set; }
     public int? IdExcretas { get; set; }
+    [StringLength(50, ErrorMessage = "Máximo {1} caracteres.")]
     public string? OtroExcreta { get; set; }
     public byte? NumDormitorio { get; set; }
     public byte? NumServHig { get; set; }
     public byte? NumCompart { get; set; }
     public byte? NumPerDorm { get; set; }
+    [StringLength(200, ErrorMessage = "Máximo {1} caracteres.")]
     public string? Observacion { get; set; }
     }
 }

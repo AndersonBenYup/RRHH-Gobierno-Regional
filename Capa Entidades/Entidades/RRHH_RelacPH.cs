@@ -8,6 +8,7 @@ namespace Capa_Entidades
     {
     [Key]
     public int idRelacPH { get; set; }
+    [StringLength(14, ErrorMessage = "Máximo {1} caracteres.")]
     public string? RelacPHDescrip { get; set; }
     }
 }

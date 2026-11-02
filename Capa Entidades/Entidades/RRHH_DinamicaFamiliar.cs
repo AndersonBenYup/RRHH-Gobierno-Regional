@@ -13,6 +13,7 @@ namespace Capa_Entidades
     public int? idRelaPareja { get; set; }
     public int? idRelaPH { get; set; }
     public int? idRelacHermano { get; set; }
+    [StringLength(200, ErrorMessage = "Máximo {1} caracteres.")]
     public string? Observacion { get; set; }
     }
 }

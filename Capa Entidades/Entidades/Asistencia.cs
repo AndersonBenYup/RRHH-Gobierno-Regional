@@ -18,7 +18,9 @@ namespace Capa_Entidades
     public bool? Flag_Sal { get; set; }
     public bool? Estado { get; set; }
     public int? idHorario { get; set; }
+    [StringLength(50, ErrorMessage = "Máximo {1} caracteres.")]
     public string? Usuario { get; set; }
+    [StringLength(50, ErrorMessage = "Máximo {1} caracteres.")]
     public string? PC { get; set; }
     }
 }

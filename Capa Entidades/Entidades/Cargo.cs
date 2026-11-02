@@ -9,7 +9,9 @@ namespace Capa_Entidades
     [Key]
     public int IdCargo { get; set; }
     [Column("Cargo")]
+    [StringLength(50, ErrorMessage = "Máximo {1} caracteres.")]
     public string? Descripcion { get; set; }
+    [StringLength(8, ErrorMessage = "Máximo {1} caracteres.")]
     public string? Abreviatura { get; set; }
     }
 }

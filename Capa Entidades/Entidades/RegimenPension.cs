@@ -8,6 +8,7 @@ namespace Capa_Entidades
     {
     [Key]
     public int IdRegimenPen { get; set; }
+    [StringLength(5, ErrorMessage = "Máximo {1} caracteres.")]
     public string? LeyRegimen { get; set; }
     }
 }

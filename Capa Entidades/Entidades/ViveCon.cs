@@ -8,6 +8,7 @@ namespace Capa_Entidades
     {
     [Key]
     public int IdViveCon { get; set; }
+    [StringLength(27, ErrorMessage = "Máximo {1} caracteres.")]
     public string? DescripViveCon { get; set; }
     }
 }
