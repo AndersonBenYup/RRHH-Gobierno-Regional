@@ -86,9 +86,35 @@ public class EvoRRLDbContext : DbContext
         public DbSet<EmpleadoResumenFamiliar> EmpleadoResumenFamiliar { get; set; } = null!;
         public DbSet<FamiliarDetalle> FamiliarDetalle { get; set; } = null!;
         public DbSet<EstructOrganizDotacion> EstructOrganizDotacion { get; set; } = null!;
+    /// <summary>
+    /// SC-008: los [Required] de las entidades son reglas de los formularios, no del esquema.
+    /// EF Core los toma como NOT NULL y fallaría al leer filas antiguas con NULL, así que aquí
+    /// se devuelve la nulabilidad real: toda propiedad anulable en C# (string?, int?, DateTime?...) acepta NULL.
+    /// </summary>
+    private static void RespetarNulabilidadDeLaBd(ModelBuilder modelBuilder)
+    {
+        var contextoNulabilidad = new System.Reflection.NullabilityInfoContext();
+        foreach (var entidad in modelBuilder.Model.GetEntityTypes())
+        {
+            var claves = entidad.FindPrimaryKey()?.Properties ?? [];
+            foreach (var propiedad in entidad.GetProperties())
+            {
+                if (claves.Contains(propiedad) || propiedad.PropertyInfo is null)
+                    continue;
+
+                var tipo = propiedad.ClrType;
+                var anulable = Nullable.GetUnderlyingType(tipo) is not null
+                    || (!tipo.IsValueType && contextoNulabilidad.Create(propiedad.PropertyInfo).ReadState == System.Reflection.NullabilityState.Nullable);
+                if (anulable)
+                    propiedad.IsNullable = true;
+            }
+        }
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        RespetarNulabilidadDeLaBd(modelBuilder);
             modelBuilder.Entity<AFP>(entity =>
             {
             });
