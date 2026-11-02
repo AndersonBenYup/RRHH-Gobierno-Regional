@@ -19,18 +19,22 @@
                 <div class="col-md-4">
                     <label class="form-label">N° colegiatura *</label>
                     <input asp-for="NumColegiatura" class="form-control" required />
+                    <span asp-validation-for="NumColegiatura" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-8">
                     <label class="form-label">Denominación / grado</label>
                     <input asp-for="DenominacionGrado" class="form-control" />
+                    <span asp-validation-for="DenominacionGrado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-8">
                     <label class="form-label">Institución</label>
                     <input asp-for="Institucion" class="form-control" />
+                    <span asp-validation-for="Institucion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha</label>
                     <input asp-for="Fecha" type="date" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Empleado</label>
@@ -41,6 +45,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

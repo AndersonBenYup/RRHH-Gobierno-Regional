@@ -410,4 +410,57 @@
         var spinner = document.getElementById('loadingSpinner');
         if (spinner) spinner.classList.toggle('show', visible);
     };
+    /* ---------- SC-008: rangos de fechas y horas en formularios ----------
+       <input data-fecha-desde="FechaInicio"> no admite una fecha anterior a la de FechaInicio.
+       <input data-hora-desde="Hora_Sal"> exige una hora posterior cuando el permiso es de un solo día.
+       El servidor vuelve a validar lo mismo (por si el JavaScript está desactivado). */
+    function initRangos() {
+        document.querySelectorAll('[data-fecha-desde]').forEach(function (fin) {
+            var inicio = fin.form && fin.form.querySelector('[name="' + fin.dataset.fechaDesde + '"]');
+            if (!inicio) return;
+            function actualizar() {
+                fin.setCustomValidity(inicio.value && fin.value && fin.value < inicio.value
+                    ? 'La fecha de fin no puede ser anterior a la fecha de inicio.' : '');
+                if (!fin.validationMessage) fin.classList.remove('is-invalid');
+            }
+            inicio.addEventListener('change', actualizar);
+            fin.addEventListener('change', actualizar);
+            actualizar();
+        });
+        document.querySelectorAll('[data-hora-desde]').forEach(function (ret) {
+            var form = ret.form;
+            var sal = form && form.querySelector('[name="' + ret.dataset.horaDesde + '"]');
+            if (!sal) return;
+            var ini = form.querySelector('[name="FechaInicio"]');
+            var fin = form.querySelector('[name="FechaFin"]');
+            function actualizar() {
+                var mismoDia = !fin || !fin.value || (ini && fin.value === ini.value);
+                ret.setCustomValidity(mismoDia && sal.value && ret.value && ret.value <= sal.value
+                    ? 'La hora de retorno debe ser posterior a la hora de salida.' : '');
+                if (!ret.validationMessage) ret.classList.remove('is-invalid');
+            }
+            [sal, ret, ini, fin].forEach(function (el) { if (el) el.addEventListener('change', actualizar); });
+            actualizar();
+        });
+    }
+    // jquery.validate pone novalidate en el formulario, así que también se revisa al enviar
+    // y se muestra el mensaje en el <span asp-validation-for> del campo.
+    document.addEventListener('submit', function (e) {
+        var form = e.target;
+        var invalidos = form.querySelectorAll ? form.querySelectorAll('[data-fecha-desde], [data-hora-desde]') : [];
+        var primero = null;
+        invalidos.forEach(function (el) {
+            var span = form.querySelector('[data-valmsg-for="' + el.name + '"]');
+            if (el.validationMessage) {
+                if (span) { span.textContent = el.validationMessage; span.classList.add('field-validation-error'); }
+                el.classList.add('is-invalid');
+                primero = primero || el;
+            } else if (span && span.dataset.rango === '1') {
+                span.textContent = '';
+            }
+            if (span) span.dataset.rango = el.validationMessage ? '1' : '';
+        });
+        if (primero) { e.preventDefault(); e.stopImmediatePropagation(); primero.focus(); }
+    }, true);
+    document.addEventListener('DOMContentLoaded', initRangos);
 })();

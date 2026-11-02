@@ -31,18 +31,22 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="idEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">N° memo</label>
                     <input asp-for="NroMemo" class="form-control" />
+                    <span asp-validation-for="NroMemo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Fecha memo</label>
                     <input asp-for="FechaMemo" type="date" class="form-control" />
+                    <span asp-validation-for="FechaMemo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Año</label>
                     <input asp-for="Year" type="number" class="form-control" placeholder="@DateTime.Now.Year" />
+                    <span asp-validation-for="Year" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-8">
                     <label class="form-label">Área organizacional</label>
@@ -53,6 +57,7 @@
                             <option value="@a.idAreaOrganiz">@a.AreaOrganizacional</option>
                         }
                     </select>
+                    <span asp-validation-for="idAreaOrganiz" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

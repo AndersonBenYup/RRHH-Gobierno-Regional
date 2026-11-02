@@ -32,6 +32,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Tipo de familia</label>
@@ -42,6 +43,7 @@
                             <option value="@t.idTipoFam">@t.TipoFamDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="idTipoFam" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Relación de pareja</label>
@@ -52,6 +54,7 @@
                             <option value="@r.idRelacPareja">@r.RelacParejaDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="idRelaPareja" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Relación P.H.</label>
@@ -62,6 +65,7 @@
                             <option value="@r.idRelacPH">@r.RelacPHDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="idRelaPH" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Relación de hermano</label>
@@ -72,10 +76,12 @@
                             <option value="@r.idRelacHermano">@r.RelacHermanoDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="idRelacHermano" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-12">
                     <label class="form-label">Observación</label>
                     <textarea asp-for="Observacion" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Observacion" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

@@ -33,10 +33,12 @@
                             <option value="@e.Id" selected="@(Model.IdEmpleado == e.Id)">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Fecha</label>
                     <input asp-for="Fecha" type="date" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Tipo de comportamiento</label>
@@ -47,18 +49,22 @@
                             <option value="@t.idTipoComportamiento" selected="@(Model.idTipoComportamiento == t.idTipoComportamiento)">@t.TipoCompDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="idTipoComportamiento" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">N. resolución</label>
                     <input asp-for="NumResol" class="form-control" />
+                    <span asp-validation-for="NumResol" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-12">
                     <label class="form-label">Título</label>
                     <input asp-for="Titulo" class="form-control" />
+                    <span asp-validation-for="Titulo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-12">
                     <label class="form-label">Descripción</label>
                     <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

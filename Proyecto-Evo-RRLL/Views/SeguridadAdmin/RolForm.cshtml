@@ -21,10 +21,12 @@
                 <div class="col-md-6">
                     <label class="form-label">Descripción *</label>
                     <input asp-for="Descripcion" class="form-control" required placeholder="Ej. Administrador" />
+                    <span asp-validation-for="Descripcion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Sistema</label>
                     <input asp-for="IdSistema" class="form-control" placeholder="Ej. RRHH" />
+                    <span asp-validation-for="IdSistema" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>
@@ -39,3 +41,7 @@
         </div>
     </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

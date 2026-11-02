@@ -20,6 +20,7 @@
                     @if (esNuevo)
                     {
                         <input asp-for="Fecha" type="date" class="form-control" required />
+                        <span asp-validation-for="Fecha" class="text-danger small d-block"></span>
                     }
                     else
                     {
@@ -37,6 +38,7 @@
                                 <option value="@e.Id">@e.Nombre</option>
                             }
                         </select>
+                        <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                     }
                     else
                     {
@@ -53,14 +55,17 @@
                             <option value="@est.Codigo">@(est.Descripcion ?? est.Codigo)</option>
                         }
                     </select>
+                    <span asp-validation-for="Estado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Minutos normales</label>
                     <input asp-for="MinNormales" class="form-control" />
+                    <span asp-validation-for="MinNormales" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Segundos de tardanza</label>
                     <input asp-for="SegundosTarde" type="number" min="0" class="form-control" />
+                    <span asp-validation-for="SegundosTarde" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>
