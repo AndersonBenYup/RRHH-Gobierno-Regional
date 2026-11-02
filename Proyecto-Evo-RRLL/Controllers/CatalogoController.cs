@@ -1,6 +1,6 @@
 using Capa_Logica;
 using Proyecto_Evo_RRLL.Utilidades;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecto_Evo_RRLL.Models.ViewModels;
@@ -10,10 +10,10 @@ namespace Proyecto_Evo_RRLL.Controllers;
 [Authorize]
 public class CatalogoController : Controller
 {
-    private readonly CatalogoRepositorio _repositorio;
+    private readonly ICatalogoRepositorio _repositorio;
     private readonly BitacoraLogica _bitacora;
 
-    public CatalogoController(CatalogoRepositorio repositorio, BitacoraLogica bitacora)
+    public CatalogoController(ICatalogoRepositorio repositorio, BitacoraLogica bitacora)
     {
         _repositorio = repositorio;
         _bitacora = bitacora;
@@ -46,7 +46,7 @@ public class CatalogoController : Controller
             Columnas = columnas,
             Filas = filas,
             Claves = _repositorio.ClavesPrimarias(tabla),
-            Editable = CatalogoRepositorio.EsEditable(tabla)
+            Editable = _repositorio.EsEditable(tabla)
         });
     }
 
@@ -169,8 +169,8 @@ public class CatalogoController : Controller
         return dict;
     }
 
-    private static bool EsCatalogoEditable(string tabla)
-        => CatalogoNavegacion.Items.ContainsKey(tabla) && CatalogoRepositorio.EsEditable(tabla);
+    private bool EsCatalogoEditable(string tabla)
+        => CatalogoNavegacion.Items.ContainsKey(tabla) && _repositorio.EsEditable(tabla);
 
     [HttpGet]
     [Authorize(Roles = "Administrador")]

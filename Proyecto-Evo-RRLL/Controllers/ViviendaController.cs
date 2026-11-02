@@ -1,5 +1,5 @@
 using Capa_Logica;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,7 @@ public class ViviendaController : Controller
     private readonly MaterialVivLogica _materialVivData;
     private readonly ServicioVivLogica _servicioVivData;
     private readonly ViviendaServicioLogica _viviendaServicioData;
-    private readonly SecuenciaService _secuencia;
+    private readonly ISecuenciaService _secuencia;
     private readonly Services.EmpleadoServicio _empleados;
 
     public ViviendaController(
@@ -40,7 +40,7 @@ public class ViviendaController : Controller
         MaterialVivLogica materialVivData,
         ServicioVivLogica servicioVivData,
         ViviendaServicioLogica viviendaServicioData,
-        SecuenciaService secuencia,
+        ISecuenciaService secuencia,
         Services.EmpleadoServicio empleados)
     {
         _empleadoData = empleadoData;

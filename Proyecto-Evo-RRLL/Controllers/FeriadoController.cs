@@ -1,5 +1,5 @@
 using Capa_Logica;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +10,9 @@ namespace Proyecto_Evo_RRLL.Controllers;
 public class FeriadoController : Controller
 {
     private readonly RRHH_FeriadoLogica _feriadoData;
-    private readonly SecuenciaService _secuencia;
+    private readonly ISecuenciaService _secuencia;
 
-    public FeriadoController(RRHH_FeriadoLogica feriadoData, SecuenciaService secuencia)
+    public FeriadoController(RRHH_FeriadoLogica feriadoData, ISecuenciaService secuencia)
     {
         _feriadoData = feriadoData;
         _secuencia = secuencia;

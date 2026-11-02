@@ -1,5 +1,5 @@
 using Capa_Logica;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +16,7 @@ public class CapacitacionController : Controller
     private readonly EstadoEstudioLogica _estadoEstudioData;
     private readonly EmpleadoLogica _empleadoData;
     private readonly PersonaLogica _personaData;
-    private readonly SecuenciaService _secuencia;
+    private readonly ISecuenciaService _secuencia;
     private readonly Services.EmpleadoServicio _empleados;
 
     public CapacitacionController(
@@ -27,7 +27,7 @@ public class CapacitacionController : Controller
         EstadoEstudioLogica estadoEstudioData,
         EmpleadoLogica empleadoData,
         PersonaLogica personaData,
-        SecuenciaService secuencia,
+        ISecuenciaService secuencia,
         Services.EmpleadoServicio empleados)
     {
         _capacitacionData = capacitacionData;

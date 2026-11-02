@@ -1,4 +1,4 @@
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 
 namespace Proyecto_Evo_RRLL.Models.ViewModels;
 

@@ -1,5 +1,5 @@
 using Capa_Logica;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +17,7 @@ public class SaludController : Controller
     private readonly EstadoCivilLogica _estadoCivilData;
     private readonly MotivoBajaLogica _motivoBajaData;
     private readonly VinculoAseguradoLogica _vinculoData;
-    private readonly SecuenciaService _secuencia;
+    private readonly ISecuenciaService _secuencia;
     private readonly Services.EmpleadoServicio _empleados;
 
     public SaludController(
@@ -29,7 +29,7 @@ public class SaludController : Controller
         EstadoCivilLogica estadoCivilData,
         MotivoBajaLogica motivoBajaData,
         VinculoAseguradoLogica vinculoData,
-        SecuenciaService secuencia,
+        ISecuenciaService secuencia,
         Services.EmpleadoServicio empleados)
     {
         _saludData = saludData;

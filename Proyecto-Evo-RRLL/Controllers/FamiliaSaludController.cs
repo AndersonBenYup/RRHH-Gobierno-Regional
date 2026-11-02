@@ -1,5 +1,5 @@
 using Capa_Logica;
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +30,7 @@ public class FamiliaSaludController : Controller
     private readonly DiscapacidadLogica _discapacidadData;
     private readonly FamiliarDetalleLogica _familiarDetalleData;
     private readonly VinculoAseguradoLogica _vinculoData;
-    private readonly SecuenciaService _secuencia;
+    private readonly ISecuenciaService _secuencia;
     private readonly Services.EmpleadoServicio _empleados;
 
     public FamiliaSaludController(
@@ -53,7 +53,7 @@ public class FamiliaSaludController : Controller
         DiscapacidadLogica discapacidadData,
         FamiliarDetalleLogica familiarDetalleData,
         VinculoAseguradoLogica vinculoData,
-        SecuenciaService secuencia,
+        ISecuenciaService secuencia,
         Services.EmpleadoServicio empleados)
     {
         _empleadoData = empleadoData;
