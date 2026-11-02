@@ -1,14 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class DepartamentoLogica
+public class DepartamentoLogica : LogicaBase<Departamento>
 {
-    private readonly DepartamentoData _data;
+    public DepartamentoLogica(IRepositorio<Departamento> repositorio) : base(repositorio) { }
 
-    public DepartamentoLogica(DepartamentoData data) => _data = data;
-
-    public async Task<List<Departamento>> Listar() => await _data.Listar();
-    public async Task<Departamento?> Obtener(string CodDepartamentoParam) => await _data.Obtener(CodDepartamentoParam);
+    public Task<Departamento?> Obtener(string CodDepartamentoParam) => Repositorio.Obtener(CodDepartamentoParam);
 }

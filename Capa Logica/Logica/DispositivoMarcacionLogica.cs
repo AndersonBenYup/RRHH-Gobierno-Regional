@@ -1,17 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class DispositivoMarcacionLogica
+public class DispositivoMarcacionLogica : LogicaBase<DispositivoMarcacion>
 {
-    private readonly DispositivoMarcacionData _data;
+    public DispositivoMarcacionLogica(IRepositorio<DispositivoMarcacion> repositorio) : base(repositorio) { }
 
-    public DispositivoMarcacionLogica(DispositivoMarcacionData data) => _data = data;
-
-    public async Task<List<DispositivoMarcacion>> Listar() => await _data.Listar();
-    public async Task<DispositivoMarcacion?> Obtener(string CodigoParam) => await _data.Obtener(CodigoParam);
-    public async Task Crear(DispositivoMarcacion registro) => await _data.Crear(registro);
-    public async Task Actualizar(DispositivoMarcacion registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(DispositivoMarcacion registro) => await _data.Eliminar(registro);
+    public Task<DispositivoMarcacion?> Obtener(string CodigoParam) => Repositorio.Obtener(CodigoParam);
 }

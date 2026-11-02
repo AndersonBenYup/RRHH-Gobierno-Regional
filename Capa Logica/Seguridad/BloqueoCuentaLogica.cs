@@ -1,4 +1,4 @@
-using Capa_Datos;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica.Seguridad;
 
@@ -11,10 +11,10 @@ public class BloqueoCuentaLogica
     private static readonly string[] AccionesReinicio =
         [ConstantesSeguridad.AccionLoginCorrecto, ConstantesSeguridad.AccionDesbloquear];
 
-    private readonly BitacoraData _bitacora;
+    private readonly IBitacoraRepositorio _bitacora;
     private readonly TimeProvider _reloj;
 
-    public BloqueoCuentaLogica(BitacoraData bitacora, TimeProvider reloj)
+    public BloqueoCuentaLogica(IBitacoraRepositorio bitacora, TimeProvider reloj)
     {
         _bitacora = bitacora;
         _reloj = reloj;

@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class AFPLogica
+public class AFPLogica : LogicaBase<AFP>
 {
-    private readonly AFPData _data;
+    public AFPLogica(IRepositorio<AFP> repositorio) : base(repositorio) { }
 
-    public AFPLogica(AFPData data) => _data = data;
-
-    public async Task<List<AFP>> Listar() => await _data.Listar();
-    public async Task<AFP?> Obtener(int IdAFPParam) => await _data.Obtener(IdAFPParam);
-    public async Task Crear(AFP registro) => await _data.Crear(registro);
-    public async Task Actualizar(AFP registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(AFP registro) => await _data.Eliminar(registro);
+    public Task<AFP?> Obtener(int IdAFPParam) => Repositorio.Obtener(IdAFPParam);
 }
-

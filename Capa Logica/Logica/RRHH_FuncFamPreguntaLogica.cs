@@ -1,14 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class RRHH_FuncFamPreguntaLogica
+public class RRHH_FuncFamPreguntaLogica : LogicaBase<RRHH_FuncFamPregunta>
 {
-    private readonly RRHH_FuncFamPreguntaData _data;
+    public RRHH_FuncFamPreguntaLogica(IRepositorio<RRHH_FuncFamPregunta> repositorio) : base(repositorio) { }
 
-    public RRHH_FuncFamPreguntaLogica(RRHH_FuncFamPreguntaData data) => _data = data;
-
-    public async Task<List<RRHH_FuncFamPregunta>> Listar() => await _data.Listar();
-    public async Task<RRHH_FuncFamPregunta?> Obtener(byte IdPreguntaParam) => await _data.Obtener(IdPreguntaParam);
+    public Task<RRHH_FuncFamPregunta?> Obtener(byte IdPreguntaParam) => Repositorio.Obtener(IdPreguntaParam);
 }

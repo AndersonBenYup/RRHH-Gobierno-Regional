@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class Usuario_RolLogica
+public class Usuario_RolLogica : LogicaBase<Usuario_Rol>
 {
-    private readonly Usuario_RolData _data;
+    public Usuario_RolLogica(IRepositorio<Usuario_Rol> repositorio) : base(repositorio) { }
 
-    public Usuario_RolLogica(Usuario_RolData data) => _data = data;
-
-    public async Task<List<Usuario_Rol>> Listar() => await _data.Listar();
-    public async Task<Usuario_Rol?> Obtener(int IdUsuarioParam, int IdRolParam) => await _data.Obtener(IdUsuarioParam, IdRolParam);
-    public async Task Crear(Usuario_Rol registro) => await _data.Crear(registro);
-    public async Task Actualizar(Usuario_Rol registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(Usuario_Rol registro) => await _data.Eliminar(registro);
+    public Task<Usuario_Rol?> Obtener(int IdUsuarioParam, int IdRolParam) => Repositorio.Obtener(IdUsuarioParam, IdRolParam);
 }
-

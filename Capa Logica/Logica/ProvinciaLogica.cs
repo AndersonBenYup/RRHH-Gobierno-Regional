@@ -1,14 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class ProvinciaLogica
+public class ProvinciaLogica : LogicaBase<Provincia>
 {
-    private readonly ProvinciaData _data;
+    public ProvinciaLogica(IRepositorio<Provincia> repositorio) : base(repositorio) { }
 
-    public ProvinciaLogica(ProvinciaData data) => _data = data;
-
-    public async Task<List<Provincia>> Listar() => await _data.Listar();
-    public async Task<Provincia?> Obtener(string CodDepartamentoParam, string CodProvinciaParam) => await _data.Obtener(CodDepartamentoParam, CodProvinciaParam);
+    public Task<Provincia?> Obtener(string CodDepartamentoParam, string CodProvinciaParam) => Repositorio.Obtener(CodDepartamentoParam, CodProvinciaParam);
 }
