@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class TipoInstitucionLogica
+public class TipoInstitucionLogica : LogicaBase<TipoInstitucion>
 {
-    private readonly TipoInstitucionData _data;
+    public TipoInstitucionLogica(IRepositorio<TipoInstitucion> repositorio) : base(repositorio) { }
 
-    public TipoInstitucionLogica(TipoInstitucionData data) => _data = data;
-
-    public async Task<List<TipoInstitucion>> Listar() => await _data.Listar();
-    public async Task<TipoInstitucion?> Obtener(int IdTipoInstitucionParam) => await _data.Obtener(IdTipoInstitucionParam);
-    public async Task Crear(TipoInstitucion registro) => await _data.Crear(registro);
-    public async Task Actualizar(TipoInstitucion registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(TipoInstitucion registro) => await _data.Eliminar(registro);
+    public Task<TipoInstitucion?> Obtener(int IdTipoInstitucionParam) => Repositorio.Obtener(IdTipoInstitucionParam);
 }
-

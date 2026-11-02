@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class SistemaOpcionLogica
+public class SistemaOpcionLogica : LogicaBase<SistemaOpcion>
 {
-    private readonly SistemaOpcionData _data;
+    public SistemaOpcionLogica(IRepositorio<SistemaOpcion> repositorio) : base(repositorio) { }
 
-    public SistemaOpcionLogica(SistemaOpcionData data) => _data = data;
-
-    public async Task<List<SistemaOpcion>> Listar() => await _data.Listar();
-    public async Task<SistemaOpcion?> Obtener(string IdSistemaOpcionParam) => await _data.Obtener(IdSistemaOpcionParam);
-    public async Task Crear(SistemaOpcion registro) => await _data.Crear(registro);
-    public async Task Actualizar(SistemaOpcion registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(SistemaOpcion registro) => await _data.Eliminar(registro);
+    public Task<SistemaOpcion?> Obtener(string IdSistemaOpcionParam) => Repositorio.Obtener(IdSistemaOpcionParam);
 }
-

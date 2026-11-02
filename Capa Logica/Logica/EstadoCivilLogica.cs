@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class EstadoCivilLogica
+public class EstadoCivilLogica : LogicaBase<EstadoCivil>
 {
-    private readonly EstadoCivilData _data;
+    public EstadoCivilLogica(IRepositorio<EstadoCivil> repositorio) : base(repositorio) { }
 
-    public EstadoCivilLogica(EstadoCivilData data) => _data = data;
-
-    public async Task<List<EstadoCivil>> Listar() => await _data.Listar();
-    public async Task<EstadoCivil?> Obtener(int IdEstadoCivilParam) => await _data.Obtener(IdEstadoCivilParam);
-    public async Task Crear(EstadoCivil registro) => await _data.Crear(registro);
-    public async Task Actualizar(EstadoCivil registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(EstadoCivil registro) => await _data.Eliminar(registro);
+    public Task<EstadoCivil?> Obtener(int IdEstadoCivilParam) => Repositorio.Obtener(IdEstadoCivilParam);
 }
-

@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class ConservacionVivLogica
+public class ConservacionVivLogica : LogicaBase<ConservacionViv>
 {
-    private readonly ConservacionVivData _data;
+    public ConservacionVivLogica(IRepositorio<ConservacionViv> repositorio) : base(repositorio) { }
 
-    public ConservacionVivLogica(ConservacionVivData data) => _data = data;
-
-    public async Task<List<ConservacionViv>> Listar() => await _data.Listar();
-    public async Task<ConservacionViv?> Obtener(int IdConservacionParam) => await _data.Obtener(IdConservacionParam);
-    public async Task Crear(ConservacionViv registro) => await _data.Crear(registro);
-    public async Task Actualizar(ConservacionViv registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(ConservacionViv registro) => await _data.Eliminar(registro);
+    public Task<ConservacionViv?> Obtener(int IdConservacionParam) => Repositorio.Obtener(IdConservacionParam);
 }
-

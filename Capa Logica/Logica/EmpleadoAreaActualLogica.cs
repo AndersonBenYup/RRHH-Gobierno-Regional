@@ -1,14 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class EmpleadoAreaActualLogica
+public class EmpleadoAreaActualLogica : LogicaBase<EmpleadoAreaActual>
 {
-    private readonly EmpleadoAreaActualData _data;
+    public EmpleadoAreaActualLogica(IRepositorio<EmpleadoAreaActual> repositorio) : base(repositorio) { }
 
-    public EmpleadoAreaActualLogica(EmpleadoAreaActualData data) => _data = data;
-
-    public async Task<List<EmpleadoAreaActual>> Listar() => await _data.Listar();
-    public async Task<EmpleadoAreaActual?> Obtener(int IdEmpleadoParam) => await _data.Obtener(IdEmpleadoParam);
+    public Task<EmpleadoAreaActual?> Obtener(int IdEmpleadoParam) => Repositorio.Obtener(IdEmpleadoParam);
 }

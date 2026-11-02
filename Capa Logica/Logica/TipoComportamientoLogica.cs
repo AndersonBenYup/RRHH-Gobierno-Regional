@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class TipoComportamientoLogica
+public class TipoComportamientoLogica : LogicaBase<TipoComportamiento>
 {
-    private readonly TipoComportamientoData _data;
+    public TipoComportamientoLogica(IRepositorio<TipoComportamiento> repositorio) : base(repositorio) { }
 
-    public TipoComportamientoLogica(TipoComportamientoData data) => _data = data;
-
-    public async Task<List<TipoComportamiento>> Listar() => await _data.Listar();
-    public async Task<TipoComportamiento?> Obtener(int idTipoComportamientoParam) => await _data.Obtener(idTipoComportamientoParam);
-    public async Task Crear(TipoComportamiento registro) => await _data.Crear(registro);
-    public async Task Actualizar(TipoComportamiento registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(TipoComportamiento registro) => await _data.Eliminar(registro);
+    public Task<TipoComportamiento?> Obtener(int idTipoComportamientoParam) => Repositorio.Obtener(idTipoComportamientoParam);
 }
-

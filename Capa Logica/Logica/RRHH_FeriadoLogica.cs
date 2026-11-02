@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class RRHH_FeriadoLogica
+public class RRHH_FeriadoLogica : LogicaBase<RRHH_Feriado>
 {
-    private readonly RRHH_FeriadoData _data;
+    public RRHH_FeriadoLogica(IRepositorio<RRHH_Feriado> repositorio) : base(repositorio) { }
 
-    public RRHH_FeriadoLogica(RRHH_FeriadoData data) => _data = data;
-
-    public async Task<List<RRHH_Feriado>> Listar() => await _data.Listar();
-    public async Task<RRHH_Feriado?> Obtener(int idFeriadoParam) => await _data.Obtener(idFeriadoParam);
-    public async Task Crear(RRHH_Feriado registro) => await _data.Crear(registro);
-    public async Task Actualizar(RRHH_Feriado registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(RRHH_Feriado registro) => await _data.Eliminar(registro);
+    public Task<RRHH_Feriado?> Obtener(int idFeriadoParam) => Repositorio.Obtener(idFeriadoParam);
 }
-

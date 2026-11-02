@@ -1,14 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class DistritoLogica
+public class DistritoLogica : LogicaBase<Distrito>
 {
-    private readonly DistritoData _data;
+    public DistritoLogica(IRepositorio<Distrito> repositorio) : base(repositorio) { }
 
-    public DistritoLogica(DistritoData data) => _data = data;
-
-    public async Task<List<Distrito>> Listar() => await _data.Listar();
-    public async Task<Distrito?> Obtener(string IdUbigeoParam) => await _data.Obtener(IdUbigeoParam);
+    public Task<Distrito?> Obtener(string IdUbigeoParam) => Repositorio.Obtener(IdUbigeoParam);
 }

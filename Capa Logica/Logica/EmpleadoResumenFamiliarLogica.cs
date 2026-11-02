@@ -1,14 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class EmpleadoResumenFamiliarLogica
+public class EmpleadoResumenFamiliarLogica : LogicaBase<EmpleadoResumenFamiliar>
 {
-    private readonly EmpleadoResumenFamiliarData _data;
+    public EmpleadoResumenFamiliarLogica(IRepositorio<EmpleadoResumenFamiliar> repositorio) : base(repositorio) { }
 
-    public EmpleadoResumenFamiliarLogica(EmpleadoResumenFamiliarData data) => _data = data;
-
-    public async Task<List<EmpleadoResumenFamiliar>> Listar() => await _data.Listar();
-    public async Task<EmpleadoResumenFamiliar?> Obtener(int IdEmpleadoParam) => await _data.Obtener(IdEmpleadoParam);
+    public Task<EmpleadoResumenFamiliar?> Obtener(int IdEmpleadoParam) => Repositorio.Obtener(IdEmpleadoParam);
 }

@@ -1,18 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class MaterialVivLogica
+public class MaterialVivLogica : LogicaBase<MaterialViv>
 {
-    private readonly MaterialVivData _data;
+    public MaterialVivLogica(IRepositorio<MaterialViv> repositorio) : base(repositorio) { }
 
-    public MaterialVivLogica(MaterialVivData data) => _data = data;
-
-    public async Task<List<MaterialViv>> Listar() => await _data.Listar();
-    public async Task<MaterialViv?> Obtener(int IdMaterialParam) => await _data.Obtener(IdMaterialParam);
-    public async Task Crear(MaterialViv registro) => await _data.Crear(registro);
-    public async Task Actualizar(MaterialViv registro) => await _data.Actualizar(registro);
-    public async Task Eliminar(MaterialViv registro) => await _data.Eliminar(registro);
+    public Task<MaterialViv?> Obtener(int IdMaterialParam) => Repositorio.Obtener(IdMaterialParam);
 }
-

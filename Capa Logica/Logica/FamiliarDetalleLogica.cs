@@ -1,14 +1,11 @@
-﻿using Capa_Entidades;
-using Capa_Datos;
+using Capa_Entidades;
+using Capa_Entidades.Contratos;
 
 namespace Capa_Logica;
 
-public class FamiliarDetalleLogica
+public class FamiliarDetalleLogica : LogicaBase<FamiliarDetalle>
 {
-    private readonly FamiliarDetalleData _data;
+    public FamiliarDetalleLogica(IRepositorio<FamiliarDetalle> repositorio) : base(repositorio) { }
 
-    public FamiliarDetalleLogica(FamiliarDetalleData data) => _data = data;
-
-    public async Task<List<FamiliarDetalle>> Listar() => await _data.Listar();
-    public async Task<FamiliarDetalle?> Obtener(int IdEmpleadoParam, int IdPersonaParam) => await _data.Obtener(IdEmpleadoParam, IdPersonaParam);
+    public Task<FamiliarDetalle?> Obtener(int IdEmpleadoParam, int IdPersonaParam) => Repositorio.Obtener(IdEmpleadoParam, IdPersonaParam);
 }
