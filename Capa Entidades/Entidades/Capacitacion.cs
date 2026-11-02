@@ -8,6 +8,7 @@ namespace Capa_Entidades
     public class Capacitacion
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int IdCapacitacion { get; set; }
     [Required(ErrorMessage = Mensajes.Obligatorio)]
     [Range(1, int.MaxValue, ErrorMessage = Mensajes.SeleccioneEmpleado)]

@@ -9,8 +9,10 @@ namespace Capa_Entidades
     {
     [Key]
     [Range(1, int.MaxValue, ErrorMessage = Mensajes.SeleccioneEmpleado)]
+    [Required(ErrorMessage = Mensajes.SeleccioneEmpleado)]
     public int idEmpleado { get; set; }
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int N { get; set; }
     [Required(ErrorMessage = Mensajes.Obligatorio)]
     public DateOnly? FechaInicio { get; set; }

@@ -7,7 +7,11 @@ namespace Proyecto_Evo_RRLL.Models.ViewModels;
 public class FamiliarFicha
 {
     // Familiar
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = Capa_Entidades.Validacion.Mensajes.SeleccioneEmpleado)]
+    [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue, ErrorMessage = Capa_Entidades.Validacion.Mensajes.SeleccioneEmpleado)]
     public int IdEmpleado { get; set; }
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Seleccione la persona.")]
+    [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue, ErrorMessage = "Seleccione la persona.")]
     public int IdPersona { get; set; }
     public int? IdTipoFam { get; set; }
     public bool? ViveCasa { get; set; }

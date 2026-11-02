@@ -1,3 +1,4 @@
+using Capa_Entidades.Validacion;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,7 @@ namespace Capa_Entidades
     public class ResponsableXUO
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int IdResponsable { get; set; }
     public int? Year { get; set; }
     public int? idAreaOrganiz { get; set; }

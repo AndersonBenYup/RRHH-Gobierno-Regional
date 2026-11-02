@@ -9,11 +9,14 @@ namespace Capa_Entidades
     {
     [Key]
     [Range(1, int.MaxValue, ErrorMessage = "Seleccione el tipo de estudio.")]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int IdTipoEstudios { get; set; }
     [Key]
     [Range(1, int.MaxValue, ErrorMessage = Mensajes.SeleccioneEmpleado)]
+    [Required(ErrorMessage = Mensajes.SeleccioneEmpleado)]
     public int IdEmpleado { get; set; }
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int Correlativo { get; set; }
     [StringLength(150, ErrorMessage = "Máximo {1} caracteres.")]
     [Required(ErrorMessage = Mensajes.Obligatorio)]

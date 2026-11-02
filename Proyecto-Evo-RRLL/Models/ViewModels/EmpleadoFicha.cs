@@ -29,7 +29,9 @@ public class EmpleadoFicha
     public int? IdViveCon { get; set; }
 
     // Area vigente (Empleado_Area / vw_EmpleadoAreaActual)
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = Capa_Entidades.Validacion.Mensajes.Obligatorio)]
     public int Year { get; set; }
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Seleccione el área.")]
     public int idAreaOrganiz { get; set; }
 
     // Persona

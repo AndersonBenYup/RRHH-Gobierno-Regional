@@ -1,3 +1,4 @@
+using Capa_Entidades.Validacion;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,8 +8,10 @@ namespace Capa_Entidades
     public class Asistencia
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public DateTime Fecha { get; set; }
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int IdEmpleado { get; set; }
     public TimeOnly? Hor_Ent { get; set; }
     public TimeOnly? Hor_Sal { get; set; }

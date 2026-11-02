@@ -1,3 +1,4 @@
+using Capa_Entidades.Validacion;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,8 +8,10 @@ namespace Capa_Entidades
     public class RRHH_Asegurado
     {
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int idEmpleado { get; set; }
     [Key]
+    [Required(ErrorMessage = Mensajes.Obligatorio)]
     public int NroBeneficiario { get; set; }
     public int? idPersona { get; set; }
     public int? IdVinculoAsegurado { get; set; }
