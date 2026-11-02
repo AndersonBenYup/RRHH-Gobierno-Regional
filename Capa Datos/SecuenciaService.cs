@@ -1,10 +1,11 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Capa_Entidades.Contratos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Capa_Datos;
 
-public class SecuenciaService
+public class SecuenciaService : ISecuenciaService
 {
     private readonly EvoRRLDbContext _contexto;
 
