@@ -1,54 +1,66 @@
 # Cambios en la arquitectura
 
-Qué se cambió, por qué y para qué sirve.
+Qué hay en el código hoy (repositorio de despliegue en Azure), por qué y en qué solicitud de cambio se hizo.
+Este documento reemplaza la versión heredada del repositorio anterior, que mencionaba piezas que aquí no
+existían (SC-010: "alinear la documentación con el código").
 
-## Capas e interfaces (IoC / DIP)
+## Capas e interfaces (DIP / IoC) — SC-006
 
-- **Se crearon las interfaces** `IRepositorio<T>`, `IUnidadDeTrabajo` y otras en `Capa Entidades/Contratos`. Las clases de `Capa Datos` (`PermisoData`, `UsuarioData`…) las implementan y las de `Capa Logica` solo reciben la interfaz. Así, cambiar de base de datos solo afecta a `Capa Datos`.
-- **Se creó `ConfiguracionCapaDatos`**, el único lugar donde la aplicación conoce la base de datos (**IoC**).
-- **Se crearon las pruebas `ArquitecturaTests`**, que fallan si una capa vuelve a depender de la base de datos.
+```
+Proyecto-Evo-RRLL (web) ──► Capa Logica ──► Capa Entidades (entidades + contratos)
+          │                                        ▲
+          └──────────► Capa Datos (EF Core) ───────┘
+```
 
-## Código repetido (DRY)
+- **Contratos** en `Capa Entidades/Contratos`: `IRepositorio<T>` y los específicos `IPermisoRepositorio`,
+  `IPersonaRepositorio`, `IUsuarioRepositorio`, `IAsistenciaRepositorio`, `IBitacoraRepositorio`,
+  `ISecuenciaService` e `ICatalogoRepositorio`.
+- **`RepositorioBase<T>`** (`Capa Datos`) implementa el CRUD una sola vez. Reemplazó a las 80 clases `XxxData`
+  que repetían el mismo código. Solo hay repositorios propios donde hay consultas específicas (`Capa Datos/Repositorios`).
+- **`ConfiguracionCapaDatos.AgregarCapaDatos()`** es el único lugar que conoce EF Core y SQL Server.
+  Cambiar de base de datos solo toca `Capa Datos`.
+- **`LogicaBase<T>`** (`Capa Logica`) recibe `IRepositorio<T>`. `Capa Logica.csproj` **no referencia** a `Capa Datos`.
+- **`ConfiguracionCapaLogica.AgregarCapaLogica()`** registra todas las clases `*Logica`.
+  `Program.cs` pasó de ~160 `AddScoped` a dos líneas.
+- **`ArquitecturaTests`** falla si Entidades o Lógica dependen de Datos o de EF, si un controller usa `Capa_Datos`
+  o si alguna clase no se puede crear desde el contenedor.
 
-- **Se creó la clase base `RepositorioBase<T>`.** Las 77 clases `*Data` repetían el mismo CRUD; ahora heredan de ella.
-- **Se creó la clase base `LogicaBase<T>`**, por el mismo motivo, para las clases `*Logica`.
-- **Se creó `PersonaExtensiones.NombreCompleto()`.** El nombre completo se armaba a mano en 10 lugares; ahora se arma en uno solo.
-- **El registro de clases en `Program.cs` pasó a ser automático:** 154 líneas manuales menos.
+## Validaciones — SC-008 (retoma SC-001)
 
-## Una responsabilidad por clase (SRP)
+- Atributos reutilizables en `Capa Entidades/Validacion`: `[Dni]` (8 dígitos) y `[FechaNoAnteriorA]`.
+- `StringLength` en las entidades con el largo real de cada columna de `RRHH_Normalizado`; `Required`/`Range`
+  en los campos de los formularios. `EvoRRLDbContext` mantiene anulables las columnas que lo son en la BD.
+- Reglas de negocio puras en `Capa Logica/Reglas` (`ReglasPermiso`, `ReglasPersona`), expuestas como
+  `PermisoLogica.Validar` y `PersonaLogica.Validar`.
+- `ModelState.IsValid` en todos los POST de alta y edición. Los mensajes de las reglas se pasan con
+  `ModelStateExtensiones.AgregarErrores`.
+- En el navegador: `asp-validation-for`, jquery.validate en español (`wwwroot/js/validacion-es.js`) y rangos de
+  fechas y horas en `site.js`. El servidor repite cada regla (funciona con JavaScript desactivado).
 
-- **Se creó la clase `Numeracion`.** El cálculo "máximo + 1" para generar IDs estaba copiado en 27 lugares de 14 controllers; ahora vive en un solo lugar de `Capa Datos`.
-- **Las reglas de negocio pasaron de los controllers a la lógica:** `EmpleadoLogica.RegistrarConPersona`, `FichaSocialLogica`, `CatalogoLogica`. El controller solo recibe la petición y muestra el resultado.
+## Seguridad — SC-009 (completa SC-002)
 
-## Abierto a la extensión (OCP)
+- La clave del admin solo viene de la configuración (`Seguridad:AdminClave`).
+- Bloqueo de cuenta con `ReglasBloqueo` y `BloqueoCuentaLogica`, usando los eventos de la bitácora (sin cambio de esquema).
+- `PoliticaClave`, cabeceras de seguridad y cookies endurecidas en `Program.cs`. Límites de peticiones por usuario y por IP.
 
-- **Se creó la interfaz `IExportadorTabla`**, implementada por `ExportadorCsv`. La usan `EmpleadoController` y `CatalogoController` para exportar. Para agregar Excel o PDF basta con crear una clase nueva, sin modificar las que ya existen.
+## Abierto a la extensión (OCP) — SC-003
 
-## Inversión de control (IoC)
+- `IExportadorTabla`, `ExportadorCsv` y `ExportadorTablas` en `Capa Logica/Exportacion`. Los usan Empleado,
+  Catálogo y Asistencia. Un formato nuevo (Excel, PDF) es otra clase registrada en `AgregarCapaLogica`.
 
-- **`EmpleadoServicio` ahora depende de `IEmpleadoData` e `IPersonaData`** y no de clases concretas. Se puede probar sin base de datos, con clases falsas.
+## Escalabilidad — SC-005 y SC-003
 
-## Números mágicos → constantes
+- Permisos: filtro y paginación en SQL Server (`OFFSET/FETCH`) con `_Paginador.cshtml` reutilizable.
+- Asistencia: el rango de fechas se filtra en la BD.
 
-- **Se crearon `EstadosEmpleado`** (`"A"`, `"I"`), **`ConstantesSeguridad`** (`"Administrador"`, `"0500000"`) y **`Paginacion`** (`25`). Antes esos valores estaban escritos a mano en varios archivos; ahora tienen un nombre claro y se cambian en un solo lugar (**SRP**, Clean Code).
+## Pruebas — SC-010
 
-## Clean Code
+- `Capa Logica.Tests` (xUnit): reglas de validación, bloqueo y política de claves, exportación, modelo de EF y
+  arquitectura. No necesita SQL Server.
+- El workflow de GitHub Actions ejecuta `dotnet test` antes de publicar. Si una prueba falla, no se despliega a Azure.
 
-- **Se eliminaron 26 dependencias** que se inyectaban en los controllers y nunca se usaban.
-- **Se renombraron los campos `_xxxData` a `_xxxLogica`**, porque el nombre no correspondía a su tipo.
+## Pendiente
 
-## Correcciones
-
-- **Script de BD:** se eliminó una FK duplicada y se agregó una FK que faltaba.
-- **Admin inicial:** se creaba con un sistema inexistente (`"GRLL"`) y perdía sus permisos al iniciar sesión.
-- **Formularios:** los de Permiso, Familiar y Periodo laboral daban error 500.
-- **Panel de inicio:** "Feriados del mes" siempre mostraba 0.
-- **Ayuda:** la página mostraba la contraseña del administrador.
-
-## Pruebas y configuración
-
-- **Se creó el proyecto `Capa Logica.Tests`** (xUnit): 41 pruebas que no necesitan SQL Server.
-- **Se ordenó la configuración:**
-  - `publish_test/` salió del repositorio.
-  - La clave del admin salió de `appsettings.json`.
-  - Los estilos ahora usan Tailwind.
+- Permisos por opción (`Rol_Acceso`).
+- Caché de catálogos y health checks.
+- Paginación en la BD para el resto de listados grandes (marcaciones, registro diario).
