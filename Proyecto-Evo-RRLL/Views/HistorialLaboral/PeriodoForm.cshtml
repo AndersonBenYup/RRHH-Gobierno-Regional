@@ -30,22 +30,27 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">N° resolución de ingreso</label>
                     <input asp-for="NumResoIngreInstitu" class="form-control" />
+                    <span asp-validation-for="NumResoIngreInstitu" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha de ingreso</label>
                     <input asp-for="FechaIngreso" type="date" class="form-control" />
+                    <span asp-validation-for="FechaIngreso" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha de salida</label>
-                    <input asp-for="FechaSalida" type="date" class="form-control" />
+                    <input asp-for="FechaSalida" data-fecha-desde="FechaIngreso" type="date" class="form-control" />
+                    <span asp-validation-for="FechaSalida" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha resolución de ingreso</label>
                     <input asp-for="FechaResoIngreInstitu" type="date" class="form-control" />
+                    <span asp-validation-for="FechaResoIngreInstitu" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <div class="form-check form-switch mt-4">
@@ -56,6 +61,7 @@
                 <div class="col-12">
                     <label class="form-label">Observaciones</label>
                     <textarea asp-for="Obs" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Obs" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

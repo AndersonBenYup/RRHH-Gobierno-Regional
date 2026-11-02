@@ -23,7 +23,7 @@
             }
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">Empleado *</label>
+                    <label class="form-label">Empleado <span class="text-danger">*</span></label>
                     <select asp-for="IdEmpleado" class="form-select" required>
                         <option value="">(seleccionar)</option>
                         @foreach (var e in empleados)
@@ -31,48 +31,58 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Motivo</label>
-                    <select asp-for="idMotivo" class="form-select">
-                        <option value="">(sin asignar)</option>
+                    <label class="form-label">Motivo <span class="text-danger">*</span></label>
+                    <select asp-for="idMotivo" class="form-select" required>
+                        <option value="">(seleccionar)</option>
                         @foreach (var m in motivos)
                         {
                             <option value="@m.idMotivo">@m.Descrip_Motivo</option>
                         }
                     </select>
+                    <span asp-validation-for="idMotivo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Fecha inicio</label>
-                    <input asp-for="FechaInicio" type="date" class="form-control" />
+                    <label class="form-label">Fecha inicio <span class="text-danger">*</span></label>
+                    <input asp-for="FechaInicio" type="date" class="form-control" required />
+                    <span asp-validation-for="FechaInicio" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Fecha fin</label>
-                    <input asp-for="FechaFin" type="date" class="form-control" />
+                    <input asp-for="FechaFin" type="date" class="form-control" data-fecha-desde="FechaInicio" />
+                    <span asp-validation-for="FechaFin" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Hora salida</label>
                     <input asp-for="Hora_Sal" type="time" class="form-control" />
+                    <span asp-validation-for="Hora_Sal" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Hora retorno</label>
-                    <input asp-for="Hora_Ret" type="time" class="form-control" />
+                    <input asp-for="Hora_Ret" type="time" class="form-control" data-hora-desde="Hora_Sal" />
+                    <span asp-validation-for="Hora_Ret" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Lugar</label>
                     <input asp-for="Lugar" class="form-control" />
+                    <span asp-validation-for="Lugar" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Referencia</label>
                     <input asp-for="Referencia" class="form-control" />
+                    <span asp-validation-for="Referencia" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Autorización JH</label>
                     <input asp-for="Autorizacion" class="form-control" placeholder="Nombre..." />
+                    <span asp-validation-for="Autorizacion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Autorización RRHH</label>
                     <input asp-for="AutorizacionRRHH" class="form-control" placeholder="Nombre..." />
+                    <span asp-validation-for="AutorizacionRRHH" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <div class="form-check form-switch mt-4">
@@ -95,6 +105,7 @@
                 <div class="col-12">
                     <label class="form-label">Observaciones</label>
                     <textarea asp-for="Obs" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Obs" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

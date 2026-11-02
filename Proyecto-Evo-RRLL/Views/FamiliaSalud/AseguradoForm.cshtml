@@ -22,10 +22,12 @@
                 <div class="col-md-3">
                     <label class="form-label">N° beneficiario</label>
                     <input asp-for="NroBeneficiario" type="number" class="form-control" readonly="@(esEdicion ? "" : null)" />
+                    <span asp-validation-for="NroBeneficiario" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Id Persona *</label>
                     <input asp-for="idPersona" type="number" class="form-control" required />
+                    <span asp-validation-for="idPersona" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Vínculo familiar</label>
@@ -36,26 +38,32 @@
                             <option value="@v.IdVinculoAsegurado">@v.Descripcion</option>
                         }
                     </select>
+                    <span asp-validation-for="IdVinculoAsegurado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">N° partida</label>
                     <input asp-for="NroPartida" class="form-control" />
+                    <span asp-validation-for="NroPartida" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Inicio de vínculo</label>
                     <input asp-for="FechaInicioVinculo" type="date" class="form-control" />
+                    <span asp-validation-for="FechaInicioVinculo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Fin de vínculo</label>
                     <input asp-for="FechaFinVinculo" type="date" class="form-control" />
+                    <span asp-validation-for="FechaFinVinculo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Reevaluar</label>
                     <input asp-for="Reevaluar" class="form-control" />
+                    <span asp-validation-for="Reevaluar" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-9">
                     <label class="form-label">Otros motivos</label>
                     <input asp-for="OtrosMotivos" class="form-control" />
+                    <span asp-validation-for="OtrosMotivos" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>
@@ -64,3 +72,7 @@
         </div>
     </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

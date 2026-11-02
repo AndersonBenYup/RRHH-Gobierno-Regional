@@ -32,6 +32,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="idEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Familiar / beneficiario *</label>
@@ -42,6 +43,7 @@
                             <option value="@p.Id">@p.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="idPersona" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Vínculo familiar</label>
@@ -52,22 +54,27 @@
                             <option value="@v.IdVinculoAsegurado">@v.Descripcion</option>
                         }
                     </select>
+                    <span asp-validation-for="IdVinculoAsegurado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">N° partida</label>
                     <input asp-for="NroPartida" class="form-control" />
+                    <span asp-validation-for="NroPartida" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">N° resol. mayor incap.</label>
                     <input asp-for="NroResolMayorIndiscap" class="form-control" />
+                    <span asp-validation-for="NroResolMayorIndiscap" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Reevaluar</label>
                     <input asp-for="Reevaluar" class="form-control" />
+                    <span asp-validation-for="Reevaluar" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha inicio vínculo</label>
                     <input asp-for="FechaInicioVinculo" type="date" class="form-control" />
+                    <span asp-validation-for="FechaInicioVinculo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Motivo de baja</label>
@@ -78,18 +85,22 @@
                             <option value="@m.idMotivoBaja">@m.Descripcion</option>
                         }
                     </select>
+                    <span asp-validation-for="idMotivoBaja" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">N° partida defunción</label>
                     <input asp-for="NroPartidaDef" class="form-control" />
+                    <span asp-validation-for="NroPartidaDef" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Otros motivos</label>
                     <input asp-for="OtrosMotivos" class="form-control" />
+                    <span asp-validation-for="OtrosMotivos" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha fin vínculo</label>
                     <input asp-for="FechaFinVinculo" type="date" class="form-control" />
+                    <span asp-validation-for="FechaFinVinculo" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

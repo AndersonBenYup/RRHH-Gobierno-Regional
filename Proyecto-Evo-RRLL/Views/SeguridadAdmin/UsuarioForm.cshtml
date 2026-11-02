@@ -23,10 +23,12 @@
                 <div class="col-md-6">
                     <label class="form-label">Login *</label>
                     <input asp-for="Login" class="form-control" required placeholder="Ej. rperez" />
+                    <span asp-validation-for="Login" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Descripción</label>
                     <input asp-for="Descripcion" class="form-control" placeholder="Nombre o rol mostrado al iniciar sesión" />
+                    <span asp-validation-for="Descripcion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Clave @(esNuevo ? "*" : "(dejar vacío para no cambiar)")</label>
@@ -41,6 +43,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Estado</label>
@@ -48,6 +51,7 @@
                         <option value="true" selected="@(Model.Estado == true)">Activo</option>
                         <option value="false" selected="@(Model.Estado == false)">Inactivo</option>
                     </select>
+                    <span asp-validation-for="Estado" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

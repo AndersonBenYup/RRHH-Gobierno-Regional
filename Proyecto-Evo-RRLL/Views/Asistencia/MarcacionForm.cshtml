@@ -21,6 +21,7 @@
                     @if (esNuevo)
                     {
                         <input asp-for="Fecha" type="datetime-local" step="1" class="form-control" required />
+                        <span asp-validation-for="Fecha" class="text-danger small d-block"></span>
                     }
                     else
                     {
@@ -38,6 +39,7 @@
                                 <option value="@e.Id">@e.Nombre</option>
                             }
                         </select>
+                        <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                     }
                     else
                     {
@@ -48,6 +50,7 @@
                 <div class="col-md-2">
                     <label class="form-label">N° marcación</label>
                     <input asp-for="NroMarcacion" type="number" min="1" max="9" class="form-control" />
+                    <span asp-validation-for="NroMarcacion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Tipo</label>
@@ -57,6 +60,7 @@
                             <option value="@t.Codigo">@(t.Descripcion ?? t.Codigo)</option>
                         }
                     </select>
+                    <span asp-validation-for="TipoMarcacion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Dispositivo</label>
@@ -67,6 +71,7 @@
                             <option value="@d.Codigo">@(d.Descripcion ?? d.Codigo)</option>
                         }
                     </select>
+                    <span asp-validation-for="CodDispositivo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Horario</label>
@@ -77,6 +82,7 @@
                             <option value="@h.idHorario">@h.Descrip_Horario</option>
                         }
                     </select>
+                    <span asp-validation-for="idHorario" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

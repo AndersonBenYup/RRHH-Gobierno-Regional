@@ -23,22 +23,27 @@
                 <div class="col-md-6">
                     <label class="form-label">Nombre del curso *</label>
                     <input asp-for="NombreCurso" class="form-control" required />
+                    <span asp-validation-for="NombreCurso" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Institución organizadora</label>
                     <input asp-for="InstitucionOrganizadora" class="form-control" />
+                    <span asp-validation-for="InstitucionOrganizadora" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Fecha inicio</label>
                     <input asp-for="FechaInicio" type="date" class="form-control" />
+                    <span asp-validation-for="FechaInicio" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Fecha fin</label>
-                    <input asp-for="FechaFin" type="date" class="form-control" />
+                    <input asp-for="FechaFin" data-fecha-desde="FechaInicio" type="date" class="form-control" />
+                    <span asp-validation-for="FechaFin" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">N° horas</label>
                     <input asp-for="NumHoras" class="form-control" placeholder="Ej. 40" />
+                    <span asp-validation-for="NumHoras" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Empleado</label>
@@ -49,6 +54,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

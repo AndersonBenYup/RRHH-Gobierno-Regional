@@ -31,18 +31,22 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Institución</label>
                     <input asp-for="NomInstitucion" class="form-control" />
+                    <span asp-validation-for="NomInstitucion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Cargo</label>
                     <input asp-for="Cargo" class="form-control" />
+                    <span asp-validation-for="Cargo" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Unidad orgánica</label>
                     <input asp-for="UnidadOrganica" class="form-control" />
+                    <span asp-validation-for="UnidadOrganica" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Tipo de institución</label>
@@ -53,14 +57,17 @@
                             <option value="@t.IdTipoInstitucion">@t.DescripTipoInstitucion</option>
                         }
                     </select>
+                    <span asp-validation-for="IdTipoInstitucion" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha de ingreso</label>
                     <input asp-for="FechaIngreso" type="date" class="form-control" />
+                    <span asp-validation-for="FechaIngreso" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha de egreso</label>
-                    <input asp-for="FechaEgreso" type="date" class="form-control" />
+                    <input asp-for="FechaEgreso" data-fecha-desde="FechaIngreso" type="date" class="form-control" />
+                    <span asp-validation-for="FechaEgreso" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

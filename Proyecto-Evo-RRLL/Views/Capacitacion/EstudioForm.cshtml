@@ -33,22 +33,27 @@
                             <option value="@t.IdTipoEstudios">@t.DescripTipoEst</option>
                         }
                     </select>
+                    <span asp-validation-for="IdTipoEstudios" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-8">
                     <label class="form-label">Centro de estudios</label>
                     <input asp-for="CentroEstudios" class="form-control" />
+                    <span asp-validation-for="CentroEstudios" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Especialidad</label>
                     <input asp-for="Especialidad" class="form-control" />
+                    <span asp-validation-for="Especialidad" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Año inicio</label>
                     <input asp-for="FechaInicio" type="date" class="form-control" />
+                    <span asp-validation-for="FechaInicio" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Año fin</label>
-                    <input asp-for="FechaTermino" type="date" class="form-control" />
+                    <input asp-for="FechaTermino" data-fecha-desde="FechaInicio" type="date" class="form-control" />
+                    <span asp-validation-for="FechaTermino" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Estado del estudio</label>
@@ -59,6 +64,7 @@
                             <option value="@es.IdEstadoEstudio">@es.DescripEstadoEstudio</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEstadoEstudio" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Empleado</label>
@@ -68,6 +74,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

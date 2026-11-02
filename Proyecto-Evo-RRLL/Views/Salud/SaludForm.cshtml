@@ -30,6 +30,7 @@
                             <option value="@e.Id">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Acudir en caso de enfermedad</label>
@@ -40,6 +41,7 @@
                             <option value="@a.idAcudeEnferm">@a.AcudeEnfermDescrip</option>
                         }
                     </select>
+                    <span asp-validation-for="idAcudeEnferm" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Enfermedad crónica</label>
@@ -48,10 +50,12 @@
                         <option value="true" selected="@(Model.EnferCronica == true)">Sí</option>
                         <option value="false" selected="@(Model.EnferCronica == false)">No</option>
                     </select>
+                    <span asp-validation-for="EnferCronica" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-8">
                     <label class="form-label">Descripción de enfermedad</label>
                     <input asp-for="EnferCronicaDescrip" class="form-control" />
+                    <span asp-validation-for="EnferCronicaDescrip" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Discapacidad en familia</label>
@@ -60,10 +64,12 @@
                         <option value="true" selected="@(Model.FamDiscapacidad == true)">Sí</option>
                         <option value="false" selected="@(Model.FamDiscapacidad == false)">No</option>
                     </select>
+                    <span asp-validation-for="FamDiscapacidad" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-8">
                     <label class="form-label">Descripción de discapacidad</label>
                     <input asp-for="FamDiscapDescrip" class="form-control" />
+                    <span asp-validation-for="FamDiscapDescrip" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Alérgico</label>
@@ -72,10 +78,12 @@
                         <option value="true" selected="@(Model.Alergico == true)">Sí</option>
                         <option value="false" selected="@(Model.Alergico == false)">No</option>
                     </select>
+                    <span asp-validation-for="Alergico" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-8">
                     <label class="form-label">Descripción de alergia</label>
                     <input asp-for="AlergicoDescrip" class="form-control" />
+                    <span asp-validation-for="AlergicoDescrip" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>

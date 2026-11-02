@@ -34,10 +34,12 @@
                 <div class="col-md-2">
                     <label class="form-label">Abreviatura</label>
                     <input asp-for="Abrev" class="form-control" />
+                    <span asp-validation-for="Abrev" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Sigla</label>
                     <input asp-for="Sigla" class="form-control" />
+                    <span asp-validation-for="Sigla" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Depende de</label>
@@ -48,6 +50,7 @@
                             <option value="@a.idAreaOrganiz" selected="@(Model.idDependeDe == a.idAreaOrganiz)">@a.AreaOrganizacional</option>
                         }
                     </select>
+                    <span asp-validation-for="idDependeDe" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Jefe de unidad</label>
@@ -58,18 +61,22 @@
                             <option value="@e.Id" selected="@(Model.IdEmpleado == e.Id)">@e.Nombre</option>
                         }
                     </select>
+                    <span asp-validation-for="IdEmpleado" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Año al que depende</label>
                     <input asp-for="YearDe" type="number" class="form-control" />
+                    <span asp-validation-for="YearDe" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-12">
                     <label class="form-label">Misión</label>
                     <textarea asp-for="Mision" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Mision" class="text-danger small d-block"></span>
                 </div>
                 <div class="col-md-12">
                     <label class="form-label">Visión</label>
                     <textarea asp-for="Vision" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Vision" class="text-danger small d-block"></span>
                 </div>
             </div>
         </div>
