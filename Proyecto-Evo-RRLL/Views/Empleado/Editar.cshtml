@@ -14,7 +14,7 @@
 </div>
 
 <form asp-action="Editar" asp-route-id="@Model.IdEmpleado" method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors-wrap"></div>
     <input type="hidden" asp-for="IdEmpleado" />
 
     <div class="card mb-3">
