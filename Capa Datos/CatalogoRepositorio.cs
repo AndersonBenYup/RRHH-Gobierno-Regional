@@ -81,6 +81,7 @@ public class CatalogoRepositorio
         var tipo = ObtenerTipo(tabla);
         var entidad = Activator.CreateInstance(tipo)!;
         AplicarValores(tipo, entidad, datos, omitirAutonumerico: true);
+        ValidarEntidad(entidad);
         _contexto.Add(entidad);
         await _contexto.SaveChangesAsync();
     }
@@ -94,7 +95,25 @@ public class CatalogoRepositorio
         var actual = await ObtenerEntidadAsync(tipo, ConvertirClaves(tipo, ids))
             ?? throw new InvalidOperationException("Registro no encontrado");
         AplicarValores(tipo, actual, datos);
+        ValidarEntidad(actual);
         await _contexto.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// SC-008: aplica las DataAnnotations de la entidad (obligatorios y largos máximos) antes de guardar.
+    /// Lanza ValidationException con todos los errores, que el controller muestra al usuario.
+    /// </summary>
+    private static void ValidarEntidad(object entidad)
+    {
+        var resultados = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+        var contexto = new System.ComponentModel.DataAnnotations.ValidationContext(entidad);
+        if (System.ComponentModel.DataAnnotations.Validator.TryValidateObject(entidad, contexto, resultados, validateAllProperties: true))
+            return;
+
+        var mensajes = resultados.Select(r => r.MemberNames.Any()
+            ? $"{string.Join(", ", r.MemberNames)}: {r.ErrorMessage}"
+            : r.ErrorMessage);
+        throw new System.ComponentModel.DataAnnotations.ValidationException(string.Join(" ", mensajes));
     }
 
     public async Task Eliminar(string tabla, string[] ids)

@@ -100,6 +100,9 @@ public class ComportamientoController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Editar(Comportamiento modelo)
     {
+        if (!ModelState.IsValid)
+            return await FormularioAsync(modelo);
+
         var actual = await _comportamientoData.Obtener(modelo.idComportamiento);
         if (actual is null)
             return NotFound();
@@ -133,4 +136,13 @@ public class ComportamientoController : Controller
 
     private async Task<string?> NombreEmpleadoAsync(int idEmpleado)
         => await _empleados.NombreEmpleadoAsync(idEmpleado);
+
+    // SC-008: vuelve a mostrar el formulario con los errores de validación.
+    private async Task<IActionResult> FormularioAsync(Comportamiento modelo)
+    {
+        ViewBag.IdEmpleado = modelo.IdEmpleado;
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.Tipos = await _tipoData.Listar();
+        return View("Form", modelo);
+    }
 }
