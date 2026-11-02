@@ -11,6 +11,15 @@ public class PersonaData
 
     public async Task<List<Persona>> Listar() => await _contexto.Set<Persona>().ToListAsync();
 
+    /// <summary>SC-008: true si otra persona (distinta de <paramref name="excluirIdPersona"/>) usa ese documento.</summary>
+    public async Task<bool> ExisteDocumento(string numDoc, int? excluirIdPersona = null)
+    {
+        var numero = numDoc.Trim();
+        return await _contexto.Set<Persona>().AnyAsync(p =>
+            p.NumDocID != null && p.NumDocID.Trim() == numero
+            && (excluirIdPersona == null || p.IdPersona != excluirIdPersona));
+    }
+
     public async Task<Persona?> Obtener(int IdPersonaParam)
     {
         return await _contexto.Set<Persona>().FindAsync(IdPersonaParam);

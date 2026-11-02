@@ -11,6 +11,10 @@ public class PermisoData
 
     public async Task<List<Permiso>> Listar() => await _contexto.Set<Permiso>().ToListAsync();
 
+    /// <summary>SC-008: permisos de un empleado (para validar solapamientos sin traer toda la tabla).</summary>
+    public async Task<List<Permiso>> ListarPorEmpleado(int idEmpleado)
+        => await _contexto.Set<Permiso>().AsNoTracking().Where(p => p.IdEmpleado == idEmpleado).ToListAsync();
+
     public async Task<Permiso?> Obtener(int IdEmpleadoParam, int NPermisoParam)
     {
         return await _contexto.Set<Permiso>().FindAsync(IdEmpleadoParam, NPermisoParam);
