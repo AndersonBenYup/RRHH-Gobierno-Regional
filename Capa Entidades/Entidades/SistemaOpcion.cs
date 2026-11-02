@@ -7,7 +7,9 @@ namespace Capa_Entidades
     public class SistemaOpcion
     {
     [Key]
+    [StringLength(7, ErrorMessage = "Máximo {1} caracteres.")]
     public string? IdSistemaOpcion { get; set; }
+    [StringLength(150, ErrorMessage = "Máximo {1} caracteres.")]
     public string? Descripcion { get; set; }
     }
 }

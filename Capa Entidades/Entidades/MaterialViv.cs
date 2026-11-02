@@ -8,6 +8,7 @@ namespace Capa_Entidades
     {
     [Key]
     public int IdMaterial { get; set; }
+    [StringLength(12, ErrorMessage = "Máximo {1} caracteres.")]
     public string? DescripMaterial { get; set; }
     }
 }

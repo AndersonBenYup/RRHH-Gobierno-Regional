@@ -9,6 +9,7 @@ namespace Capa_Entidades
     [Key]
     public int IdRol { get; set; }
     [Key]
+    [StringLength(7, ErrorMessage = "Máximo {1} caracteres.")]
     public string? IdSistemaOpcion { get; set; }
     }
 }

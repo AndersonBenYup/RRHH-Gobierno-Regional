@@ -8,6 +8,7 @@ namespace Capa_Entidades
     {
     [Key]
     public int IdTipoSangre { get; set; }
+    [StringLength(5, ErrorMessage = "Máximo {1} caracteres.")]
     public string? DescripTS { get; set; }
     }
 }

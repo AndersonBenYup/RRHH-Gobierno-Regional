@@ -8,6 +8,7 @@ namespace Capa_Entidades
     {
     [Key]
     public int idTipoComportamiento { get; set; }
+    [StringLength(8, ErrorMessage = "Máximo {1} caracteres.")]
     public string? TipoCompDescrip { get; set; }
     }
 }
