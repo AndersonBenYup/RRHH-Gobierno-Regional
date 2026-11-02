@@ -40,10 +40,10 @@ Plantilla en GitHub: `.github/ISSUE_TEMPLATE/solicitud-de-cambio.md`.
 |---|---|---|---|---|---|
 | SC-001 | Correctivo | Validar fechas, horas y solapamiento al registrar permisos (`PermisoLogica` hoy no valida) | Permisos | Alta | Cerrada en SC-008 · `v1.1.0` |
 | SC-002 | Preventivo | Bloquear la cuenta tras intentos fallidos de inicio de sesión (`SeguridadController.Login` no los limita) | Seguridad | Alta | Cerrada en SC-009 · `v1.2.0` |
-| SC-003 | Perfectivo | Exportar el registro de asistencia a CSV reutilizando `ExportadorTablas` / `ExportadorCsv` | Asistencia | Media | En cola (Semana 3) |
+| SC-003 | Perfectivo | Exportar el registro de asistencia a CSV reutilizando `ExportadorTablas` / `ExportadorCsv` | Asistencia | Media | Cerrada · `v1.3.0` |
 | SC-004 | Adaptativo | Leer la cadena de conexión desde variable de entorno en producción (la clave del admin ya se lee de `Seguridad__AdminClave`) | Configuración | Alta | Cerrada |
-| SC-005 | Perfectivo | Filtrar y paginar permisos en la BD (`PermisoController.Index` trae toda la tabla y filtra en memoria) | Permisos | Baja | Semana 3 |
-| SC-006 | Perfectivo | Arquitectura en capas con contratos: cambiar de BD solo toca `Capa Datos` | Todas las capas | Media | Reabierta (Semana 3): hay capas, faltan interfaces |
+| SC-005 | Perfectivo | Filtrar y paginar permisos en la BD (`PermisoController.Index` trae toda la tabla y filtra en memoria) | Permisos | Baja | Cerrada · `v1.3.0` |
+| SC-006 | Perfectivo | Arquitectura en capas con contratos: cambiar de BD solo toca `Capa Datos` | Todas las capas | Media | Cerrada (reimplementada) · `v1.3.0` |
 | SC-007 | Perfectivo | Rediseño de la interfaz (login, inicio y layout) con Tailwind CSS | Vistas | Media | Cerrada con corrección: se hizo con Bootstrap + `site.css`, sin Tailwind |
 | SC-008 | Correctivo | Validar todos los formularios en frontend y backend: DataAnnotations, `ModelState` y reglas de negocio (retoma SC-001) | Todos los módulos | Alta | Cerrada · `v1.1.0` |
 | SC-009 | Preventivo | Endurecer la seguridad: clave fuera del repositorio, cabeceras HTTP, política de contraseñas y bloqueo de cuenta (completa SC-002) | Seguridad | Alta | Cerrada · `v1.2.0` |
@@ -68,6 +68,13 @@ Plantilla en GitHub: `.github/ISSUE_TEMPLATE/solicitud-de-cambio.md`.
 - Correcciones encontradas al probar: el límite global contaba los archivos estáticos (un usuario recibía 429 a las ~10 páginas), el límite de login era uno solo para todos los usuarios (ahora es por IP) y el rol `ADMINISTRADOR` de la BD no coincidía con `[Authorize(Roles = "Administrador")]`.
 - Pendiente (fuera del alcance): permisos por opción con `Rol_Acceso`.
 - Pruebas: `ReglasBloqueoTests` y `PoliticaClaveTests` (57 pruebas en verde en total).
+
+**Evidencia de cierre de SC-006, SC-005 y SC-003 (`v1.3.0`):**
+- SC-006: contratos `IRepositorio<T>` y específicos en `Capa Entidades/Contratos`; `RepositorioBase<T>` reemplaza las 80 clases `XxxData` duplicadas (−2.900 líneas); `LogicaBase<T>` y `Capa Logica.csproj` sin referencia a `Capa Datos`; `Program.cs` pasa de ~160 `AddScoped` a `AgregarCapaDatos()` + `AgregarCapaLogica()`. `ArquitecturaTests` impide volver a acoplar las capas.
+- SC-005: `IPermisoRepositorio.ListarPaginado` filtra y pagina en SQL Server (`OFFSET/FETCH`, 25 por página sobre 26.120 permisos); el siguiente `NPermiso` se calcula con `MAX` en la BD.
+- SC-003: `IExportadorTabla` / `ExportadorCsv` / `ExportadorTablas` en `Capa Logica/Exportacion`; `Asistencia/Exportar` con los filtros de la pantalla. La pantalla de asistencia de un mes pasó de más de 30 s a menos de 1 s (el rango se filtra en la BD).
+- Pruebas: 75 en verde (`ArquitecturaTests`, `ExportacionTests` y las anteriores).
+
 
 
 
