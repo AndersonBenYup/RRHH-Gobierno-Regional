@@ -12,7 +12,7 @@
 </div>
 
 <form asp-action="@(esNuevo ? "PeriodoNuevo" : "PeriodoEditar")" method="post">
-    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors-wrap"></div>
     <div class="card">
         <div class="card-body">
             @if (!esNuevo)
