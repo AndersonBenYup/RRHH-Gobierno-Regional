@@ -20,10 +20,26 @@ La aplicación trabaja sobre la base de datos normalizada **`RRHH_Normalizado`**
    sqlcmd -S . -E -C -i Scripts\bd-Normalizada\03-datos-RRHH_Normalizado.sql
    ```
 4. Revisar la cadena de conexión en `Proyecto-Evo-RRLL/appsettings.Development.json`.
-5. Abrir el proyecto en Visual Studio y presionar **F5**.
-6. Iniciar sesión con el usuario creado automáticamente al arrancar:
-   - **Usuario:** `admin`
-   - **Contraseña:** `Admin.2026` (solo en desarrollo)
+5. Definir la clave inicial del administrador **fuera del repositorio** (user-secrets), cumpliendo la política
+   de contraseñas (mínimo 8 caracteres, con al menos una letra y un número):
+   ```
+   cd Proyecto-Evo-RRLL
+   dotnet user-secrets set "Seguridad:AdminClave" "<tu-clave>"
+   ```
+6. Abrir el proyecto en Visual Studio y presionar **F5**.
+7. Iniciar sesión con el usuario `admin` (se crea en el primer arranque si no existe) y la clave del paso 5.
+
+## Seguridad (SC-009)
+
+- La clave inicial del administrador solo se lee de la configuración (`Seguridad:AdminClave`): user-secrets en local
+  y App setting `Seguridad__AdminClave` en Azure. No hay ninguna clave en el código ni en este README.
+- Bloqueo de cuenta: 5 intentos fallidos en 15 minutos bloquean la cuenta durante 15 minutos. Los intentos quedan en
+  la bitácora (`LoginFallido`, `CuentaBloqueada`) y el administrador puede desbloquearla en *Mantenimiento › Usuarios*.
+- Política de contraseñas al crear o cambiar una clave: mínimo 8 caracteres, con al menos una letra y un número.
+- Cabeceras HTTP: `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` y
+  `Permissions-Policy`. Cookies de sesión y antiforgery `HttpOnly`, `SameSite=Strict` y solo HTTPS en producción.
+- Límite de peticiones: 100 páginas por minuto por usuario (los archivos estáticos no cuentan) y 10 intentos de login
+  por minuto por IP.
 
 ## Conexión a la base de datos
 
