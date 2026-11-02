@@ -1,15 +1,15 @@
 using System.Globalization;
 using System.Reflection;
 using Capa_Entidades;
+using Capa_Entidades.Contratos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Capa_Datos;
 
 // EsAutonumerico: clave IDENTITY, la genera SQL Server al crear.
-public record CatalogoColumna(string Nombre, string Tipo, bool EsClave, bool EsArchivo, bool EsAutonumerico = false);
 
-public class CatalogoRepositorio
+public class CatalogoRepositorio : ICatalogoRepositorio
 {
     private static readonly string[] Editable =
     {
@@ -27,7 +27,9 @@ public class CatalogoRepositorio
 
     public CatalogoRepositorio(EvoRRLDbContext contexto) => _contexto = contexto;
 
-    public static bool EsEditable(string tabla) => Editable.Contains(tabla);
+    public bool EsEditable(string tabla) => EsTablaEditable(tabla);
+
+    private static bool EsTablaEditable(string tabla) => Editable.Contains(tabla);
 
     public static IEnumerable<string> CatalogoEditable() => Editable;
 
@@ -75,7 +77,7 @@ public class CatalogoRepositorio
 
     public async Task Crear(string tabla, IReadOnlyDictionary<string, string> datos)
     {
-        if (!EsEditable(tabla))
+        if (!EsTablaEditable(tabla))
             throw new InvalidOperationException($"El catálogo {tabla} no es editable.");
 
         var tipo = ObtenerTipo(tabla);
@@ -88,7 +90,7 @@ public class CatalogoRepositorio
 
     public async Task Actualizar(string tabla, string[] ids, IReadOnlyDictionary<string, string> datos)
     {
-        if (!EsEditable(tabla))
+        if (!EsTablaEditable(tabla))
             throw new InvalidOperationException($"El catálogo {tabla} no es editable.");
 
         var tipo = ObtenerTipo(tabla);
@@ -118,7 +120,7 @@ public class CatalogoRepositorio
 
     public async Task Eliminar(string tabla, string[] ids)
     {
-        if (!EsEditable(tabla))
+        if (!EsTablaEditable(tabla))
             throw new InvalidOperationException($"El catálogo {tabla} no es editable.");
 
         var tipo = ObtenerTipo(tabla);
