@@ -1,4 +1,4 @@
-namespace Proyecto_Evo_RRLL.Models.ViewModels;
+﻿namespace Proyecto_Evo_RRLL.Models.ViewModels;
 
 public class EmpleadoViewModel
 {
@@ -9,6 +9,9 @@ public class EmpleadoViewModel
     public int TotalPaginas { get; set; } = 1;
 
     public int Total { get; set; }
+
+    /// <summary>SC-005: paginador reutilizable (Views/Shared/_Paginador.cshtml).</summary>
+    public PaginadorModelo? Paginador { get; set; }
 
     public List<EmpleadoFila> Empleados { get; set; } = new();
 }
