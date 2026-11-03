@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Capa_Logica;
 
@@ -15,6 +16,9 @@ public static class ConfiguracionCapaLogica
                         && t.Name.EndsWith("Logica", StringComparison.Ordinal));
         foreach (var tipo in tipos)
             servicios.AddScoped(tipo);
+
+        // Valores por defecto de seguridad; Program.cs los reemplaza con los de la configuración (IOptions).
+        servicios.TryAddSingleton(new Seguridad.OpcionesSeguridad());
 
         // SC-003: exportadores (OCP). Un formato nuevo solo necesita otra línea aquí.
         servicios.AddSingleton<Exportacion.IExportadorTabla, Exportacion.ExportadorCsv>();
