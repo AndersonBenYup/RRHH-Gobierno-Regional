@@ -60,6 +60,10 @@
         </tbody>
     </table>
 </div>
+@if (ViewBag.Paginador is Proyecto_Evo_RRLL.Models.ViewModels.PaginadorModelo paginador)
+{
+    <partial name="_Paginador" model="paginador" />
+}
 
 <div class="d-flex gap-2 mt-3">
     <a asp-action="Estudios" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-journal-text me-1"></i>Estudios</a>

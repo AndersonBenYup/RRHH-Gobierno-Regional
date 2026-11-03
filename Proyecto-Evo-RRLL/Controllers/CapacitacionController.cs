@@ -44,17 +44,23 @@ public class CapacitacionController : Controller
     // ---------- Cursos de capacitación ----------
 
     [HttpGet]
-    public async Task<IActionResult> Index(int? idEmpleado, string? q)
+    public async Task<IActionResult> Index(int? idEmpleado, string? q, int pagina = 1, int? tamano = null)
     {
-        var cursos = (await _capacitacionData.Listar())
-            .Where(c => idEmpleado is null || c.IdEmpleado == idEmpleado)
-            .OrderByDescending(c => c.FechaInicio);
+        // SC-005: filtro y paginación en la BD (antes se enviaban las 2 177 capacitaciones a la vez).
+        var tamanoPagina = Capa_Logica.Paginacion.VentanaPaginas.NormalizarTamano(tamano, 25);
+        var resultado = await _capacitacionData.ListarPagina(
+            c => idEmpleado == null || c.IdEmpleado == idEmpleado,
+            c => c.OrderByDescending(x => x.FechaInicio).ThenByDescending(x => x.IdCapacitacion),
+            pagina, tamanoPagina);
+        var cursos = resultado.Registros;
+        ViewBag.Paginador = new Proyecto_Evo_RRLL.Models.ViewModels.PaginadorModelo(resultado.NumeroPagina, resultado.TotalPaginas, resultado.Total, nameof(Index),
+            new Dictionary<string, string?> { ["idEmpleado"] = idEmpleado?.ToString(), ["q"] = q }, tamanoPagina, "capacitaciones");
 
         ViewBag.IdEmpleado = idEmpleado;
         ViewBag.NombreEmpleado = idEmpleado is null ? null : await NombreEmpleadoAsync(idEmpleado.Value);
         ViewBag.Empleados = await EmpleadosAsync();
         ViewBag.Busqueda = q;
-        return View(cursos.ToList());
+        return View(cursos);
     }
 
     [HttpGet]

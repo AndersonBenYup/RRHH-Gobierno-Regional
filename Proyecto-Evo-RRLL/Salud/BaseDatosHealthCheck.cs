@@ -3,7 +3,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Proyecto_Evo_RRLL.Salud;
 
-/// <summary>SC-005: /salud responde "Healthy" solo si la app llega a SQL Server (para el monitoreo de Azure).</summary>
+/// <summary>SC-005: /estado responde "Healthy" solo si la app llega a SQL Server (para el monitoreo de Azure).</summary>
 public sealed class BaseDatosHealthCheck : IHealthCheck
 {
     private readonly EvoRRLDbContext _contexto;
