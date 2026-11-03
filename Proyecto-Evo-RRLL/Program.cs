@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Proyecto_Evo_RRLL.Filtros;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,6 +59,13 @@ builder.Services.AddAuthorization(options =>
 // SC-006: cada capa registra sus propios servicios. Capa Datos es la unica que conoce EF Core.
 builder.Services.AgregarCapaDatos(cadenaConexion);
 builder.Services.AgregarCapaLogica();
+
+// Seguridad (IOptions): clave inicial del admin, intentos y minutos de bloqueo. Se valida al arrancar.
+builder.Services.AddOptions<OpcionesSeguridad>()
+    .Bind(builder.Configuration.GetSection(OpcionesSeguridad.Seccion))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<OpcionesSeguridad>>().Value);
 builder.Services.AddScoped<Proyecto_Evo_RRLL.Services.EmpleadoServicio>();
 builder.Services.AddScoped<Proyecto_Evo_RRLL.Services.EmpleadoFichaServicio>();
 builder.Services.AddScoped<Proyecto_Evo_RRLL.Services.EmpleadoListadoServicio>();
@@ -111,7 +119,7 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<EvoRRLDbContext>();
     // SC-009: la clave inicial solo viene de la configuracion, nunca del codigo.
     // Desarrollo: dotnet user-secrets set "Seguridad:AdminClave" "<clave>"; Azure: App setting Seguridad__AdminClave.
-    var adminClave = builder.Configuration["Seguridad:AdminClave"];
+    var adminClave = scope.ServiceProvider.GetRequiredService<OpcionesSeguridad>().AdminClave;
     if (!string.IsNullOrWhiteSpace(adminClave))
         await SeedAdminAsync(db, adminClave);
     else

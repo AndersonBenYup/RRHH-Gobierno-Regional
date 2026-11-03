@@ -13,25 +13,30 @@ public class BloqueoCuentaLogica
 
     private readonly IBitacoraRepositorio _bitacora;
     private readonly TimeProvider _reloj;
+    private readonly OpcionesSeguridad _opciones;
 
-    public BloqueoCuentaLogica(IBitacoraRepositorio bitacora, TimeProvider reloj)
+    public BloqueoCuentaLogica(IBitacoraRepositorio bitacora, TimeProvider reloj, OpcionesSeguridad opciones)
     {
         _bitacora = bitacora;
         _reloj = reloj;
+        _opciones = opciones;
     }
+
+    /// <summary>Intentos fallidos que bloquean la cuenta (configurable en Seguridad:MaxIntentosFallidos).</summary>
+    public int MaxIntentos => _opciones.MaxIntentosFallidos;
 
     public DateTime Ahora => _reloj.GetLocalNow().DateTime;
 
     public async Task<EstadoBloqueo> Estado(string login)
     {
         var ahora = Ahora;
-        var desde = ahora - ConstantesSeguridad.DuracionBloqueo;
+        var desde = ahora - _opciones.DuracionBloqueo;
         var fallos = await _bitacora.Fechas(login, ConstantesSeguridad.AccionLoginFallido, desde);
-        if (fallos.Count < ConstantesSeguridad.MaxIntentosFallidos)
+        if (fallos.Count < _opciones.MaxIntentosFallidos)
             return new EstadoBloqueo(false, fallos.Count, null);
 
         var reinicio = await _bitacora.UltimaFecha(login, AccionesReinicio);
-        return ReglasBloqueo.Evaluar(fallos, reinicio, ahora);
+        return ReglasBloqueo.Evaluar(fallos, reinicio, ahora, _opciones.MaxIntentosFallidos, _opciones.DuracionBloqueo);
     }
 
     /// <summary>Registra un intento fallido y devuelve el estado resultante (registra también si la cuenta quedó bloqueada).</summary>
