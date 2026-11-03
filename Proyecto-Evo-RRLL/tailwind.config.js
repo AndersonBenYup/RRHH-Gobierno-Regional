@@ -14,7 +14,7 @@ module.exports = {
         piedra: { 50: '#FAF9F7', 100: '#F5F4F1', 200: '#E9E6E0', 300: '#DAD6CE', 500: '#7C8087', 600: '#5E646B', 800: '#2E3338', 900: '#1F2328' },
         ocre: { 600: '#9A6516', 100: '#F6ECDB' }
       },
-      fontFamily: { sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'] }
+      fontFamily: { sans: ['"Public Sans"', 'system-ui', 'sans-serif'] }
     }
   }
 };

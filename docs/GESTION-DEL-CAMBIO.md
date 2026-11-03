@@ -82,7 +82,7 @@ Plantilla en GitHub: `.github/ISSUE_TEMPLATE/solicitud-de-cambio.md`.
 
 **Evidencia de cierre de SC-011 (`v1.5.0`):**
 - Tailwind 3.4 junto a Bootstrap (prefijo `tw-`, sin preflight): `Estilos/app.css` → `npm run css:build` → `wwwroot/css/app.css` (versionado; la app no necesita Node).
-- Sistema visual institucional: azul petróleo y gris piedra, IBM Plex Sans, sin degradados; tablas, formularios con errores de validación, badges, paginador, barra lateral y modo oscuro coherentes. Contexto en `PRODUCT.md`.
+- Sistema visual institucional: azul petróleo y gris piedra, Public Sans, sin degradados; tablas, formularios con errores de validación, badges, paginador, barra lateral y modo oscuro coherentes. Contexto en `PRODUCT.md`.
 - Login rediseñado y centrado; gráficos del inicio con la paleta institucional; se eliminó la pantalla de carga que dejaba un logo encima del contenido; los formularios ya no repiten cada error dos veces.
 - `node_modules` deja de estar en git (1590 archivos incompletos).
 - Revisado en escritorio (1366 px), móvil (390 px, sin desborde horizontal) y modo oscuro.

@@ -181,7 +181,7 @@
                 };
             }
 
-            Chart.defaults.font.family = '"IBM Plex Sans", system-ui, sans-serif';
+            Chart.defaults.font.family = '"Public Sans", system-ui, sans-serif';
             // SC-011: las barras crecen desde 0 una tras otra y la dona se dibuja girando (unos 0,7 s en total).
             Chart.defaults.animation = window.evoAnimarInicio ? {
                 duration: 650,
@@ -294,6 +294,13 @@
             });
 
             document.querySelectorAll('.chart-box.cargando').forEach(function (c) { c.classList.remove('cargando'); });
+
+            // Si Public Sans llega después de dibujar, se vuelven a medir las etiquetas (si no, las largas se cortan)
+            if (document.fonts && document.fonts.status !== 'loaded') {
+                document.fonts.ready.then(function () {
+                    [chartAreas, chartEstados, chartAsistencia].forEach(function (c) { c.update('none'); });
+                });
+            }
 
             // Recolorear los gráficos al cambiar de tema, sin recargar la página
             document.addEventListener('evo:theme', function () {
