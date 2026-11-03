@@ -248,18 +248,20 @@
   .btn-cargando { pointer-events: none; }
   .btn-cargando .spinner-border { width: 1rem; height: 1rem; border-width: .15em; vertical-align: -.15em; }
 
-  /* Menú lateral: el fondo del enlace activo es una sola pieza que se desliza entre secciones */
-  .sidebar-nav { position: relative; }
-  .sidebar-nav > :not(.sidebar-indicador) { position: relative; z-index: 1; }
+  /* Menú lateral: el fondo del enlace activo es una pieza propia. Al cambiar de página el navegador
+     la desliza desde la sección anterior a la nueva (transición entre documentos, ver más abajo). */
+  .sidebar-link { position: relative; }
+  .sidebar-link > :not(.sidebar-indicador) { position: relative; z-index: 1; }
   .sidebar-indicador {
-    position: absolute; top: 0; left: 0; z-index: 0;
+    position: absolute; inset: 0; z-index: 0;
     border-radius: .375rem;
     background: var(--evo-sidebar-active);
     pointer-events: none;
-    opacity: 0;
-    transition: transform .26s var(--evo-ease-in-out), opacity .15s ease;
+    view-transition-name: evo-menu-activo;
   }
-  .sidebar-nav.con-indicador .sidebar-link.active { background: transparent; transition: color .15s ease; }
+  .sidebar-link.active:has(.sidebar-indicador) { background: transparent; }
+  .sidebar { view-transition-name: evo-sidebar; }
+  .topbar { view-transition-name: evo-topbar; }
 
   /* Skeleton: tablas mientras llega la página siguiente y gráficos mientras se dibujan */
   .table-responsive.cargando { position: relative; overflow: hidden; }
@@ -334,14 +336,18 @@
   80% { transform: translateX(2px); }
 }
 
-/* Cambio de tema: fundido corto de toda la página (View Transitions; sin soporte, el cambio es inmediato) */
-::view-transition-old(root), ::view-transition-new(root) { animation-duration: .2s; animation-timing-function: ease; }
+/* Cambio de página y de tema: fundido corto del contenido (View Transitions).
+   La barra lateral y la superior se quedan quietas; solo se desliza el fondo de la sección activa.
+   Sin soporte en el navegador, el cambio es inmediato como antes. */
+@view-transition { navigation: auto; }
+::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: .18s; animation-timing-function: ease; }
+::view-transition-group(evo-menu-activo) { animation-duration: .3s; animation-timing-function: cubic-bezier(.77, 0, .175, 1); }
 
 @media (prefers-reduced-motion: reduce) {
   .btn:active:not(:disabled):not(.disabled), a.stat-card:hover { transform: none; }
-  .sidebar-indicador { transition: opacity .15s ease; }
+  ::view-transition-group(evo-menu-activo) { animation-duration: 0s; }
   .evo-skeleton-barra::after { animation: none; }
   .evo-toast.entrando, .evo-toast.saliendo { transform: none; }
   .acceso-sacudida { animation: none; }
-  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .12s; }
+  ::view-transition-old(*), ::view-transition-new(*) { animation-duration: .12s; }
 }

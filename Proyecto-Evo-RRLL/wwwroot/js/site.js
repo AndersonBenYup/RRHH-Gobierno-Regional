@@ -14,7 +14,6 @@
         initCopyButtons();
         initToasts();
         initSidebar();
-        initIndicadorMenu();
         initCargaTablas();
         initBotonesCarga();
         initTooltips();
@@ -426,54 +425,6 @@
                 if (window.innerWidth < 992) cerrar();
             });
         });
-    }
-
-    /* ---------- SC-011: indicador del menú lateral ----------
-       Una sola pieza de fondo marca la sección activa. Al llegar a otra sección parte desde la
-       posición de la página anterior (guardada en sessionStorage) y se desliza hasta la nueva. */
-    function initIndicadorMenu() {
-        var nav = document.querySelector('.sidebar-nav');
-        var activo = nav && nav.querySelector('.sidebar-link.active');
-        var CLAVE = 'evo-menu-indicador';
-        if (!activo) { try { sessionStorage.removeItem(CLAVE); } catch (e) { } return; }
-
-        var ind = document.createElement('span');
-        ind.className = 'sidebar-indicador';
-        ind.setAttribute('aria-hidden', 'true');
-        nav.insertBefore(ind, nav.firstChild);
-        nav.classList.add('con-indicador');
-
-        function medir() {
-            var a = activo.getBoundingClientRect(), n = nav.getBoundingClientRect();
-            return { x: a.left - n.left, y: a.top - n.top, w: a.width, h: a.height };
-        }
-        function colocar(m) {
-            ind.style.width = m.w + 'px';
-            ind.style.height = m.h + 'px';
-            ind.style.transform = 'translate(' + m.x + 'px,' + m.y + 'px)';
-        }
-        function guardar(m) { try { sessionStorage.setItem(CLAVE, JSON.stringify(m)); } catch (e) { } }
-
-        var actual = medir(), previo = null;
-        try { previo = JSON.parse(sessionStorage.getItem(CLAVE) || 'null'); } catch (e) { }
-        if (previo && Math.abs(previo.y - actual.y) > 1 && !reducirMovimiento()) {
-            ind.style.transition = 'none';
-            colocar(previo);
-            ind.style.opacity = '1';
-            void ind.offsetHeight;
-            ind.style.transition = '';
-            requestAnimationFrame(function () { colocar(actual); });
-        } else {
-            colocar(actual);
-            ind.style.opacity = '1';
-        }
-        guardar(actual);
-
-        // Si se abre o cierra un submenú, o cambia el ancho, el indicador sigue al enlace
-        function recolocar() { var m = medir(); colocar(m); guardar(m); }
-        nav.addEventListener('shown.bs.collapse', recolocar);
-        nav.addEventListener('hidden.bs.collapse', recolocar);
-        window.addEventListener('resize', recolocar, { passive: true });
     }
 
     /* ---------- SC-011: skeleton de tablas ----------
