@@ -1,0 +1,15 @@
+@{
+    var modulo = ViewData["Modulo"] as string ?? "este módulo";
+}
+@* SC-009: se muestra cuando el rol del usuario no tiene el módulo en Rol_Acceso (403). *@
+<div class="card tw-mx-auto tw-max-w-xl tw-mt-6">
+    <div class="card-body tw-p-8 tw-text-center">
+        <div class="tw-mb-3 tw-text-4xl tw-text-piedra-600" aria-hidden="true"><i class="bi bi-shield-lock"></i></div>
+        <h1 class="h4 tw-mb-2">No tiene acceso a @modulo</h1>
+        <p class="text-secondary tw-mb-6">
+            Su rol no incluye este módulo. Si lo necesita para su trabajo, pida al administrador del sistema
+            que lo agregue en <strong>Usuarios y roles → Permisos del rol</strong>.
+        </p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary"><i class="bi bi-house me-1"></i>Volver al inicio</a>
+    </div>
+</div>
