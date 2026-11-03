@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Capa_Entidades.Contratos;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,22 @@ public class RepositorioBase<T> : IRepositorio<T> where T : class
         => UsaCache
             ? await _cache!.ObtenerAsync(() => Tabla.AsNoTracking().ToListAsync())
             : await Tabla.ToListAsync();
+
+    public virtual async Task<Pagina<T>> ListarPagina(Expression<Func<T, bool>>? filtro,
+        Func<IQueryable<T>, IOrderedQueryable<T>> ordenar, int pagina, int tamanoPagina)
+    {
+        tamanoPagina = Math.Clamp(tamanoPagina, 1, 500);
+        var consulta = Tabla.AsNoTracking();
+        if (filtro is not null)
+            consulta = consulta.Where(filtro);
+
+        var total = await consulta.CountAsync();
+        var totalPaginas = Math.Max(1, (int)Math.Ceiling(total / (double)tamanoPagina));
+        pagina = Math.Clamp(pagina, 1, totalPaginas);
+
+        var registros = await ordenar(consulta).Skip((pagina - 1) * tamanoPagina).Take(tamanoPagina).ToListAsync();
+        return new Pagina<T>(registros, total, pagina, tamanoPagina);
+    }
 
     public virtual async Task<T?> Obtener(params object[] claves) => await Tabla.FindAsync(claves);
 
