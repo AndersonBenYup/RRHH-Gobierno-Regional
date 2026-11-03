@@ -60,6 +60,8 @@ builder.Services.AgregarCapaDatos(cadenaConexion);
 builder.Services.AgregarCapaLogica();
 builder.Services.AddScoped<Proyecto_Evo_RRLL.Services.EmpleadoServicio>();
 builder.Services.AddScoped<Proyecto_Evo_RRLL.Services.EmpleadoFichaServicio>();
+builder.Services.AddScoped<Proyecto_Evo_RRLL.Services.EmpleadoListadoServicio>();
+builder.Services.AddScoped<Proyecto_Evo_RRLL.Services.EmpleadoCatalogosServicio>();
 
 // SC-009: bloqueo de cuenta por intentos fallidos (los intentos se registran en la bitácora).
 builder.Services.AddSingleton(TimeProvider.System);
