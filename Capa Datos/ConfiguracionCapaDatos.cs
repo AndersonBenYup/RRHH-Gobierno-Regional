@@ -16,6 +16,10 @@ public static class ConfiguracionCapaDatos
     {
         servicios.AddDbContext<EvoRRLDbContext>(opciones => opciones.UseSqlServer(cadenaConexion));
 
+        // SC-005: caché en memoria de los catálogos pequeños (ver CacheCatalogos).
+        servicios.AddMemoryCache();
+        servicios.AddSingleton<CacheCatalogos>();
+
         // CRUD genérico para todas las entidades.
         servicios.AddScoped(typeof(IRepositorio<>), typeof(RepositorioBase<>));
 
