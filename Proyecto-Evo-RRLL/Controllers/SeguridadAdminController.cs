@@ -364,16 +364,17 @@ public class SeguridadAdminController : Controller
         if (rol is null)
             return NotFound();
 
-        var opciones = await _sistemaOpcionData.Listar();
+        // SC-009: se muestran los módulos de RRHH; las opciones de otros sistemas del gobierno regional no aplican aquí.
         var actuales = (await _rolAccesoData.Listar()).Where(a => a.IdRol == id).ToList();
 
         ViewBag.Rol = rol;
-        ViewBag.Opciones = opciones
-            .Select(o => new OpcionCheckTexto
+        ViewBag.EsAdministrador = Capa_Logica.Seguridad.ReglasAcceso.EsAdministradorRrhh(rol.Descripcion, rol.IdSistema);
+        ViewBag.Opciones = Capa_Logica.Seguridad.ReglasAcceso.Modulos
+            .Select(m => new OpcionCheckTexto
             {
-                Valor = o.IdSistemaOpcion ?? "",
-                Texto = $"{o.IdSistemaOpcion} - {o.Descripcion}",
-                Seleccionado = actuales.Any(a => a.IdSistemaOpcion == o.IdSistemaOpcion)
+                Valor = m.Codigo,
+                Texto = m.Nombre,
+                Seleccionado = actuales.Any(a => a.IdSistemaOpcion?.Trim() == m.Codigo)
             })
             .ToList();
         return View();
@@ -387,19 +388,25 @@ public class SeguridadAdminController : Controller
         if (rol is null)
             return NotFound();
 
-        var actuales = (await _rolAccesoData.Listar()).Where(a => a.IdRol == id).ToList();
+        // Solo se reemplazan los módulos de RRHH; los accesos a otros sistemas se conservan.
+        opciones = opciones.Where(Capa_Logica.Seguridad.ReglasAcceso.EsCodigoModulo).ToArray();
+        var actuales = (await _rolAccesoData.Listar())
+            .Where(a => a.IdRol == id && Capa_Logica.Seguridad.ReglasAcceso.EsCodigoModulo(a.IdSistemaOpcion))
+            .ToList();
 
-        foreach (var a in actuales.Where(a => !opciones.Contains(a.IdSistemaOpcion ?? "")))
+        foreach (var a in actuales.Where(a => !opciones.Contains(a.IdSistemaOpcion?.Trim() ?? "")))
             await _rolAccesoData.Eliminar(a);
 
         foreach (var o in opciones)
         {
-            if (actuales.Any(a => a.IdSistemaOpcion == o))
+            if (actuales.Any(a => a.IdSistemaOpcion?.Trim() == o))
                 continue;
             await _rolAccesoData.Crear(new Rol_Acceso { IdRol = id, IdSistemaOpcion = o });
         }
 
-        TempData["MensajeExito"] = "Permisos del rol actualizados.";
+        TempData["MensajeExito"] = opciones.Length == 0
+            ? $"El rol {rol.Descripcion?.Trim()} ve todos los módulos (sin restricciones)."
+            : $"El rol {rol.Descripcion?.Trim()} ahora ve {opciones.Length} módulo(s). Los usuarios lo verán al volver a iniciar sesión.";
         return RedirectToAction(nameof(Roles));
     }
 

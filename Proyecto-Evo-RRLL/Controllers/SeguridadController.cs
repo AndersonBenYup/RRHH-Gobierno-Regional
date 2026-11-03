@@ -18,22 +18,16 @@ public class SeguridadController : Controller
     private readonly BitacoraLogica _bitacora;
     private readonly BloqueoCuentaLogica _bloqueo;
     private readonly ILogger<SeguridadController> _logger;
+    private readonly AccesoLogica _acceso;
 
     public SeguridadController(UsuarioLogica usuarioData, BitacoraLogica bitacora, BloqueoCuentaLogica bloqueo,
-        ILogger<SeguridadController> logger)
+        ILogger<SeguridadController> logger, AccesoLogica acceso)
     {
+        _acceso = acceso;
         _usuarioData = usuarioData;
         _bitacora = bitacora;
         _bloqueo = bloqueo;
         _logger = logger;
-    }
-
-    internal static string NombreRol(string? descripcion)
-    {
-        var nombre = descripcion?.Trim();
-        if (string.IsNullOrEmpty(nombre))
-            return "SinRol";
-        return nombre.Equals("Administrador", StringComparison.OrdinalIgnoreCase) ? "Administrador" : nombre;
     }
 
     private string MensajeBloqueo(EstadoBloqueo estado)
@@ -103,9 +97,14 @@ public class SeguridadController : Controller
             new(ClaimTypes.Name, usuario.Login!.Trim()),
             new(ClaimTypes.GivenName, usuario.Descripcion ?? usuario.Login!.Trim())
         };
-        // SC-009: [Authorize(Roles = "Administrador")] distingue mayúsculas; en la BD el rol puede estar como
-        // "ADMINISTRADOR", así que se normaliza para que el administrador no quede sin acceso.
-        claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, NombreRol(r.Descripcion))));
+        // SC-009: permisos por opción. "Administrador" solo para los administradores de RRHH (no los de otros
+        // sistemas) y un claim por módulo permitido (o "*" si el rol aún no tiene módulos configurados).
+        var acceso = await _acceso.CalcularAsync(roles);
+        claims.AddRange(roles
+            .Select(r => r.Descripcion?.Trim())
+            .Where(d => !string.IsNullOrEmpty(d) && !d.Equals(ReglasAcceso.RolAdministrador, StringComparison.OrdinalIgnoreCase))
+            .Select(d => new Claim(ClaimTypes.Role, d!)));
+        claims.AddRange(Proyecto_Evo_RRLL.Seguridad.AccesoModulos.Claims(acceso));
 
         var identidad = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identidad);
