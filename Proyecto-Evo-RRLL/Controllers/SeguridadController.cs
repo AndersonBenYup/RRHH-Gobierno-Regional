@@ -17,12 +17,15 @@ public class SeguridadController : Controller
     private readonly UsuarioLogica _usuarioData;
     private readonly BitacoraLogica _bitacora;
     private readonly BloqueoCuentaLogica _bloqueo;
+    private readonly ILogger<SeguridadController> _logger;
 
-    public SeguridadController(UsuarioLogica usuarioData, BitacoraLogica bitacora, BloqueoCuentaLogica bloqueo)
+    public SeguridadController(UsuarioLogica usuarioData, BitacoraLogica bitacora, BloqueoCuentaLogica bloqueo,
+        ILogger<SeguridadController> logger)
     {
         _usuarioData = usuarioData;
         _bitacora = bitacora;
         _bloqueo = bloqueo;
+        _logger = logger;
     }
 
     internal static string NombreRol(string? descripcion)
@@ -34,7 +37,7 @@ public class SeguridadController : Controller
     }
 
     private string MensajeBloqueo(EstadoBloqueo estado)
-        => $"La cuenta está bloqueada por {ConstantesSeguridad.MaxIntentosFallidos} intentos fallidos. " +
+        => $"La cuenta está bloqueada por {_bloqueo.MaxIntentos} intentos fallidos. " +
            $"Intente de nuevo en {estado.MinutosRestantes(_bloqueo.Ahora)} minuto(s) o pida al administrador que la desbloquee.";
 
     [HttpGet]
@@ -61,6 +64,7 @@ public class SeguridadController : Controller
         var estado = await _bloqueo.Estado(login);
         if (estado.Bloqueada)
         {
+            _logger.LogWarning("Intento de acceso a la cuenta bloqueada {Login} desde {Ip}", login, ip);
             await _bloqueo.RegistrarIntentoBloqueado(login, ip);
             modelo.Error = MensajeBloqueo(estado);
             return View(modelo);
@@ -74,7 +78,11 @@ public class SeguridadController : Controller
         if (!claveCorrecta)
         {
             estado = await _bloqueo.RegistrarFallo(login, ip);
-            var restantes = ConstantesSeguridad.MaxIntentosFallidos - estado.FallosRecientes;
+            if (estado.Bloqueada)
+                _logger.LogWarning("Cuenta {Login} bloqueada tras {Fallos} intentos fallidos (IP {Ip})", login, estado.FallosRecientes, ip);
+            else
+                _logger.LogInformation("Inicio de sesión fallido para {Login} desde {Ip}", login, ip);
+            var restantes = _bloqueo.MaxIntentos - estado.FallosRecientes;
             modelo.Error = estado.Bloqueada
                 ? MensajeBloqueo(estado)
                 : restantes <= 2
@@ -83,6 +91,7 @@ public class SeguridadController : Controller
             return View(modelo);
         }
 
+        _logger.LogInformation("Inicio de sesión correcto de {Login}", login);
         TempData["MensajeExito"] = $"Bienvenido, {usuario!.Login!.Trim()}.";
         await _bitacora.Registrar(usuario.Login.Trim(), ConstantesSeguridad.AccionLoginCorrecto, ConstantesSeguridad.EntidadSeguridad, "Acceso correcto al sistema");
 
