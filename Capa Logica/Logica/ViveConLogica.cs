@@ -7,5 +7,5 @@ public class ViveConLogica : LogicaBase<ViveCon>
 {
     public ViveConLogica(IRepositorio<ViveCon> repositorio) : base(repositorio) { }
 
-    public Task<ViveCon?> Obtener(int IdViveConParam) => Repositorio.Obtener(IdViveConParam);
+    public Task<ViveCon?> Obtener(int idViveCon) => Repositorio.Obtener(idViveCon);
 }

@@ -7,5 +7,5 @@ public class AlumbradoVivLogica : LogicaBase<AlumbradoViv>
 {
     public AlumbradoVivLogica(IRepositorio<AlumbradoViv> repositorio) : base(repositorio) { }
 
-    public Task<AlumbradoViv?> Obtener(int IdAlumbradoParam) => Repositorio.Obtener(IdAlumbradoParam);
+    public Task<AlumbradoViv?> Obtener(int idAlumbrado) => Repositorio.Obtener(idAlumbrado);
 }

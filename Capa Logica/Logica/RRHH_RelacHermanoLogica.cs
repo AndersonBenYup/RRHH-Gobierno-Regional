@@ -7,5 +7,5 @@ public class RRHH_RelacHermanoLogica : LogicaBase<RRHH_RelacHermano>
 {
     public RRHH_RelacHermanoLogica(IRepositorio<RRHH_RelacHermano> repositorio) : base(repositorio) { }
 
-    public Task<RRHH_RelacHermano?> Obtener(int idRelacHermanoParam) => Repositorio.Obtener(idRelacHermanoParam);
+    public Task<RRHH_RelacHermano?> Obtener(int idRelacHermano) => Repositorio.Obtener(idRelacHermano);
 }

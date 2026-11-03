@@ -7,5 +7,5 @@ public class ExcretasVivLogica : LogicaBase<ExcretasViv>
 {
     public ExcretasVivLogica(IRepositorio<ExcretasViv> repositorio) : base(repositorio) { }
 
-    public Task<ExcretasViv?> Obtener(int IdExcretasParam) => Repositorio.Obtener(IdExcretasParam);
+    public Task<ExcretasViv?> Obtener(int idExcretas) => Repositorio.Obtener(idExcretas);
 }

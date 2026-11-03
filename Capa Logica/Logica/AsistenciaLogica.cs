@@ -9,7 +9,7 @@ public class AsistenciaLogica : LogicaBase<Asistencia>
 
     public AsistenciaLogica(IAsistenciaRepositorio asistencias) : base(asistencias) => _asistencias = asistencias;
 
-    public Task<Asistencia?> Obtener(DateTime FechaParam, int IdEmpleadoParam) => Repositorio.Obtener(FechaParam, IdEmpleadoParam);
+    public Task<Asistencia?> Obtener(DateTime fecha, int idEmpleado) => Repositorio.Obtener(fecha, idEmpleado);
     public Task<int> ContarEntreFechas(DateTime desde, DateTime hasta) => _asistencias.ContarEntreFechas(desde, hasta);
 
     /// <summary>SC-003: asistencias de un rango, filtradas en la BD (antes se traía toda la tabla).</summary>

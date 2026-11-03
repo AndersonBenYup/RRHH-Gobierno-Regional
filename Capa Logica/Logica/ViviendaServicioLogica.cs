@@ -7,5 +7,5 @@ public class ViviendaServicioLogica : LogicaBase<ViviendaServicio>
 {
     public ViviendaServicioLogica(IRepositorio<ViviendaServicio> repositorio) : base(repositorio) { }
 
-    public Task<ViviendaServicio?> Obtener(int IdViviendaParam, int IdServicioParam) => Repositorio.Obtener(IdViviendaParam, IdServicioParam);
+    public Task<ViviendaServicio?> Obtener(int idVivienda, int idServicio) => Repositorio.Obtener(idVivienda, idServicio);
 }

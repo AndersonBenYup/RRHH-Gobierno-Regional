@@ -7,5 +7,5 @@ public class FamiliarLogica : LogicaBase<Familiar>
 {
     public FamiliarLogica(IRepositorio<Familiar> repositorio) : base(repositorio) { }
 
-    public Task<Familiar?> Obtener(int IdEmpleadoParam, int IdPersonaParam) => Repositorio.Obtener(IdEmpleadoParam, IdPersonaParam);
+    public Task<Familiar?> Obtener(int idEmpleado, int idPersona) => Repositorio.Obtener(idEmpleado, idPersona);
 }

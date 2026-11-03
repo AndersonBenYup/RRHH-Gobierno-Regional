@@ -11,7 +11,7 @@ public class PersonaLogica : LogicaBase<Persona>
 
     public PersonaLogica(IPersonaRepositorio personas) : base(personas) => _personas = personas;
 
-    public Task<Persona?> Obtener(int IdPersonaParam) => Repositorio.Obtener(IdPersonaParam);
+    public Task<Persona?> Obtener(int idPersona) => Repositorio.Obtener(idPersona);
 
     /// <summary>SC-008: nombres, formato del documento (DNI/RUC) y documento no duplicado.</summary>
     public async Task<List<ErrorValidacion>> Validar(Persona persona, bool exigirApellido = true)

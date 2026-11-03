@@ -7,5 +7,5 @@ public class MaterialVivLogica : LogicaBase<MaterialViv>
 {
     public MaterialVivLogica(IRepositorio<MaterialViv> repositorio) : base(repositorio) { }
 
-    public Task<MaterialViv?> Obtener(int IdMaterialParam) => Repositorio.Obtener(IdMaterialParam);
+    public Task<MaterialViv?> Obtener(int idMaterial) => Repositorio.Obtener(idMaterial);
 }

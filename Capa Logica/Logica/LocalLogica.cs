@@ -7,5 +7,5 @@ public class LocalLogica : LogicaBase<Local>
 {
     public LocalLogica(IRepositorio<Local> repositorio) : base(repositorio) { }
 
-    public Task<Local?> Obtener(int idLocalParam) => Repositorio.Obtener(idLocalParam);
+    public Task<Local?> Obtener(int idLocal) => Repositorio.Obtener(idLocal);
 }

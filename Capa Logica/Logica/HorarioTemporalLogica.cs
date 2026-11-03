@@ -7,5 +7,5 @@ public class HorarioTemporalLogica : LogicaBase<HorarioTemporal>
 {
     public HorarioTemporalLogica(IRepositorio<HorarioTemporal> repositorio) : base(repositorio) { }
 
-    public Task<HorarioTemporal?> Obtener(int idEmpleadoParam, int NParam) => Repositorio.Obtener(idEmpleadoParam, NParam);
+    public Task<HorarioTemporal?> Obtener(int idEmpleado, int n) => Repositorio.Obtener(idEmpleado, n);
 }

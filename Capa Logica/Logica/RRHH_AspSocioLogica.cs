@@ -7,5 +7,5 @@ public class RRHH_AspSocioLogica : LogicaBase<RRHH_AspSocio>
 {
     public RRHH_AspSocioLogica(IRepositorio<RRHH_AspSocio> repositorio) : base(repositorio) { }
 
-    public Task<RRHH_AspSocio?> Obtener(int idAspSocioParam) => Repositorio.Obtener(idAspSocioParam);
+    public Task<RRHH_AspSocio?> Obtener(int idAspSocio) => Repositorio.Obtener(idAspSocio);
 }

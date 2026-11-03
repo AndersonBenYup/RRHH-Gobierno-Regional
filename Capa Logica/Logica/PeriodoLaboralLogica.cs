@@ -7,5 +7,5 @@ public class PeriodoLaboralLogica : LogicaBase<PeriodoLaboral>
 {
     public PeriodoLaboralLogica(IRepositorio<PeriodoLaboral> repositorio) : base(repositorio) { }
 
-    public Task<PeriodoLaboral?> Obtener(int IdEmpleadoParam, int NroPeriodoParam) => Repositorio.Obtener(IdEmpleadoParam, NroPeriodoParam);
+    public Task<PeriodoLaboral?> Obtener(int idEmpleado, int nroPeriodo) => Repositorio.Obtener(idEmpleado, nroPeriodo);
 }

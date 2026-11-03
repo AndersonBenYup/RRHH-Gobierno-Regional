@@ -7,5 +7,5 @@ public class RolLogica : LogicaBase<Rol>
 {
     public RolLogica(IRepositorio<Rol> repositorio) : base(repositorio) { }
 
-    public Task<Rol?> Obtener(int IdRolParam) => Repositorio.Obtener(IdRolParam);
+    public Task<Rol?> Obtener(int idRol) => Repositorio.Obtener(idRol);
 }

@@ -7,5 +7,5 @@ public class ExpLaboralLogica : LogicaBase<ExpLaboral>
 {
     public ExpLaboralLogica(IRepositorio<ExpLaboral> repositorio) : base(repositorio) { }
 
-    public Task<ExpLaboral?> Obtener(int IdEmpleadoParam, int IdExpLabParam) => Repositorio.Obtener(IdEmpleadoParam, IdExpLabParam);
+    public Task<ExpLaboral?> Obtener(int idEmpleado, int idExpLab) => Repositorio.Obtener(idEmpleado, idExpLab);
 }

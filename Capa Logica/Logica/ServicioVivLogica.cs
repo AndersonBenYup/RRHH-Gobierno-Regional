@@ -7,5 +7,5 @@ public class ServicioVivLogica : LogicaBase<ServicioViv>
 {
     public ServicioVivLogica(IRepositorio<ServicioViv> repositorio) : base(repositorio) { }
 
-    public Task<ServicioViv?> Obtener(int IdServicioParam) => Repositorio.Obtener(IdServicioParam);
+    public Task<ServicioViv?> Obtener(int idServicio) => Repositorio.Obtener(idServicio);
 }

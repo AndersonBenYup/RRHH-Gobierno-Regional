@@ -7,5 +7,5 @@ public class ComportamientoLogica : LogicaBase<Comportamiento>
 {
     public ComportamientoLogica(IRepositorio<Comportamiento> repositorio) : base(repositorio) { }
 
-    public Task<Comportamiento?> Obtener(int idComportamientoParam) => Repositorio.Obtener(idComportamientoParam);
+    public Task<Comportamiento?> Obtener(int idComportamiento) => Repositorio.Obtener(idComportamiento);
 }

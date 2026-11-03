@@ -7,5 +7,5 @@ public class ConservacionVivLogica : LogicaBase<ConservacionViv>
 {
     public ConservacionVivLogica(IRepositorio<ConservacionViv> repositorio) : base(repositorio) { }
 
-    public Task<ConservacionViv?> Obtener(int IdConservacionParam) => Repositorio.Obtener(IdConservacionParam);
+    public Task<ConservacionViv?> Obtener(int idConservacion) => Repositorio.Obtener(idConservacion);
 }

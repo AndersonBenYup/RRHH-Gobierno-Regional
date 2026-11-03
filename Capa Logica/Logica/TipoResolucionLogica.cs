@@ -7,5 +7,5 @@ public class TipoResolucionLogica : LogicaBase<TipoResolucion>
 {
     public TipoResolucionLogica(IRepositorio<TipoResolucion> repositorio) : base(repositorio) { }
 
-    public Task<TipoResolucion?> Obtener(int idTipoResolucionParam) => Repositorio.Obtener(idTipoResolucionParam);
+    public Task<TipoResolucion?> Obtener(int idTipoResolucion) => Repositorio.Obtener(idTipoResolucion);
 }

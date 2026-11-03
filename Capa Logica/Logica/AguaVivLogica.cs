@@ -7,5 +7,5 @@ public class AguaVivLogica : LogicaBase<AguaViv>
 {
     public AguaVivLogica(IRepositorio<AguaViv> repositorio) : base(repositorio) { }
 
-    public Task<AguaViv?> Obtener(int IdAguaParam) => Repositorio.Obtener(IdAguaParam);
+    public Task<AguaViv?> Obtener(int idAgua) => Repositorio.Obtener(idAgua);
 }
