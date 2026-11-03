@@ -1,4 +1,4 @@
-using Capa_Logica.Exportacion;
+﻿using Capa_Logica.Exportacion;
 using Proyecto_Evo_RRLL.Utilidades;
 using Capa_Logica;
 using Capa_Entidades.Contratos;
@@ -72,9 +72,9 @@ public class EmpleadoController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string? q, int pagina = 1)
+    public async Task<IActionResult> Index(string? q, int pagina = 1, int? tamano = null)
     {
-        const int tamanoPagina = 25;
+        var tamanoPagina = Capa_Logica.Paginacion.VentanaPaginas.NormalizarTamano(tamano, 25);
         var (filtrados, personasPorId, cargosPorId, areasPorEmpleado) = await FiltrarEmpleadosAsync(q);
 
         var total = filtrados.Count;
@@ -82,7 +82,12 @@ public class EmpleadoController : Controller
         if (pagina < 1) pagina = 1;
         if (pagina > totalPaginas) pagina = totalPaginas;
 
-        var vm = new EmpleadoViewModel { Busqueda = q, Pagina = pagina, TotalPaginas = totalPaginas, Total = total };
+        var vm = new EmpleadoViewModel
+        {
+            Busqueda = q, Pagina = pagina, TotalPaginas = totalPaginas, Total = total,
+            Paginador = new PaginadorModelo(pagina, totalPaginas, total, nameof(Index),
+                new Dictionary<string, string?> { ["q"] = q }, tamanoPagina, "empleados")
+        };
 
         foreach (var e in filtrados.Skip((pagina - 1) * tamanoPagina).Take(tamanoPagina))
         {

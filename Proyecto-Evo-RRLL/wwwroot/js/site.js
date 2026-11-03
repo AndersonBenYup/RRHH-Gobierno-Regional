@@ -99,7 +99,7 @@
             // Si la vista ya trae su propia paginación (servidor), no la duplicamos
             var wrapper = table.closest('.table-responsive');
             var siguiente = wrapper ? wrapper.nextElementSibling : null;
-            if (siguiente && siguiente.matches && (siguiente.matches('nav') || siguiente.matches('ul.pagination'))) return;
+            if (siguiente && siguiente.matches && siguiente.matches('nav, ul.pagination, .evo-paginador')) return;
 
             // Filas reales; ignora mensajes vacíos (una celda con colspan)
             var rows = Array.prototype.filter.call(tbody.querySelectorAll('tr'), function (r) {
@@ -107,9 +107,8 @@
             });
             if (rows.length === 0) return;
 
-            var PAGE_SIZE = 10;
-            var state = { sortIdx: -1, sortAsc: true, page: 1 };
-            var toolbar = null, countEl = null, pagesEl = null;
+            var state = { sortIdx: -1, sortAsc: true, page: 1, size: 10, ordenAplicado: null };
+            var paginador = null;
             var msgVacio = null;
 
             function cabeceraTexto(th) {
@@ -147,18 +146,24 @@
                 return true;
             }
 
+            function comparar(a, b, idx, dir, num) {
+                var ta = a.cells[idx] ? a.cells[idx].textContent.trim() : '';
+                var tb = b.cells[idx] ? b.cells[idx].textContent.trim() : '';
+                var r = num
+                    ? (parseFloat(ta.replace(/\./g, '').replace(',', '.')) || 0) - (parseFloat(tb.replace(/\./g, '').replace(',', '.')) || 0)
+                    : ta.localeCompare(tb, 'es');
+                return r * dir;
+            }
+
             function asegurarToolbar() {
-                if (toolbar) return;
-                toolbar = document.createElement('div');
-                toolbar.className = 'dt-toolbar';
-                countEl = document.createElement('span');
-                countEl.className = 'dt-count';
-                pagesEl = document.createElement('div');
-                pagesEl.className = 'dt-pages';
-                toolbar.appendChild(countEl);
-                toolbar.appendChild(pagesEl);
+                if (paginador) return;
+                paginador = crearPaginador({
+                    etiqueta: 'registros',
+                    alCambiarPagina: function (p) { state.page = p; aplicar(); },
+                    alCambiarTamano: function (t) { state.size = t; state.page = 1; aplicar(); }
+                });
                 var ancla = wrapper || table;
-                ancla.parentNode.insertBefore(toolbar, ancla.nextSibling);
+                ancla.parentNode.insertBefore(paginador.raiz, ancla.nextSibling);
             }
 
             function mostrarVacio(on) {
@@ -178,39 +183,6 @@
                 }
             }
 
-            function dibujarPaginas(total, totalPaginas) {
-                pagesEl.innerHTML = '';
-                if (totalPaginas <= 1) { pagesEl.style.display = 'none'; return; }
-                pagesEl.style.display = 'flex';
-
-                var crearBtn = function (etiqueta, activa, deshabilitada, accion) {
-                    var b = document.createElement('button');
-                    b.type = 'button';
-                    b.className = 'dt-page-btn' + (activa ? ' active' : '');
-                    b.innerHTML = etiqueta;
-                    b.disabled = !!deshabilitada;
-                    b.addEventListener('click', accion);
-                    pagesEl.appendChild(b);
-                };
-
-                crearBtn('<i class="bi bi-chevron-left"></i>', false, state.page <= 1, function () { state.page--; aplicar(); });
-
-                var MAX = 7;
-                var desde = 1, hasta = totalPaginas;
-                if (totalPaginas > MAX) {
-                    desde = Math.max(1, state.page - Math.floor(MAX / 2));
-                    hasta = Math.min(totalPaginas, desde + MAX - 1);
-                    if (hasta - desde + 1 < MAX) desde = Math.max(1, hasta - MAX + 1);
-                }
-                for (var p = desde; p <= hasta; p++) {
-                    (function (pp) {
-                        crearBtn(String(pp), pp === state.page, false, function () { state.page = pp; aplicar(); });
-                    })(p);
-                }
-
-                crearBtn('<i class="bi bi-chevron-right"></i>', false, state.page >= totalPaginas, function () { state.page++; aplicar(); });
-            }
-
             function aplicar() {
                 var termino = terminoBusqueda();
                 var lista = rows.slice();
@@ -222,37 +194,32 @@
                 }
 
                 if (state.sortIdx >= 0) {
-                    var idx = state.sortIdx;
-                    var dir = state.sortAsc ? 1 : -1;
-                    var num = esNumerica(idx);
-                    lista.sort(function (a, b) {
-                        var ta = a.cells[idx] ? a.cells[idx].textContent.trim() : '';
-                        var tb = b.cells[idx] ? b.cells[idx].textContent.trim() : '';
-                        var r;
-                        if (num) {
-                            r = (parseFloat(ta.replace(/\./g, '').replace(',', '.')) || 0) -
-                                (parseFloat(tb.replace(/\./g, '').replace(',', '.')) || 0);
-                        } else {
-                            r = ta.localeCompare(tb, 'es');
-                        }
-                        return r * dir;
-                    });
+                    var idx = state.sortIdx, dir = state.sortAsc ? 1 : -1, num = esNumerica(idx);
+                    lista.sort(function (a, b) { return comparar(a, b, idx, dir, num); });
                 }
 
-                var totalPaginas = Math.max(1, Math.ceil(lista.length / PAGE_SIZE));
+                // Al cambiar el orden se reordenan las filas en la tabla (antes solo cambiaba qué filas se veían)
+                var claveOrden = state.sortIdx + ':' + state.sortAsc;
+                if (state.sortIdx >= 0 && claveOrden !== state.ordenAplicado) {
+                    var ordenadas = rows.slice().sort(function (a, b) {
+                        return comparar(a, b, state.sortIdx, state.sortAsc ? 1 : -1, esNumerica(state.sortIdx));
+                    });
+                    var fragmento = document.createDocumentFragment();
+                    ordenadas.forEach(function (r) { fragmento.appendChild(r); });
+                    tbody.appendChild(fragmento);
+                    state.ordenAplicado = claveOrden;
+                }
+
+                var totalPaginas = Math.max(1, Math.ceil(lista.length / state.size));
                 if (state.page > totalPaginas) state.page = totalPaginas;
-                var inicio = (state.page - 1) * PAGE_SIZE;
-                var visibles = lista.slice(inicio, inicio + PAGE_SIZE);
+                var inicio = (state.page - 1) * state.size;
+                var visibles = new Set(lista.slice(inicio, inicio + state.size));
 
                 rows.forEach(function (r) {
-                    r.style.display = visibles.indexOf(r) === -1 ? 'none' : '';
+                    r.style.display = visibles.has(r) ? '' : 'none';
                 });
                 mostrarVacio(lista.length === 0);
-
-                var desde = lista.length === 0 ? 0 : inicio + 1;
-                var hasta = Math.min(inicio + PAGE_SIZE, lista.length);
-                if (countEl) countEl.textContent = 'Mostrando ' + desde + '–' + hasta + ' de ' + lista.length;
-                dibujarPaginas(lista.length, totalPaginas);
+                paginador.dibujar(state.page, totalPaginas, lista.length, state.size);
 
                 ths.forEach(function (th, i) {
                     var ic = th.querySelector('.si');
@@ -276,6 +243,127 @@
             aplicar();
         });
     }
+
+    /* ---------- SC-005: paginador de tablas en el navegador ----------
+       Genera el mismo HTML y las mismas clases que Views/Shared/_Paginador.cshtml (paginación del servidor),
+       así todas las tablas del sistema se ven y se usan igual. */
+    var TAMANOS_PAGINA = [10, 25, 50, 100];
+
+    // Igual que Capa Logica/Paginacion/VentanaPaginas.cs: máximo 7 elementos, 0 = "…"
+    function ventanaPaginas(actual, total) {
+        if (total <= 0) return [];
+        actual = Math.min(Math.max(actual, 1), total);
+        var r = [];
+        if (total <= 7) { for (var i = 1; i <= total; i++) r.push(i); return r; }
+        if (actual <= 4) return [1, 2, 3, 4, 5, 0, total];
+        if (actual >= total - 3) return [1, 0, total - 4, total - 3, total - 2, total - 1, total];
+        return [1, 0, actual - 1, actual, actual + 1, 0, total];
+    }
+    window.evoVentanaPaginas = ventanaPaginas;
+
+    var contadorPaginadores = 0;
+    function numero(n) { return Number(n).toLocaleString('es-PE'); }
+
+    function crearPaginador(op) {
+        var id = 'pagjs' + (++contadorPaginadores);
+        var raiz = document.createElement('div');
+        raiz.className = 'evo-paginador';
+        raiz.innerHTML =
+            '<p class="evo-paginador-resumen" aria-live="polite"></p>' +
+            '<div class="evo-paginador-controles">' +
+            '<form class="evo-paginador-tamano"><label for="' + id + '-tamano">Filas por página</label>' +
+            '<select id="' + id + '-tamano" class="form-select form-select-sm">' +
+            TAMANOS_PAGINA.map(function (t) { return '<option value="' + t + '">' + t + '</option>'; }).join('') +
+            '</select></form>' +
+            '<nav aria-label="Paginación"><ul class="pagination"></ul></nav>' +
+            '<form class="evo-paginador-ir"><label for="' + id + '-ir">Ir a página</label>' +
+            '<input id="' + id + '-ir" type="number" class="form-control form-control-sm" min="1" inputmode="numeric" required />' +
+            '<button type="submit" class="btn btn-sm btn-outline-secondary">Ir</button></form>' +
+            '</div>';
+        var resumen = raiz.querySelector('.evo-paginador-resumen');
+        var lista = raiz.querySelector('.pagination');
+        var nav = raiz.querySelector('nav');
+        var formTamano = raiz.querySelector('.evo-paginador-tamano');
+        var selector = formTamano.querySelector('select');
+        var formIr = raiz.querySelector('.evo-paginador-ir');
+        var campoIr = formIr.querySelector('input');
+        var total = 1;
+
+        selector.addEventListener('change', function () { op.alCambiarTamano(parseInt(selector.value, 10)); });
+        formTamano.addEventListener('submit', function (e) { e.preventDefault(); });
+        formIr.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var p = parseInt(campoIr.value, 10);
+            if (!p) return;
+            campoIr.value = '';
+            op.alCambiarPagina(Math.min(Math.max(p, 1), total));
+        });
+
+        function item(clase, contenido, alPulsar, etiquetaAria) {
+            var li = document.createElement('li');
+            li.className = 'page-item ' + clase;
+            var el;
+            if (alPulsar) {
+                el = document.createElement('button');
+                el.type = 'button';
+                el.addEventListener('click', alPulsar);
+                if (etiquetaAria) el.setAttribute('aria-label', etiquetaAria);
+            } else {
+                el = document.createElement('span');
+            }
+            el.className = 'page-link';
+            el.innerHTML = contenido;
+            li.appendChild(el);
+            lista.appendChild(li);
+            return li;
+        }
+
+        function dibujar(pagina, totalPaginas, totalRegistros, tamano) {
+            total = totalPaginas;
+            var desde = totalRegistros === 0 ? 0 : (pagina - 1) * tamano + 1;
+            var hasta = Math.min(pagina * tamano, totalRegistros);
+            resumen.innerHTML = totalRegistros === 0
+                ? 'No hay ' + op.etiqueta + ' para mostrar'
+                : 'Mostrando <b>' + numero(desde) + '–' + numero(hasta) + '</b> de <b>' + numero(totalRegistros) + '</b> ' + op.etiqueta;
+            selector.value = String(tamano);
+            campoIr.max = String(totalPaginas);
+
+            var hayPaginas = totalPaginas > 1;
+            nav.hidden = !hayPaginas;
+            formIr.hidden = !hayPaginas;
+            // Con 10 filas o menos no tiene sentido elegir el tamaño de página
+            formTamano.hidden = totalRegistros <= TAMANOS_PAGINA[0];
+            lista.innerHTML = '';
+            if (!hayPaginas) return;
+
+            var izq = '<i class="bi bi-chevron-left" aria-hidden="true"></i><span>Anterior</span>';
+            var der = '<span>Siguiente</span><i class="bi bi-chevron-right" aria-hidden="true"></i>';
+            var ant = item('evo-pag-extremo' + (pagina <= 1 ? ' disabled' : ''), izq,
+                pagina > 1 ? function () { op.alCambiarPagina(pagina - 1); } : null);
+            if (pagina <= 1) ant.firstChild.setAttribute('aria-disabled', 'true');
+            ventanaPaginas(pagina, totalPaginas).forEach(function (p) {
+                if (p === 0) { item('evo-pag-elipsis', '…').setAttribute('aria-hidden', 'true'); return; }
+                if (p === pagina) {
+                    item('active evo-pag-actual', '<span class="visually-hidden">Página </span>' + numero(p) +
+                        '<span class="evo-pag-de"> de ' + numero(totalPaginas) + '</span>').setAttribute('aria-current', 'page');
+                    return;
+                }
+                item('evo-pag-num', numero(p), function () { op.alCambiarPagina(p); }, 'Página ' + p);
+            });
+            var sig = item('evo-pag-extremo' + (pagina >= totalPaginas ? ' disabled' : ''), der,
+                pagina < totalPaginas ? function () { op.alCambiarPagina(pagina + 1); } : null);
+            if (pagina >= totalPaginas) sig.firstChild.setAttribute('aria-disabled', 'true');
+        }
+
+        return { raiz: raiz, dibujar: dibujar };
+    }
+
+    // <select data-autoenviar> envía su formulario al cambiar (p. ej. "Filas por página" del paginador del servidor)
+    document.addEventListener('change', function (e) {
+        var el = e.target;
+        if (!el.matches || !el.matches('select[data-autoenviar]') || !el.form) return;
+        if (el.form.requestSubmit) el.form.requestSubmit(); else el.form.submit();
+    });
 
     /* ---------- Botón volver arriba ---------- */
     function initBackToTop() {

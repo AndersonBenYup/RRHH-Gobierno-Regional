@@ -358,3 +358,69 @@ html.evo-cambiando-tema::view-transition-new(root), html.evo-cambiando-tema::vie
   .acceso-sacudida { animation: none; }
   ::view-transition-old(*), ::view-transition-new(*) { animation-duration: .12s; }
 }
+
+/* ============================================================
+   SC-005 · Paginador reutilizable (_Paginador.cshtml y site.js generan el mismo HTML)
+   « Anterior  1 … 52 [53] 54 … 120  Siguiente » con máximo 7 números, resumen, filas por página e "Ir a página".
+   En el celular: Anterior · página actual · Siguiente.
+   ============================================================ */
+@layer components {
+  .evo-paginador {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: .75rem 1.5rem; margin-top: .9rem;
+    font-size: .875rem; font-variant-numeric: tabular-nums;
+  }
+  .evo-paginador [hidden] { display: none !important; }
+  .evo-paginador-resumen { margin: 0; color: var(--bs-secondary-color); }
+  .evo-paginador-resumen b { color: var(--bs-body-color); font-weight: 600; }
+  .evo-paginador-controles { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; }
+  .evo-paginador-tamano, .evo-paginador-ir { display: flex; align-items: center; gap: .45rem; margin: 0; }
+  .evo-paginador label { margin: 0; color: var(--bs-secondary-color); white-space: nowrap; }
+  .evo-paginador .form-select-sm { width: auto; padding-right: 1.9rem; }
+  /* Selector, campo, botón y números a la misma altura */
+  .evo-paginador .form-select-sm, .evo-paginador .form-control-sm, .evo-paginador .btn-sm {
+    height: 2.15rem; padding-top: 0; padding-bottom: 0; font-size: .875rem;
+  }
+  .evo-paginador .btn-sm { display: inline-flex; align-items: center; padding-inline: .75rem; }
+  .evo-paginador-ir .form-control-sm { width: 4.75rem; }
+
+  .evo-paginador .pagination {
+    margin: 0; gap: .25rem; flex-wrap: nowrap;
+    --bs-pagination-padding-x: .6rem; --bs-pagination-padding-y: .3rem; --bs-pagination-font-size: .875rem;
+  }
+  .evo-paginador .page-item .page-link {
+    margin-left: 0;
+    min-width: 2.15rem; height: 2.15rem;
+    display: inline-flex; align-items: center; justify-content: center; gap: .3rem;
+    border: 1px solid var(--bs-border-color); border-radius: .375rem !important;
+    background: var(--evo-surface); color: var(--bs-body-color);
+    line-height: 1; white-space: nowrap; box-shadow: none;
+    transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+  }
+  .evo-paginador button.page-link { font: inherit; cursor: pointer; }
+  /* Un solo resaltado: el relleno es solo para la página actual. Pasar el mouse o el foco no lo imitan. */
+  .evo-paginador .page-item:not(.active):not(.disabled) .page-link:hover { background: var(--bs-tertiary-bg); border-color: var(--bs-border-color); color: var(--bs-body-color); }
+  .evo-paginador .page-link:focus { box-shadow: none; z-index: auto; }
+  .evo-paginador .page-link:focus-visible { outline: 2px solid var(--evo-primary); outline-offset: 2px; }
+  .evo-paginador .page-item.active .page-link {
+    background: var(--evo-primary); border-color: var(--evo-primary); color: #fff; font-weight: 600; cursor: default;
+  }
+  html[data-bs-theme="dark"] .evo-paginador .page-item.active .page-link { color: #0A1A1F; }
+  .evo-paginador .page-item.disabled .page-link { background: var(--evo-surface); color: var(--bs-secondary-color); opacity: .5; cursor: not-allowed; }
+  .evo-paginador .evo-pag-elipsis .page-link { border-color: transparent; background: transparent; min-width: 1.4rem; padding-inline: .1rem; color: var(--bs-secondary-color); }
+  .evo-paginador .evo-pag-extremo .page-link { padding-inline: .7rem; }
+  .evo-paginador .evo-pag-de { display: none; }
+  html.js .evo-solo-sin-js { display: none; }
+
+  @media (max-width: 575.98px) {
+    .evo-paginador { justify-content: center; text-align: center; }
+    .evo-paginador-resumen { width: 100%; }
+    .evo-paginador-controles { width: 100%; justify-content: center; }
+    .evo-paginador .evo-pag-num, .evo-paginador .evo-pag-elipsis,
+    .evo-paginador-tamano, .evo-paginador-ir { display: none !important; }
+    .evo-paginador nav, .evo-paginador .pagination { width: 100%; }
+    .evo-paginador .pagination { justify-content: space-between; }
+    .evo-paginador .evo-pag-de { display: inline; }
+    .evo-paginador .evo-pag-extremo .page-link { height: 2.5rem; padding-inline: .9rem; }
+  }
+}

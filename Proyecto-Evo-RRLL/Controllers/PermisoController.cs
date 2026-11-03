@@ -1,4 +1,4 @@
-using Capa_Logica;
+﻿using Capa_Logica;
 using Capa_Entidades.Contratos;
 using Capa_Entidades;
 using Microsoft.AspNetCore.Authorization;
@@ -35,17 +35,18 @@ public class PermisoController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(int? idEmpleado, int pagina = 1)
+    public async Task<IActionResult> Index(int? idEmpleado, int pagina = 1, int? tamano = null)
     {
         // SC-005: el filtro y la página se resuelven en SQL Server (OFFSET/FETCH); antes se traía toda la tabla.
-        var resultado = await _permisoData.ListarPaginado(idEmpleado, pagina);
+        var tamanoPagina = Capa_Logica.Paginacion.VentanaPaginas.NormalizarTamano(tamano, PermisoLogica.TamanoPagina);
+        var resultado = await _permisoData.ListarPaginado(idEmpleado, pagina, tamanoPagina);
 
         ViewBag.IdEmpleado = idEmpleado;
         ViewBag.NombreEmpleado = idEmpleado is null ? null : await NombreEmpleadoAsync(idEmpleado.Value);
         ViewBag.Empleados = await EmpleadosAsync();
         ViewBag.Motivos = await _motivoData.Listar();
         ViewBag.Paginador = new PaginadorModelo(resultado.NumeroPagina, resultado.TotalPaginas, resultado.Total,
-            nameof(Index), new Dictionary<string, string?> { ["idEmpleado"] = idEmpleado?.ToString() });
+            nameof(Index), new Dictionary<string, string?> { ["idEmpleado"] = idEmpleado?.ToString() }, tamanoPagina, "permisos");
         return View(resultado.Registros);
     }
 
