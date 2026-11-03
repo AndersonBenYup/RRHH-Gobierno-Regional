@@ -336,12 +336,19 @@
   80% { transform: translateX(2px); }
 }
 
-/* Cambio de página y de tema: fundido corto del contenido (View Transitions).
-   La barra lateral y la superior se quedan quietas; solo se desliza el fondo de la sección activa.
-   Sin soporte en el navegador, el cambio es inmediato como antes. */
+/* Cambio de página (View Transitions entre documentos): el contenido nuevo aparece al instante, sin fundido,
+   porque se navega muchas veces al día. Solo el fondo de la sección activa se desliza, en 200 ms y sin
+   frenar la página. Sin soporte en el navegador, el cambio es inmediato como antes.
+   El cambio de tema (misma página) sí usa un fundido corto, porque es ocasional. */
 @view-transition { navigation: auto; }
 ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: .18s; animation-timing-function: ease; }
-::view-transition-group(evo-menu-activo) { animation-duration: .3s; animation-timing-function: cubic-bezier(.77, 0, .175, 1); }
+::view-transition-old(root), ::view-transition-old(evo-sidebar), ::view-transition-old(evo-topbar) { animation: none; opacity: 0; }
+::view-transition-new(root), ::view-transition-new(evo-sidebar), ::view-transition-new(evo-topbar) { animation: none; }
+html.evo-cambiando-tema::view-transition-old(root), html.evo-cambiando-tema::view-transition-old(evo-sidebar), html.evo-cambiando-tema::view-transition-old(evo-topbar) { animation: evo-desvanecer .18s ease both; opacity: 1; }
+html.evo-cambiando-tema::view-transition-new(root), html.evo-cambiando-tema::view-transition-new(evo-sidebar), html.evo-cambiando-tema::view-transition-new(evo-topbar) { animation: evo-aparecer .18s ease both; }
+@keyframes evo-desvanecer { from { opacity: 1; } to { opacity: 0; } }
+@keyframes evo-aparecer { from { opacity: 0; } to { opacity: 1; } }
+::view-transition-group(evo-menu-activo) { animation-duration: .2s; animation-timing-function: cubic-bezier(.23, 1, .32, 1); }
 
 @media (prefers-reduced-motion: reduce) {
   .btn:active:not(:disabled):not(.disabled), a.stat-card:hover { transform: none; }

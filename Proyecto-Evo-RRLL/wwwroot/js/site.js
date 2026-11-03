@@ -51,8 +51,11 @@
         toggle.addEventListener('click', function () {
             var nuevo = root.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
             // Fundido corto de toda la página. No anima cada elemento, así que no pesa en las tablas grandes.
-            if (document.startViewTransition) document.startViewTransition(function () { aplicar(nuevo); });
-            else aplicar(nuevo);
+            if (!document.startViewTransition) { aplicar(nuevo); return; }
+            root.classList.add('evo-cambiando-tema');
+            var vt = document.startViewTransition(function () { aplicar(nuevo); });
+            vt.finished.then(quitarMarca, quitarMarca);
+            function quitarMarca() { root.classList.remove('evo-cambiando-tema'); }
         });
 
         function aplicar(t) {
