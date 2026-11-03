@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<RegistrarExcepcionFilter>();
+    options.Filters.Add<AccesoModuloFilter>(); // SC-009: permisos por opción (Rol_Acceso)
     MensajesValidacionEspanol.Configurar(options); // SC-008
 });
 
@@ -33,7 +34,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
         // SC-009: cookie de sesión no accesible desde JavaScript, solo por HTTPS en producción y sin envío cruzado.
-        options.Cookie.Name = "EvoRRHH.Sesion";
+        // SC-009: nombre nuevo para que las sesiones anteriores (sin claims de módulos) vuelvan a iniciar sesión.
+        options.Cookie.Name = "EvoRRHH.Sesion.v2";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Strict;
         options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
@@ -123,6 +125,7 @@ using (var scope = app.Services.CreateScope())
     // SC-009: la clave inicial solo viene de la configuracion, nunca del codigo.
     // Desarrollo: dotnet user-secrets set "Seguridad:AdminClave" "<clave>"; Azure: App setting Seguridad__AdminClave.
     var adminClave = scope.ServiceProvider.GetRequiredService<OpcionesSeguridad>().AdminClave;
+    await SembrarOpcionesRrhhAsync(db); // SC-009: una SistemaOpcion por módulo, para asignarlos a los roles
     if (!string.IsNullOrWhiteSpace(adminClave))
         await SeedAdminAsync(db, adminClave);
     else
@@ -182,6 +185,21 @@ app.MapControllerRoute(
 app.MapHealthChecks("/estado").AllowAnonymous().DisableRateLimiting();
 
 app.Run();
+
+// SC-009: crea (si faltan) las opciones de los módulos de RRHH. Solo inserta filas; no cambia el esquema.
+static async Task SembrarOpcionesRrhhAsync(EvoRRLDbContext db)
+{
+    var existentes = await db.Set<SistemaOpcion>().Select(o => o.IdSistemaOpcion).ToListAsync();
+    var faltantes = ReglasAcceso.Modulos.Where(m => !existentes.Contains(m.Codigo)).ToList();
+    if (faltantes.Count == 0)
+        return;
+    db.Set<SistemaOpcion>().AddRange(faltantes.Select(m => new SistemaOpcion
+    {
+        IdSistemaOpcion = m.Codigo,
+        Descripcion = "RRHH - " + m.Nombre.ToUpperInvariant()
+    }));
+    await db.SaveChangesAsync();
+}
 
 static async Task SeedAdminAsync(EvoRRLDbContext db, string adminClave)
 {
