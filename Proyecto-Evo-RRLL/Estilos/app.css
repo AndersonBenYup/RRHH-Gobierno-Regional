@@ -1,6 +1,6 @@
 /* ============================================================
    SC-011 · Sistema visual institucional (Gobierno Regional)
-   Azul petróleo + gris piedra, IBM Plex Sans, sin degradados.
+   Azul petróleo + gris piedra, Public Sans, sin degradados.
    Se carga DESPUÉS de site.css: redefine sus tokens y corrige
    los componentes compartidos sin tocar el HTML de cada vista.
    Fuente: Estilos/app.css  →  npm run css:build  →  wwwroot/css/app.css
@@ -42,7 +42,7 @@
     --bs-tertiary-bg: #EFEDE8;
     --bs-border-color: #DAD6CE;
     --bs-border-radius: .375rem;
-    --bs-body-font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-body-font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
     --evo-topbar-bg: #FFFFFF;
     --evo-control-bg: #FFFFFF;
     --evo-control-hover: #EFEDE8;
