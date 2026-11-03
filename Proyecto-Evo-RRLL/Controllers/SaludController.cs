@@ -47,16 +47,22 @@ public class SaludController : Controller
     // ---------- Ficha de salud ----------
 
     [HttpGet]
-    public async Task<IActionResult> Index(int? idEmpleado)
+    public async Task<IActionResult> Index(int? idEmpleado, int pagina = 1, int? tamano = null)
     {
-        var fichas = (await _saludData.Listar())
-            .Where(f => idEmpleado is null || f.IdEmpleado == idEmpleado)
-            .OrderByDescending(f => f.idSalud);
+        // SC-005: filtro y paginación en la BD.
+        var tamanoPagina = Capa_Logica.Paginacion.VentanaPaginas.NormalizarTamano(tamano, 25);
+        var resultado = await _saludData.ListarPagina(
+            f => idEmpleado == null || f.IdEmpleado == idEmpleado,
+            f => f.OrderByDescending(x => x.idSalud),
+            pagina, tamanoPagina);
+        var fichas = resultado.Registros;
+        ViewBag.Paginador = new Proyecto_Evo_RRLL.Models.ViewModels.PaginadorModelo(resultado.NumeroPagina, resultado.TotalPaginas, resultado.Total, nameof(Index),
+            new Dictionary<string, string?> { ["idEmpleado"] = idEmpleado?.ToString() }, tamanoPagina, "fichas de salud");
 
         ViewBag.IdEmpleado = idEmpleado;
         ViewBag.Empleados = await EmpleadosAsync();
         ViewBag.AcudeEnferm = await _acudeEnfermData.Listar();
-        return View(fichas.ToList());
+        return View(fichas);
     }
 
     [HttpGet]

@@ -66,13 +66,17 @@ public class FamiliaController : Controller
     // ---------- Familiares ----------
 
     [HttpGet]
-    public async Task<IActionResult> Index(int? idEmpleado)
+    public async Task<IActionResult> Index(int? idEmpleado, int pagina = 1, int? tamano = null)
     {
-        var familiares = (await _familiarData.Listar())
-            .Where(f => idEmpleado is null || f.IdEmpleado == idEmpleado)
-            .OrderBy(f => f.IdEmpleado)
-            .ThenBy(f => f.IdPersona)
-            .ToList();
+        // SC-005: filtro y paginación en la BD.
+        var tamanoPagina = Capa_Logica.Paginacion.VentanaPaginas.NormalizarTamano(tamano, 25);
+        var resultado = await _familiarData.ListarPagina(
+            f => idEmpleado == null || f.IdEmpleado == idEmpleado,
+            f => f.OrderBy(x => x.IdEmpleado).ThenBy(x => x.IdPersona),
+            pagina, tamanoPagina);
+        var familiares = resultado.Registros;
+        ViewBag.Paginador = new Proyecto_Evo_RRLL.Models.ViewModels.PaginadorModelo(resultado.NumeroPagina, resultado.TotalPaginas, resultado.Total, nameof(Index),
+            new Dictionary<string, string?> { ["idEmpleado"] = idEmpleado?.ToString() }, tamanoPagina, "familiares");
         var personas = (await _personaData.Listar()).ToDictionary(p => p.IdPersona);
         var fichas = familiares
             .Select(f => FamiliarFicha.Desde(f, personas.GetValueOrDefault(f.IdPersona), null))

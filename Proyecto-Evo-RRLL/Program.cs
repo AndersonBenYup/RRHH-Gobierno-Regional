@@ -60,7 +60,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AgregarCapaDatos(cadenaConexion);
 builder.Services.AgregarCapaLogica();
 
-// SC-005: health check para el monitoreo de Azure (GET /salud).
+// SC-005: health check para el monitoreo de Azure (GET /estado; /salud es el módulo de Salud).
 builder.Services.AddHealthChecks().AddCheck<Proyecto_Evo_RRLL.Salud.BaseDatosHealthCheck>("base-de-datos");
 
 // Seguridad (IOptions): clave inicial del admin, intentos y minutos de bloqueo. Se valida al arrancar.
@@ -179,7 +179,7 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 // Sin sesión y sin límite de peticiones: lo consulta el monitoreo de Azure.
-app.MapHealthChecks("/salud").AllowAnonymous().DisableRateLimiting();
+app.MapHealthChecks("/estado").AllowAnonymous().DisableRateLimiting();
 
 app.Run();
 
