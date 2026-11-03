@@ -133,13 +133,7 @@ public class AsistenciaController : Controller
     [HttpGet]
     public async Task<IActionResult> Marcaciones(DateTime? desde, DateTime? hasta, int? idEmpleado)
     {
-        var registros = (await _marcacionData.Listar())
-            .Where(m => idEmpleado is null || m.IdEmpleado == idEmpleado)
-            .Where(m => !desde.HasValue || m.Fecha.Date >= desde.Value.Date)
-            .Where(m => !hasta.HasValue || m.Fecha.Date <= hasta.Value.Date)
-            .OrderByDescending(m => m.Fecha)
-            .ThenBy(m => m.IdEmpleado)
-            .Take(2000);
+        var registros = await _marcacionData.ListarRecientes(idEmpleado, desde, hasta);
 
         var horarios = await _horarioData.Listar();
 
@@ -223,13 +217,7 @@ public class AsistenciaController : Controller
     [HttpGet]
     public async Task<IActionResult> RegDiario(DateTime? desde, DateTime? hasta, int? idEmpleado)
     {
-        var registros = (await _regAsisData.Listar())
-            .Where(m => idEmpleado is null || m.IdEmpleado == idEmpleado)
-            .Where(m => !desde.HasValue || m.Fecha.Date >= desde.Value.Date)
-            .Where(m => !hasta.HasValue || m.Fecha.Date <= hasta.Value.Date)
-            .OrderByDescending(m => m.Fecha)
-            .ThenBy(m => m.IdEmpleado)
-            .Take(2000);
+        var registros = await _regAsisData.ListarRecientes(idEmpleado, desde, hasta);
 
         ViewBag.Desde = desde;
         ViewBag.Hasta = hasta;

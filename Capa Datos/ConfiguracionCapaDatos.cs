@@ -24,6 +24,8 @@ public static class ConfiguracionCapaDatos
         AgregarEspecifico<IPersonaRepositorio, PersonaRepositorio, Persona>(servicios);
         AgregarEspecifico<IUsuarioRepositorio, UsuarioRepositorio, Usuario>(servicios);
         AgregarEspecifico<IAsistenciaRepositorio, AsistenciaRepositorio, Asistencia>(servicios);
+        AgregarEspecifico<IMarcacionRepositorio, MarcacionRepositorio, Marcacion>(servicios);
+        AgregarEspecifico<IRegAsisDiarioRepositorio, RegAsisDiarioRepositorio, RegAsisDiario>(servicios);
 
         servicios.AddScoped<IBitacoraRepositorio, BitacoraRepositorio>();
         servicios.AddScoped<ISecuenciaService, SecuenciaService>();
