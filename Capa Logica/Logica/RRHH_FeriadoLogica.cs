@@ -7,5 +7,5 @@ public class RRHH_FeriadoLogica : LogicaBase<RRHH_Feriado>
 {
     public RRHH_FeriadoLogica(IRepositorio<RRHH_Feriado> repositorio) : base(repositorio) { }
 
-    public Task<RRHH_Feriado?> Obtener(int idFeriadoParam) => Repositorio.Obtener(idFeriadoParam);
+    public Task<RRHH_Feriado?> Obtener(int idFeriado) => Repositorio.Obtener(idFeriado);
 }

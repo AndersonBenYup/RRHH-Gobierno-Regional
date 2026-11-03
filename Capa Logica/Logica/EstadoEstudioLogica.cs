@@ -7,5 +7,5 @@ public class EstadoEstudioLogica : LogicaBase<EstadoEstudio>
 {
     public EstadoEstudioLogica(IRepositorio<EstadoEstudio> repositorio) : base(repositorio) { }
 
-    public Task<EstadoEstudio?> Obtener(int IdEstadoEstudioParam) => Repositorio.Obtener(IdEstadoEstudioParam);
+    public Task<EstadoEstudio?> Obtener(int idEstadoEstudio) => Repositorio.Obtener(idEstadoEstudio);
 }

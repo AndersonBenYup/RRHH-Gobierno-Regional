@@ -16,5 +16,5 @@ public class RegAsisDiarioLogica : LogicaBase<RegAsisDiario>
     public Task<List<RegAsisDiario>> ListarRecientes(int? idEmpleado, DateTime? desde, DateTime? hasta)
         => _registros.ListarRecientes(idEmpleado, desde, hasta, MaximoListado);
 
-    public Task<RegAsisDiario?> Obtener(DateTime FechaParam, int IdEmpleadoParam) => Repositorio.Obtener(FechaParam, IdEmpleadoParam);
+    public Task<RegAsisDiario?> Obtener(DateTime fecha, int idEmpleado) => Repositorio.Obtener(fecha, idEmpleado);
 }

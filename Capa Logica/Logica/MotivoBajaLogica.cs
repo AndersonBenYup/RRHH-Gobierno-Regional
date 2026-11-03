@@ -7,5 +7,5 @@ public class MotivoBajaLogica : LogicaBase<MotivoBaja>
 {
     public MotivoBajaLogica(IRepositorio<MotivoBaja> repositorio) : base(repositorio) { }
 
-    public Task<MotivoBaja?> Obtener(int idMotivoBajaParam) => Repositorio.Obtener(idMotivoBajaParam);
+    public Task<MotivoBaja?> Obtener(int idMotivoBaja) => Repositorio.Obtener(idMotivoBaja);
 }

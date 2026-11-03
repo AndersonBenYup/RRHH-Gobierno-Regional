@@ -7,5 +7,5 @@ public class ProvinciaLogica : LogicaBase<Provincia>
 {
     public ProvinciaLogica(IRepositorio<Provincia> repositorio) : base(repositorio) { }
 
-    public Task<Provincia?> Obtener(string CodDepartamentoParam, string CodProvinciaParam) => Repositorio.Obtener(CodDepartamentoParam, CodProvinciaParam);
+    public Task<Provincia?> Obtener(string codDepartamento, string codProvincia) => Repositorio.Obtener(codDepartamento, codProvincia);
 }

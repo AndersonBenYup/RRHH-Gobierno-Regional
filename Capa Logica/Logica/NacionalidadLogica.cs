@@ -7,5 +7,5 @@ public class NacionalidadLogica : LogicaBase<Nacionalidad>
 {
     public NacionalidadLogica(IRepositorio<Nacionalidad> repositorio) : base(repositorio) { }
 
-    public Task<Nacionalidad?> Obtener(int IdNacionalidadParam) => Repositorio.Obtener(IdNacionalidadParam);
+    public Task<Nacionalidad?> Obtener(int idNacionalidad) => Repositorio.Obtener(idNacionalidad);
 }

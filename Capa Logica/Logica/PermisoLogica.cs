@@ -14,7 +14,7 @@ public class PermisoLogica : LogicaBase<Permiso>
 
     public PermisoLogica(IPermisoRepositorio permisos) : base(permisos) => _permisos = permisos;
 
-    public Task<Permiso?> Obtener(int IdEmpleadoParam, int NPermisoParam) => Repositorio.Obtener(IdEmpleadoParam, NPermisoParam);
+    public Task<Permiso?> Obtener(int idEmpleado, int nPermiso) => Repositorio.Obtener(idEmpleado, nPermiso);
 
     /// <summary>SC-005: filtro por empleado y paginación resueltos en la BD.</summary>
     public Task<Pagina<Permiso>> ListarPaginado(int? idEmpleado, int pagina, int tamanoPagina = TamanoPagina)

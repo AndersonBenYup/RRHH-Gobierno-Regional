@@ -7,5 +7,5 @@ public class RegimenPensionLogica : LogicaBase<RegimenPension>
 {
     public RegimenPensionLogica(IRepositorio<RegimenPension> repositorio) : base(repositorio) { }
 
-    public Task<RegimenPension?> Obtener(int IdRegimenPenParam) => Repositorio.Obtener(IdRegimenPenParam);
+    public Task<RegimenPension?> Obtener(int idRegimenPen) => Repositorio.Obtener(idRegimenPen);
 }

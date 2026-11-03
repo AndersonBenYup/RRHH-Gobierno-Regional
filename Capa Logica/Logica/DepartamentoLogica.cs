@@ -7,5 +7,5 @@ public class DepartamentoLogica : LogicaBase<Departamento>
 {
     public DepartamentoLogica(IRepositorio<Departamento> repositorio) : base(repositorio) { }
 
-    public Task<Departamento?> Obtener(string CodDepartamentoParam) => Repositorio.Obtener(CodDepartamentoParam);
+    public Task<Departamento?> Obtener(string codDepartamento) => Repositorio.Obtener(codDepartamento);
 }

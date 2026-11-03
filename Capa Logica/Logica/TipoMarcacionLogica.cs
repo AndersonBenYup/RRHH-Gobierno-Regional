@@ -7,5 +7,5 @@ public class TipoMarcacionLogica : LogicaBase<TipoMarcacion>
 {
     public TipoMarcacionLogica(IRepositorio<TipoMarcacion> repositorio) : base(repositorio) { }
 
-    public Task<TipoMarcacion?> Obtener(string CodigoParam) => Repositorio.Obtener(CodigoParam);
+    public Task<TipoMarcacion?> Obtener(string codigo) => Repositorio.Obtener(codigo);
 }

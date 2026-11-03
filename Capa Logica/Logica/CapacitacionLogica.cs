@@ -7,5 +7,5 @@ public class CapacitacionLogica : LogicaBase<Capacitacion>
 {
     public CapacitacionLogica(IRepositorio<Capacitacion> repositorio) : base(repositorio) { }
 
-    public Task<Capacitacion?> Obtener(int IdCapacitacionParam) => Repositorio.Obtener(IdCapacitacionParam);
+    public Task<Capacitacion?> Obtener(int idCapacitacion) => Repositorio.Obtener(idCapacitacion);
 }

@@ -7,5 +7,5 @@ public class TipoDocIDLogica : LogicaBase<TipoDocID>
 {
     public TipoDocIDLogica(IRepositorio<TipoDocID> repositorio) : base(repositorio) { }
 
-    public Task<TipoDocID?> Obtener(int TipoDocIDParam) => Repositorio.Obtener(TipoDocIDParam);
+    public Task<TipoDocID?> Obtener(int tipoDocID) => Repositorio.Obtener(tipoDocID);
 }

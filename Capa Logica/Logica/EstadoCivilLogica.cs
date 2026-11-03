@@ -7,5 +7,5 @@ public class EstadoCivilLogica : LogicaBase<EstadoCivil>
 {
     public EstadoCivilLogica(IRepositorio<EstadoCivil> repositorio) : base(repositorio) { }
 
-    public Task<EstadoCivil?> Obtener(int IdEstadoCivilParam) => Repositorio.Obtener(IdEstadoCivilParam);
+    public Task<EstadoCivil?> Obtener(int idEstadoCivil) => Repositorio.Obtener(idEstadoCivil);
 }

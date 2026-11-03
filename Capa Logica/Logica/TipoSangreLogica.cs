@@ -7,5 +7,5 @@ public class TipoSangreLogica : LogicaBase<TipoSangre>
 {
     public TipoSangreLogica(IRepositorio<TipoSangre> repositorio) : base(repositorio) { }
 
-    public Task<TipoSangre?> Obtener(int IdTipoSangreParam) => Repositorio.Obtener(IdTipoSangreParam);
+    public Task<TipoSangre?> Obtener(int idTipoSangre) => Repositorio.Obtener(idTipoSangre);
 }

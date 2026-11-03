@@ -7,5 +7,5 @@ public class TitulosEmpleadoLogica : LogicaBase<TitulosEmpleado>
 {
     public TitulosEmpleadoLogica(IRepositorio<TitulosEmpleado> repositorio) : base(repositorio) { }
 
-    public Task<TitulosEmpleado?> Obtener(int IdTituloParam) => Repositorio.Obtener(IdTituloParam);
+    public Task<TitulosEmpleado?> Obtener(int idTitulo) => Repositorio.Obtener(idTitulo);
 }

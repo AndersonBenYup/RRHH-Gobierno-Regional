@@ -7,5 +7,5 @@ public class EstudiosRealizadoLogica : LogicaBase<EstudiosRealizado>
 {
     public EstudiosRealizadoLogica(IRepositorio<EstudiosRealizado> repositorio) : base(repositorio) { }
 
-    public Task<EstudiosRealizado?> Obtener(int IdTipoEstudiosParam, int IdEmpleadoParam, int CorrelativoParam) => Repositorio.Obtener(IdTipoEstudiosParam, IdEmpleadoParam, CorrelativoParam);
+    public Task<EstudiosRealizado?> Obtener(int idTipoEstudios, int idEmpleado, int correlativo) => Repositorio.Obtener(idTipoEstudios, idEmpleado, correlativo);
 }
