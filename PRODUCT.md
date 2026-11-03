@@ -62,7 +62,7 @@ navegador como en el servidor.
 - Tono institucional, sobrio y confiable.
 - En las pantallas públicas (inicio de sesión) se trata al usuario de "usted"; en el resto, los textos son directos.
 - Los errores dicen qué pasó y cómo corregirlo.
-- Dirección "Institucional sobrio", elegida en SC-011: azul petróleo como color de acción e IBM Plex Sans.
+- Dirección "Institucional sobrio", elegida en SC-011: azul petróleo como color de acción e Public Sans.
   El detalle está implementado en `Proyecto-Evo-RRLL/Estilos/app.css`.
 
 ## Evidence on Hand
