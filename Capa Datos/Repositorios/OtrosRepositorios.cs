@@ -43,6 +43,34 @@ public class AsistenciaRepositorio : RepositorioBase<Asistencia>, IAsistenciaRep
         => await Tabla.AsNoTracking().Where(a => a.Fecha >= desde && a.Fecha < hastaExclusivo).ToListAsync();
 }
 
+public class MarcacionRepositorio : RepositorioBase<Marcacion>, IMarcacionRepositorio
+{
+    public MarcacionRepositorio(EvoRRLDbContext contexto) : base(contexto) { }
+
+    public async Task<List<Marcacion>> ListarRecientes(int? idEmpleado, DateTime? desde, DateTime? hasta, int maximo)
+    {
+        var consulta = Tabla.AsNoTracking();
+        if (idEmpleado is not null) consulta = consulta.Where(m => m.IdEmpleado == idEmpleado);
+        if (desde is not null) consulta = consulta.Where(m => m.Fecha >= desde.Value.Date);
+        if (hasta is not null) consulta = consulta.Where(m => m.Fecha < hasta.Value.Date.AddDays(1));
+        return await consulta.OrderByDescending(m => m.Fecha).ThenBy(m => m.IdEmpleado).Take(maximo).ToListAsync();
+    }
+}
+
+public class RegAsisDiarioRepositorio : RepositorioBase<RegAsisDiario>, IRegAsisDiarioRepositorio
+{
+    public RegAsisDiarioRepositorio(EvoRRLDbContext contexto) : base(contexto) { }
+
+    public async Task<List<RegAsisDiario>> ListarRecientes(int? idEmpleado, DateTime? desde, DateTime? hasta, int maximo)
+    {
+        var consulta = Tabla.AsNoTracking();
+        if (idEmpleado is not null) consulta = consulta.Where(r => r.IdEmpleado == idEmpleado);
+        if (desde is not null) consulta = consulta.Where(r => r.Fecha >= desde.Value.Date);
+        if (hasta is not null) consulta = consulta.Where(r => r.Fecha < hasta.Value.Date.AddDays(1));
+        return await consulta.OrderByDescending(r => r.Fecha).ThenBy(r => r.IdEmpleado).Take(maximo).ToListAsync();
+    }
+}
+
 /// <summary>Bitácora tolerante: si la tabla aún no existe en la BD, no rompe la operación principal.</summary>
 public class BitacoraRepositorio : IBitacoraRepositorio
 {
