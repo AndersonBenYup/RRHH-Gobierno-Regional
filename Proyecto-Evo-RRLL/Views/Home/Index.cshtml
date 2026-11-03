@@ -102,16 +102,11 @@
     </div>
 </div>
 
-@* SC-011: el inicio se anima solo la primera vez de la sesión (y nunca con "reducir movimiento").
+@* SC-011: el inicio se anima en cada visita, salvo con "reducir movimiento".
    Este script corre antes de que se pinten los indicadores, así que no se ve el número final saltar a 0. *@
 <script>
     (function () {
-        var animar = false;
-        try {
-            var reducir = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-            animar = !reducir && !sessionStorage.getItem('evo-inicio-animado');
-            sessionStorage.setItem('evo-inicio-animado', '1');
-        } catch (e) { }
+        var animar = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
         window.evoAnimarInicio = animar;
         if (animar) document.querySelectorAll('[data-contar]').forEach(function (el) { el.textContent = '0'; });
     })();
@@ -187,14 +182,18 @@
             }
 
             Chart.defaults.font.family = '"IBM Plex Sans", system-ui, sans-serif';
-            // SC-011: entrada corta (300 ms). Las barras crecen desde 0 y la dona se dibuja girando.
-            Chart.defaults.animation = window.evoAnimarInicio ? { duration: 300, easing: 'easeOutQuart' } : false;
+            // SC-011: las barras crecen desde 0 una tras otra y la dona se dibuja girando (unos 0,7 s en total).
+            Chart.defaults.animation = window.evoAnimarInicio ? {
+                duration: 650,
+                easing: 'easeOutQuart',
+                delay: function (ctx) { return ctx.type === 'data' && ctx.mode === 'default' ? Math.min(ctx.dataIndex, 8) * 35 : 0; }
+            } : false;
             var t = tema();
 
-            // Indicadores: cuentan desde 0 hasta el valor real en 300 ms
+            // Indicadores: cuentan desde 0 hasta el valor real en 0,7 s
             if (window.evoAnimarInicio) {
                 var contadores = document.querySelectorAll('[data-contar]');
-                var t0 = performance.now(), DURACION = 300;
+                var t0 = performance.now(), DURACION = 700;
                 var listo = false;
                 function pintar(k) {
                     var e = 1 - Math.pow(1 - k, 3);

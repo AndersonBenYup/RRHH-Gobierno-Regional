@@ -54,40 +54,40 @@
             </a>
             <div class="sidebar-section">PRINCIPAL</div>
             <nav class="sidebar-nav">
-                <a class="sidebar-link @(controlador == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">@if (controlador == "Home") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-speedometer2"></i><span>Inicio</span>
                 </a>
-                <a class="sidebar-link @(controlador == "Empleado" ? "active" : "")" asp-controller="Empleado" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Empleado" ? "active" : "")" asp-controller="Empleado" asp-action="Index">@if (controlador == "Empleado") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-people"></i><span>Personal</span>
                 </a>
-                <a class="sidebar-link @(controlador == "Salud" ? "active" : "")" asp-controller="Salud" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Salud" ? "active" : "")" asp-controller="Salud" asp-action="Index">@if (controlador == "Salud") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-heart-pulse"></i><span>Salud</span>
                 </a>
-                <a class="sidebar-link @(controlador == "Familia" ? "active" : "")" asp-controller="Familia" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Familia" ? "active" : "")" asp-controller="Familia" asp-action="Index">@if (controlador == "Familia") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-people-fill"></i><span>Familia</span>
                 </a>
-                <a class="sidebar-link @(controlador == "Asistencia" ? "active" : "")" asp-controller="Asistencia" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Asistencia" ? "active" : "")" asp-controller="Asistencia" asp-action="Index">@if (controlador == "Asistencia") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-clock-history"></i><span>Asistencia</span>
                 </a>
-                <a class="sidebar-link @(controlador == "Feriado" ? "active" : "")" asp-controller="Feriado" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Feriado" ? "active" : "")" asp-controller="Feriado" asp-action="Index">@if (controlador == "Feriado") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-calendar-event"></i><span>Feriados</span>
                 </a>
-                <a class="sidebar-link @(controlador == "Capacitacion" ? "active" : "")" asp-controller="Capacitacion" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Capacitacion" ? "active" : "")" asp-controller="Capacitacion" asp-action="Index">@if (controlador == "Capacitacion") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-mortarboard"></i><span>Capacitación</span>
                 </a>
-                <a class="sidebar-link @(controlador == "Permiso" ? "active" : "")" asp-controller="Permiso" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Permiso" ? "active" : "")" asp-controller="Permiso" asp-action="Index">@if (controlador == "Permiso") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-calendar-check"></i><span>Permisos</span>
                 </a>
-                <a class="sidebar-link @(controlador == "HistorialLaboral" ? "active" : "")" asp-controller="HistorialLaboral" asp-action="Index">
+                <a class="sidebar-link @(controlador == "HistorialLaboral" ? "active" : "")" asp-controller="HistorialLaboral" asp-action="Index">@if (controlador == "HistorialLaboral") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-briefcase"></i><span>Historial Laboral</span>
                 </a>
-                <a class="sidebar-link @(controlador == "Comportamiento" ? "active" : "")" asp-controller="Comportamiento" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Comportamiento" ? "active" : "")" asp-controller="Comportamiento" asp-action="Index">@if (controlador == "Comportamiento") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-clipboard-data"></i><span>Comportamiento</span>
                 </a>
-                <a class="sidebar-link @(controlador == "Vivienda" ? "active" : "")" asp-controller="Vivienda" asp-action="Index">
+                <a class="sidebar-link @(controlador == "Vivienda" ? "active" : "")" asp-controller="Vivienda" asp-action="Index">@if (controlador == "Vivienda") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-house"></i><span>Vivienda</span>
                 </a>
-                <a class="sidebar-link @(controlador == "EstructuraOrganiz" ? "active" : "")" asp-controller="EstructuraOrganiz" asp-action="Index">
+                <a class="sidebar-link @(controlador == "EstructuraOrganiz" ? "active" : "")" asp-controller="EstructuraOrganiz" asp-action="Index">@if (controlador == "EstructuraOrganiz") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                     <i class="bi bi-diagram-3"></i><span>Estructura orgánica</span>
                 </a>
 
@@ -95,7 +95,7 @@
                 {
                     <div class="sidebar-section">SEGURIDAD</div>
                     <div class="sidebar-submenu">
-                        <a class="sidebar-link @(controlador == "SeguridadAdmin" ? "active" : "")" asp-controller="SeguridadAdmin" asp-action="Usuarios">
+                        <a class="sidebar-link @(controlador == "SeguridadAdmin" ? "active" : "")" asp-controller="SeguridadAdmin" asp-action="Usuarios">@if (controlador == "SeguridadAdmin") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                             <i class="bi bi-person-gear"></i><span>Usuarios y roles</span>
                         </a>
                         <a class="sidebar-link" asp-controller="SeguridadAdmin" asp-action="Actividad">
@@ -106,7 +106,7 @@
 
                 <div class="sidebar-section">ADMINISTRACIÓN</div>
                 <div class="sidebar-submenu">
-                    <a class="sidebar-link @(controlador == "Catalogo" ? "active" : "")" data-bs-toggle="collapse" href="#menuCatalogo" role="button" aria-expanded="false" aria-controls="menuCatalogo">
+                    <a class="sidebar-link @(controlador == "Catalogo" ? "active" : "")" data-bs-toggle="collapse" href="#menuCatalogo" role="button" aria-expanded="false" aria-controls="menuCatalogo">@if (controlador == "Catalogo") { <span class="sidebar-indicador" aria-hidden="true"></span> }
                         <i class="bi bi-grid-1x2"></i><span>Mantenimiento</span><i class="bi bi-chevron-down ms-auto submenu-caret"></i>
                     </a>
                     <div class="collapse @(controlador == "Catalogo" ? "show" : "")" id="menuCatalogo">
