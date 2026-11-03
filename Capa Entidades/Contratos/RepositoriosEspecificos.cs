@@ -37,6 +37,18 @@ public interface IAsistenciaRepositorio : IRepositorio<Asistencia>
     Task<List<Asistencia>> ListarEntreFechas(DateTime desde, DateTime hastaExclusivo);
 }
 
+/// <summary>Marcaciones del reloj: el filtro y el límite se aplican en la BD (la tabla tiene más de 200 000 filas).</summary>
+public interface IMarcacionRepositorio : IRepositorio<Marcacion>
+{
+    Task<List<Marcacion>> ListarRecientes(int? idEmpleado, DateTime? desde, DateTime? hasta, int maximo);
+}
+
+/// <summary>Registro diario de asistencia: el filtro y el límite se aplican en la BD (más de 250 000 filas).</summary>
+public interface IRegAsisDiarioRepositorio : IRepositorio<RegAsisDiario>
+{
+    Task<List<RegAsisDiario>> ListarRecientes(int? idEmpleado, DateTime? desde, DateTime? hasta, int maximo);
+}
+
 public interface IBitacoraRepositorio
 {
     Task Registrar(string usuario, string accion, string entidad, string? detalle = null);
