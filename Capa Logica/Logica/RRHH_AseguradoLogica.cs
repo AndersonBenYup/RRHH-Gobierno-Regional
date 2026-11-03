@@ -7,5 +7,5 @@ public class RRHH_AseguradoLogica : LogicaBase<RRHH_Asegurado>
 {
     public RRHH_AseguradoLogica(IRepositorio<RRHH_Asegurado> repositorio) : base(repositorio) { }
 
-    public Task<RRHH_Asegurado?> Obtener(int idEmpleadoParam, int NroBeneficiarioParam) => Repositorio.Obtener(idEmpleadoParam, NroBeneficiarioParam);
+    public Task<RRHH_Asegurado?> Obtener(int idEmpleado, int nroBeneficiario) => Repositorio.Obtener(idEmpleado, nroBeneficiario);
 }

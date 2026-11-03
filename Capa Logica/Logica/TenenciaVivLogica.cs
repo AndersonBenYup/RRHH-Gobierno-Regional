@@ -7,5 +7,5 @@ public class TenenciaVivLogica : LogicaBase<TenenciaViv>
 {
     public TenenciaVivLogica(IRepositorio<TenenciaViv> repositorio) : base(repositorio) { }
 
-    public Task<TenenciaViv?> Obtener(int IdTenenciaParam) => Repositorio.Obtener(IdTenenciaParam);
+    public Task<TenenciaViv?> Obtener(int idTenencia) => Repositorio.Obtener(idTenencia);
 }

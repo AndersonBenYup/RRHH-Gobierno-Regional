@@ -7,5 +7,5 @@ public class EstadoAsistenciaLogica : LogicaBase<EstadoAsistencia>
 {
     public EstadoAsistenciaLogica(IRepositorio<EstadoAsistencia> repositorio) : base(repositorio) { }
 
-    public Task<EstadoAsistencia?> Obtener(string CodigoParam) => Repositorio.Obtener(CodigoParam);
+    public Task<EstadoAsistencia?> Obtener(string codigo) => Repositorio.Obtener(codigo);
 }

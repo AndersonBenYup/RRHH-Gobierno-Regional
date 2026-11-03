@@ -7,5 +7,5 @@ public class RRHH_FuncFamLogica : LogicaBase<RRHH_FuncFam>
 {
     public RRHH_FuncFamLogica(IRepositorio<RRHH_FuncFam> repositorio) : base(repositorio) { }
 
-    public Task<RRHH_FuncFam?> Obtener(int IdEmpleadoParam) => Repositorio.Obtener(IdEmpleadoParam);
+    public Task<RRHH_FuncFam?> Obtener(int idEmpleado) => Repositorio.Obtener(idEmpleado);
 }

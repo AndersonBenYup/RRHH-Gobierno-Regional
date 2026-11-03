@@ -7,5 +7,5 @@ public class TipoPermisoLogica : LogicaBase<TipoPermiso>
 {
     public TipoPermisoLogica(IRepositorio<TipoPermiso> repositorio) : base(repositorio) { }
 
-    public Task<TipoPermiso?> Obtener(int idTipoPermisoParam) => Repositorio.Obtener(idTipoPermisoParam);
+    public Task<TipoPermiso?> Obtener(int idTipoPermiso) => Repositorio.Obtener(idTipoPermiso);
 }

@@ -16,5 +16,5 @@ public class MarcacionLogica : LogicaBase<Marcacion>
     public Task<List<Marcacion>> ListarRecientes(int? idEmpleado, DateTime? desde, DateTime? hasta)
         => _registros.ListarRecientes(idEmpleado, desde, hasta, MaximoListado);
 
-    public Task<Marcacion?> Obtener(DateTime FechaParam, int IdEmpleadoParam) => Repositorio.Obtener(FechaParam, IdEmpleadoParam);
+    public Task<Marcacion?> Obtener(DateTime fecha, int idEmpleado) => Repositorio.Obtener(fecha, idEmpleado);
 }

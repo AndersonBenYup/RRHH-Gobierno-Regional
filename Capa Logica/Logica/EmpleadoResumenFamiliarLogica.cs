@@ -7,5 +7,5 @@ public class EmpleadoResumenFamiliarLogica : LogicaBase<EmpleadoResumenFamiliar>
 {
     public EmpleadoResumenFamiliarLogica(IRepositorio<EmpleadoResumenFamiliar> repositorio) : base(repositorio) { }
 
-    public Task<EmpleadoResumenFamiliar?> Obtener(int IdEmpleadoParam) => Repositorio.Obtener(IdEmpleadoParam);
+    public Task<EmpleadoResumenFamiliar?> Obtener(int idEmpleado) => Repositorio.Obtener(idEmpleado);
 }

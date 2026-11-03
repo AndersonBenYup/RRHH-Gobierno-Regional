@@ -7,5 +7,5 @@ public class DistritoLogica : LogicaBase<Distrito>
 {
     public DistritoLogica(IRepositorio<Distrito> repositorio) : base(repositorio) { }
 
-    public Task<Distrito?> Obtener(string IdUbigeoParam) => Repositorio.Obtener(IdUbigeoParam);
+    public Task<Distrito?> Obtener(string idUbigeo) => Repositorio.Obtener(idUbigeo);
 }

@@ -7,5 +7,5 @@ public class CargoLogica : LogicaBase<Cargo>
 {
     public CargoLogica(IRepositorio<Cargo> repositorio) : base(repositorio) { }
 
-    public Task<Cargo?> Obtener(int IdCargoParam) => Repositorio.Obtener(IdCargoParam);
+    public Task<Cargo?> Obtener(int idCargo) => Repositorio.Obtener(idCargo);
 }

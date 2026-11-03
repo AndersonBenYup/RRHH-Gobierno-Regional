@@ -7,5 +7,5 @@ public class UbigeoLogica : LogicaBase<Ubigeo>
 {
     public UbigeoLogica(IRepositorio<Ubigeo> repositorio) : base(repositorio) { }
 
-    public Task<Ubigeo?> Obtener(string IdUbigeoParam) => Repositorio.Obtener(IdUbigeoParam);
+    public Task<Ubigeo?> Obtener(string idUbigeo) => Repositorio.Obtener(idUbigeo);
 }

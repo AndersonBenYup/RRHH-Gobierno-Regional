@@ -7,5 +7,5 @@ public class TipoVivLogica : LogicaBase<TipoViv>
 {
     public TipoVivLogica(IRepositorio<TipoViv> repositorio) : base(repositorio) { }
 
-    public Task<TipoViv?> Obtener(int IdTipoParam) => Repositorio.Obtener(IdTipoParam);
+    public Task<TipoViv?> Obtener(int idTipo) => Repositorio.Obtener(idTipo);
 }

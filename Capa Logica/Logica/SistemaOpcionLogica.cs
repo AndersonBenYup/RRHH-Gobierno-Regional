@@ -7,5 +7,5 @@ public class SistemaOpcionLogica : LogicaBase<SistemaOpcion>
 {
     public SistemaOpcionLogica(IRepositorio<SistemaOpcion> repositorio) : base(repositorio) { }
 
-    public Task<SistemaOpcion?> Obtener(string IdSistemaOpcionParam) => Repositorio.Obtener(IdSistemaOpcionParam);
+    public Task<SistemaOpcion?> Obtener(string idSistemaOpcion) => Repositorio.Obtener(idSistemaOpcion);
 }

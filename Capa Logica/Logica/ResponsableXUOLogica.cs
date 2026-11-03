@@ -7,5 +7,5 @@ public class ResponsableXUOLogica : LogicaBase<ResponsableXUO>
 {
     public ResponsableXUOLogica(IRepositorio<ResponsableXUO> repositorio) : base(repositorio) { }
 
-    public Task<ResponsableXUO?> Obtener(int IdResponsableParam) => Repositorio.Obtener(IdResponsableParam);
+    public Task<ResponsableXUO?> Obtener(int idResponsable) => Repositorio.Obtener(idResponsable);
 }
