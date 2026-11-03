@@ -10,12 +10,21 @@ namespace Capa_Datos;
 public class RepositorioBase<T> : IRepositorio<T> where T : class
 {
     protected readonly EvoRRLDbContext Contexto;
+    private readonly CacheCatalogos? _cache;
 
     public RepositorioBase(EvoRRLDbContext contexto) => Contexto = contexto;
 
+    /// <summary>Con caché: los catálogos pequeños (<see cref="CacheCatalogos.Tablas"/>) se leen de memoria.</summary>
+    public RepositorioBase(EvoRRLDbContext contexto, CacheCatalogos cache) : this(contexto) => _cache = cache;
+
     protected DbSet<T> Tabla => Contexto.Set<T>();
 
-    public virtual async Task<List<T>> Listar() => await Tabla.ToListAsync();
+    private bool UsaCache => _cache is not null && CacheCatalogos.EsCatalogo(typeof(T));
+
+    public virtual async Task<List<T>> Listar()
+        => UsaCache
+            ? await _cache!.ObtenerAsync(() => Tabla.AsNoTracking().ToListAsync())
+            : await Tabla.ToListAsync();
 
     public virtual async Task<T?> Obtener(params object[] claves) => await Tabla.FindAsync(claves);
 
@@ -23,17 +32,20 @@ public class RepositorioBase<T> : IRepositorio<T> where T : class
     {
         Tabla.Add(registro);
         await Contexto.SaveChangesAsync();
+        _cache?.Invalidar(typeof(T));
     }
 
     public virtual async Task Actualizar(T registro)
     {
         Tabla.Update(registro);
         await Contexto.SaveChangesAsync();
+        _cache?.Invalidar(typeof(T));
     }
 
     public virtual async Task Eliminar(T registro)
     {
         Tabla.Remove(registro);
         await Contexto.SaveChangesAsync();
+        _cache?.Invalidar(typeof(T));
     }
 }

@@ -24,8 +24,11 @@ public class CatalogoRepositorio : ICatalogoRepositorio
     };
 
     private readonly EvoRRLDbContext _contexto;
+    private readonly CacheCatalogos? _cache;
 
     public CatalogoRepositorio(EvoRRLDbContext contexto) => _contexto = contexto;
+
+    public CatalogoRepositorio(EvoRRLDbContext contexto, CacheCatalogos cache) : this(contexto) => _cache = cache;
 
     public bool EsEditable(string tabla) => EsTablaEditable(tabla);
 
@@ -86,6 +89,7 @@ public class CatalogoRepositorio : ICatalogoRepositorio
         ValidarEntidad(entidad);
         _contexto.Add(entidad);
         await _contexto.SaveChangesAsync();
+        _cache?.Invalidar(tabla);
     }
 
     public async Task Actualizar(string tabla, string[] ids, IReadOnlyDictionary<string, string> datos)
@@ -99,6 +103,7 @@ public class CatalogoRepositorio : ICatalogoRepositorio
         AplicarValores(tipo, actual, datos);
         ValidarEntidad(actual);
         await _contexto.SaveChangesAsync();
+        _cache?.Invalidar(tabla);
     }
 
     /// <summary>
@@ -128,6 +133,7 @@ public class CatalogoRepositorio : ICatalogoRepositorio
             ?? throw new InvalidOperationException("Registro no encontrado");
         _contexto.Remove(actual);
         await _contexto.SaveChangesAsync();
+        _cache?.Invalidar(tabla);
     }
 
     public string[] ClavesPrimarias(string tabla)
