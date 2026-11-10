@@ -44,6 +44,13 @@
 | --- | --- | --- | --- |
 | CP-RF05-01 | Motivo de prueba sin permisos asociados | Desaparece del catálogo y se muestra éxito | Pendiente de ejecución |
 | CP-RF05-02 | Motivo de prueba asociado a un permiso | El motivo y el permiso se conservan; se muestra el aviso de motivo en uso | Pendiente de ejecución |
+## Seguimiento T3 · SC-017 (RF-06) · Validar licencias que se otorgan una sola vez al año
+
+- **Rama y commit:** `feature/licencias-una-vez-al-ano`, `543d70d`.
+- **Componente:** `PermisoLogica.Validar` y `ReglaLicenciaAnual`, utilizados al registrar y editar permisos.
+- **Regla implementada para revisión:** los motivos 70, 76, 82 y 133 comparten un límite por empleado y año calendario de la fecha de inicio. Se excluye el permiso que se está editando.
+- **CP-RF06-01 a CP-RF06-06:** 6 pruebas automatizadas correctas. Cubren repetición del motivo, otro código del grupo, año distinto, empleado distinto, edición del propio registro y un motivo ajeno al grupo.
+- **Estado:** implementado según el supuesto indicado. Pendiente de confirmación del área usuaria y de evidencia funcional en la aplicación con una base de prueba.
 
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 

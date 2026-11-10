@@ -25,5 +25,12 @@ public class PermisoLogica : LogicaBase<Permiso>
 
     /// <summary>SC-008: reglas de negocio (fechas, horas y solapamiento) que se revisan antes de guardar.</summary>
     public async Task<List<ErrorValidacion>> Validar(Permiso permiso)
-        => ReglasPermiso.Validar(permiso, await _permisos.ListarPorEmpleado(permiso.IdEmpleado));
+    {
+        var registrados = await _permisos.ListarPorEmpleado(permiso.IdEmpleado);
+        var errores = ReglasPermiso.Validar(permiso, registrados);
+        if (errores.Count == 0 && ReglaLicenciaAnual.TieneOtraLicenciaDelMismoAnio(permiso, registrados))
+            errores.Add(new(nameof(Permiso.idMotivo), "El empleado ya tiene registrada una licencia de este grupo en el año de inicio."));
+
+        return errores;
+    }
 }
