@@ -2,6 +2,15 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## Seguimiento T3 · Teletrabajo
+
+| Solicitud | Rama y commit | Implementación | Caso y evidencia |
+| --- | --- | --- | --- |
+| SC-024 · RF-13 · Registrar periodos de teletrabajo | `feature/registro-de-teletrabajo`, `88c7765` | Permisos → Registrar teletrabajo. Guarda empleado, fechas y modalidad en `PeriodoTeletrabajo`. | CP-RF13-01: crear un periodo válido, comprobar su persistencia y rechazar fechas invertidas. Pendiente de ejecución con SQL Server. |
+| SC-025 · RF-14 · Reportar días de teletrabajo | `feature/reporte-de-dias-de-teletrabajo`, `6e4f31e` | Reporte por empleado y rango. Cuenta días calendario únicos y recorta los periodos al rango. | CP-RF14-01 y CP-RF14-02: recorte de rangos, solapamientos y cero días sin registros. Pruebas automatizadas aprobadas; captura pendiente. |
+
+Antes de la prueba funcional, ejecutar `Scripts/rf-13-crear-periodo-teletrabajo.sql` en una base de prueba. Los motivos históricos 125 y 126 quedan en el catálogo de permisos. El reporte utiliza la tabla nueva y su criterio de días calendario incluye fines de semana y feriados. Validar ese criterio con el área usuaria antes de publicar.
+
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
 Este documento explica las 7 solicitudes de cambio que se presentaron en la exposición de la Semana 9 (`Grupo5_EVO-RRHH_Semanas_1a9.pptx` y `temas-semanas/Grupo5_Gestion_del_Cambio.pptx`) y registradas en `docs/GESTION-DEL-CAMBIO.md`. Para cada una se revisó el código y se indica si realmente se cumplió. Sirve como base para la nueva revisión que se hace en el repositorio de despliegue en Azure, donde algunas solicitudes se reabren.
