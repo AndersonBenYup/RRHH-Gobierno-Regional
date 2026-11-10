@@ -2,10 +2,10 @@
 
 ## 1. Carátula
 
-Universidad Privada del Norte · Ingeniería de Sistemas Computacionales  
-Evolución y Configuración de Software · Sistema de gestión de asistencias  
-Grupo 5 · 10 de noviembre de 2026  
-Completar nombres de los integrantes, docente y sección con los datos oficiales del curso.
+- Universidad Privada del Norte · Ingeniería de Sistemas Computacionales
+- Evolución y Configuración de Software · Sistema de gestión de asistencias
+- Grupo 5 · 10 de noviembre de 2026
+- Completar nombres de los integrantes, docente y sección con los datos oficiales del curso.
 
 ## 2. Resumen ejecutivo del avance
 
