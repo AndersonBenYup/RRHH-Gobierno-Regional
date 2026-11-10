@@ -2,6 +2,23 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## Seguimiento T3
+
+### SC-013 · RF-02 · Consultar el histórico de turnos
+
+- **Estado inicial:** parcial. El historial permitía filtrar por empleado.
+- **Rama:** `feature/historico-de-turnos`. **Implementación:** `8f07a49`.
+- **Componente:** Asistencia → Horarios Temporales.
+- **Regla:** incluye los turnos que se cruzan con el rango, con fechas límite incluidas. Cada límite es opcional. Para registros sin fecha de fin se usa la fecha de inicio como fin al filtrar.
+- **Verificación técnica:** el proyecto web compiló con cero errores y cero advertencias.
+- **Estado:** implementado, pendiente de validación funcional y evidencia de pantalla.
+
+| Caso | Datos de prueba | Resultado esperado | Estado |
+| --- | --- | --- | --- |
+| CP-RF02-01 | Buscar al empleado A del 10 al 15 de noviembre. Turnos de A del 8 al 10, del 15 al 16 y del 16 al 18. Turno de B del 12 al 13. | Aparecen los primeros dos turnos de A. | Pendiente |
+| CP-RF02-02 | Buscar desde el 15 de noviembre con un turno del 15 sin fecha de fin y otro terminado el 14. | Aparece el turno del 15. | Pendiente |
+| CP-RF02-03 | Ingresar desde el 16 hasta el 15 de noviembre. | Se muestra el mensaje de rango inválido. | Pendiente |
+
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
 Este documento explica las 7 solicitudes de cambio que se presentaron en la exposición de la Semana 9 (`Grupo5_EVO-RRHH_Semanas_1a9.pptx` y `temas-semanas/Grupo5_Gestion_del_Cambio.pptx`) y registradas en `docs/GESTION-DEL-CAMBIO.md`. Para cada una se revisó el código y se indica si realmente se cumplió. Sirve como base para la nueva revisión que se hace en el repositorio de despliegue en Azure, donde algunas solicitudes se reabren.

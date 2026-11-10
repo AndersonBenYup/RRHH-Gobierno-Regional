@@ -33,7 +33,7 @@ Se reserva un código por RF para revisar lo existente y completar solo las brec
 | Solicitud | RF | Alcance | Prioridad T3 |
 | --- | --- | --- | --- |
 | SC-012 | RF-01 | Registrar turnos por periodos | Obligatorio |
-| SC-013 | RF-02 | Consultar histórico de turnos | Obligatorio |
+| SC-013 | RF-02 | Consultar histórico de turnos. Implementado, pendiente de prueba funcional | Obligatorio |
 | SC-014 | RF-03 | Impedir dos permisos el mismo día | Obligatorio |
 | SC-015 | RF-04 | Agregar motivos de permiso | Obligatorio |
 | SC-016 | RF-05 | Eliminar motivos de permiso | Obligatorio |
