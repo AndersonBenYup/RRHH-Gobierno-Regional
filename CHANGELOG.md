@@ -1,6 +1,6 @@
 # Changelog
 
-## Sin publicar
+## v1.7.0
 
 - SC-013 (RF-02): filtro por empleado y rango de fechas en Horarios Temporales.
 - RF-03: impedir dos permisos para el mismo empleado en un mismo día.
