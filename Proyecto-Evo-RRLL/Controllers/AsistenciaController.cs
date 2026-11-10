@@ -293,16 +293,28 @@ public class AsistenciaController : Controller
     // ---------- Horarios temporales ----------
 
     [HttpGet]
-    public async Task<IActionResult> HorariosTemporal(int? idEmpleado)
+    public async Task<IActionResult> HorariosTemporal(int? idEmpleado, DateOnly? desde, DateOnly? hasta)
     {
-        var registros = (await _horarioTemporalData.Listar())
-            .Where(h => idEmpleado is null || h.idEmpleado == idEmpleado)
-            .OrderByDescending(h => h.FechaInicio);
+        if (desde.HasValue && hasta.HasValue && desde > hasta)
+            ModelState.AddModelError("", "La fecha desde debe ser anterior o igual a la fecha hasta.");
+
+        var registros = new List<HorarioTemporal>();
+        if (ModelState.IsValid)
+        {
+            registros = (await _horarioTemporalData.Listar())
+                .Where(h => idEmpleado is null || h.idEmpleado == idEmpleado)
+                .Where(h => !desde.HasValue || (h.FechaFin ?? h.FechaInicio) >= desde)
+                .Where(h => !hasta.HasValue || h.FechaInicio <= hasta)
+                .OrderByDescending(h => h.FechaInicio)
+                .ToList();
+        }
 
         ViewBag.IdEmpleado = idEmpleado;
+        ViewBag.Desde = desde?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
         ViewBag.Empleados = await EmpleadosAsync();
         ViewBag.Horarios = await _horarioData.Listar();
-        return View(registros.ToList());
+        return View(registros);
     }
 
     [HttpGet]
