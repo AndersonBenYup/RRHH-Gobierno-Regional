@@ -150,6 +150,43 @@ public class PermisoController : Controller
         return RedirectToAction(nameof(Index), new { idEmpleado });
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Teletrabajo(int? idEmpleado)
+    {
+        ViewBag.Empleados = await EmpleadosAsync();
+        return View(new PeriodoTeletrabajo { IdEmpleado = idEmpleado ?? 0 });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Teletrabajo(
+        [Bind("IdEmpleado,FechaInicio,FechaFin,Parcial")] PeriodoTeletrabajo modelo,
+        [FromServices] IRepositorio<PeriodoTeletrabajo> periodos,
+        [FromServices] ILogger<PermisoController> logger)
+    {
+        var empleados = await EmpleadosAsync();
+        if (ModelState.IsValid && !empleados.Any(e => e.Id == modelo.IdEmpleado))
+            ModelState.AddModelError(nameof(modelo.IdEmpleado), "Seleccione un empleado válido.");
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                await periodos.Crear(modelo);
+                TempData["MensajeExito"] = "Periodo de teletrabajo registrado.";
+                return RedirectToAction(nameof(Teletrabajo), new { idEmpleado = modelo.IdEmpleado });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "No se pudo registrar el periodo de teletrabajo.");
+                ModelState.AddModelError("", "No se pudo guardar el periodo. Verifique si ya está registrado.");
+            }
+        }
+
+        ViewBag.Empleados = empleados;
+        return View(modelo);
+    }
+
     // ---------- Utilidades ----------
 
     private async Task<List<(int Id, string Nombre)>> EmpleadosAsync()
