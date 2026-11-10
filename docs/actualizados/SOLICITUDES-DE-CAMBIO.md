@@ -51,6 +51,14 @@
 - **Regla implementada para revisión:** los motivos 70, 76, 82 y 133 comparten un límite por empleado y año calendario de la fecha de inicio. Se excluye el permiso que se está editando.
 - **CP-RF06-01 a CP-RF06-06:** 6 pruebas automatizadas correctas. Cubren repetición del motivo, otro código del grupo, año distinto, empleado distinto, edición del propio registro y un motivo ajeno al grupo.
 - **Estado:** implementado según el supuesto indicado. Pendiente de confirmación del área usuaria y de evidencia funcional en la aplicación con una base de prueba.
+## Seguimiento T3 · SC-012 (RF-01) · Registrar turnos por periodos de fechas
+
+- **Estado:** implementación existente, verificada en el código. Pendiente de prueba funcional.
+- **Rama de seguimiento:** `feature/registro-de-turnos`. **Referencias:** `0f441ee` (alta) y `312f4aa` (validación del formulario).
+- **Componente:** Asistencia → Horarios Temporales → Nuevo horario. `AsistenciaController.HorarioTemporalNuevo` guarda el horario asignado y las fechas del empleado en `HorarioTemporal`.
+- **CP-RF01-01:** registrar un horario de prueba del 10 al 15 de noviembre. Verificar que aparezca en la lista del empleado con el horario y ambas fechas tras recargar.
+- **CP-RF01-02:** intentar registrar el mismo horario con fecha final anterior a la inicial. Verificar que se muestre el mensaje de validación y que el registro no aparezca.
+- **Resultado obtenido y evidencia:** pendientes de ejecución con una base de prueba.
 
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
