@@ -18,6 +18,13 @@
 | CP-RF02-01 | Buscar al empleado A del 10 al 15 de noviembre. Turnos de A del 8 al 10, del 15 al 16 y del 16 al 18. Turno de B del 12 al 13. | Aparecen los primeros dos turnos de A. | Pendiente |
 | CP-RF02-02 | Buscar desde el 15 de noviembre con un turno del 15 sin fecha de fin y otro terminado el 14. | Aparece el turno del 15. | Pendiente |
 | CP-RF02-03 | Ingresar desde el 16 hasta el 15 de noviembre. | Se muestra el mensaje de rango inválido. | Pendiente |
+## Seguimiento T3 · SC-014 (RF-03)
+
+- **Solicitud:** impedir que una persona tenga dos permisos en un mismo día. Antecedente: SC-008.
+- **Rama y commit:** `feature/evitar-permisos-duplicados`, `8065889`.
+- **Componente:** `ReglasPermiso.Validar`, invocado desde el alta y la edición de permisos.
+- **Estado:** implementado. La regla rechaza fechas compartidas incluso si las horas son distintas. En edición se excluye el propio permiso.
+- **Pruebas y evidencia:** las 13 pruebas de `ReglasPermisoTests` pasaron, incluido el caso de regresión CP-RF03-01 (mismo empleado y día, de 08:00 a 10:00 y de 15:00 a 16:00). También se verificaron los casos de otro empleado, días consecutivos y edición del mismo registro. Queda pendiente la evidencia funcional en pantalla.
 
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 

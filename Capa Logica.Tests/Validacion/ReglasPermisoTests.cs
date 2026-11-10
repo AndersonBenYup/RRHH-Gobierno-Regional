@@ -86,11 +86,12 @@ public class ReglasPermisoTests
     }
 
     [Fact]
-    public void Permisos_por_horas_del_mismo_dia_sin_cruce_de_horario_son_validos()
+    public void Permisos_por_horas_del_mismo_dia_sin_cruce_de_horario_son_error()
     {
         var manana = Permiso(1, "2026-11-02", null, "08:00", "10:00");
         var tarde = Permiso(0, "2026-11-02", null, "15:00", "16:00");
-        Assert.Empty(ReglasPermiso.Validar(tarde, [manana]));
+        var error = Assert.Single(ReglasPermiso.Validar(tarde, [manana]));
+        Assert.Contains("N.º 1", error.Mensaje);
     }
 
     [Fact]
