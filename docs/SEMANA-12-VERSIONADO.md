@@ -2,7 +2,7 @@
 
 El flujo se adopta el 10 de noviembre de 2026 a partir de `v1.6.0` (`7d81d5b`).
 
-1. Crear una rama `feature/SC-NNN-descripcion` desde `develop`. Si la solicitud ya tiene rama, actualizarla desde `develop` antes de empezar.
+1. Crear una rama `feature/<funcionalidad>` desde `develop`, por ejemplo `feature/historico-de-turnos`. Registrar los códigos RF y SC en la matriz y el pull request. Si la funcionalidad ya tiene rama, actualizarla desde `develop` antes de empezar.
 2. Registrar el cambio con un mensaje descriptivo, por ejemplo `SC-014 (RF-03): validar permisos duplicados por día`. Enlazar el caso de prueba y su evidencia en el pull request a `develop`.
 3. Integrar en `develop` tras revisar el cambio y su evidencia. Cuando haya una versión aprobada, abrir un pull request de `develop` a `main`, actualizar el changelog y etiquetar el commit publicado.
 
@@ -51,6 +51,6 @@ Se reserva un código por RF para revisar lo existente y completar solo las brec
 | SC-028 | RF-17 | Validar feriados en el reporte general | Complementario |
 | SC-029 | RF-18 | Reportar ausencias por periodo | Complementario |
 
-Las ramas `feature/SC-012-rf-01` a `feature/SC-029-rf-18` son puntos de partida. La T3 exige los ocho RF obligatorios y al menos tres complementarios. Elegir los tres tras revisar los módulos y su evidencia.
+Las ramas `feature/` usan nombres de funcionalidad. La T3 exige los ocho RF obligatorios y al menos tres complementarios. Elegir los tres tras revisar los módulos y su evidencia.
 
 Para el informe, usar la lista de ramas, el gráfico de commits, las etiquetas y el changelog. Adjuntar los enlaces de pull requests y las pruebas ejecutadas cuando existan. Registrar las contribuciones con los autores y evidencias reales.
