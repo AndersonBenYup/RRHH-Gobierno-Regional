@@ -2,6 +2,19 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## Seguimiento T3 · SC-016 (RF-05) · Eliminar motivos de permiso
+
+- **Estado:** implementado, pendiente de validación funcional con datos de prueba.
+- **Rama y commit:** `feature/eliminar-motivos-de-permiso`, `73719bb`.
+- **Componentes:** `CatalogoRepositorio.Eliminar` y `CatalogoController.Eliminar`.
+- **Regla:** el administrador puede eliminar un motivo sin referencias. Si está asociado a un permiso, se conserva y se muestra un mensaje comprensible.
+- **Verificación técnica:** compilación web correcta, cero errores y advertencias.
+
+| Caso | Datos | Resultado esperado | Resultado obtenido y evidencia |
+| --- | --- | --- | --- |
+| CP-RF05-01 | Motivo de prueba sin permisos asociados | Desaparece del catálogo y se muestra éxito | Pendiente de ejecución |
+| CP-RF05-02 | Motivo de prueba asociado a un permiso | El motivo y el permiso se conservan; se muestra el aviso de motivo en uso | Pendiente de ejecución |
+
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
 Este documento explica las 7 solicitudes de cambio que se presentaron en la exposición de la Semana 9 (`Grupo5_EVO-RRHH_Semanas_1a9.pptx` y `temas-semanas/Grupo5_Gestion_del_Cambio.pptx`) y registradas en `docs/GESTION-DEL-CAMBIO.md`. Para cada una se revisó el código y se indica si realmente se cumplió. Sirve como base para la nueva revisión que se hace en el repositorio de despliegue en Azure, donde algunas solicitudes se reabren.
