@@ -2,6 +2,15 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## Seguimiento T3 · SC-012 (RF-01) · Registrar turnos por periodos de fechas
+
+- **Estado:** implementación existente, verificada en el código. Pendiente de prueba funcional.
+- **Rama de seguimiento:** `feature/registro-de-turnos`. **Referencias:** `0f441ee` (alta) y `312f4aa` (validación del formulario).
+- **Componente:** Asistencia → Horarios Temporales → Nuevo horario. `AsistenciaController.HorarioTemporalNuevo` guarda el horario asignado y las fechas del empleado en `HorarioTemporal`.
+- **CP-RF01-01:** registrar un horario de prueba del 10 al 15 de noviembre. Verificar que aparezca en la lista del empleado con el horario y ambas fechas tras recargar.
+- **CP-RF01-02:** intentar registrar el mismo horario con fecha final anterior a la inicial. Verificar que se muestre el mensaje de validación y que el registro no aparezca.
+- **Resultado obtenido y evidencia:** pendientes de ejecución con una base de prueba.
+
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
 Este documento explica las 7 solicitudes de cambio que se presentaron en la exposición de la Semana 9 (`Grupo5_EVO-RRHH_Semanas_1a9.pptx` y `temas-semanas/Grupo5_Gestion_del_Cambio.pptx`) y registradas en `docs/GESTION-DEL-CAMBIO.md`. Para cada una se revisó el código y se indica si realmente se cumplió. Sirve como base para la nueva revisión que se hace en el repositorio de despliegue en Azure, donde algunas solicitudes se reabren.
