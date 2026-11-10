@@ -2,6 +2,8 @@
 
 ## Sin publicar
 
+- SC-013 (RF-02): filtro por empleado y rango de fechas en Horarios Temporales.
+
 - Flujo de ramas de la Semana 12 y registro de solicitudes para la T3.
 
 ## v1.6.0
