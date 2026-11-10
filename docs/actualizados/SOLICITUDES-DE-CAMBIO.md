@@ -32,6 +32,18 @@
 - **Componente:** Permisos → Motivos de permiso → Nuevo. `CatalogoController.Nuevo` requiere el rol Administrador y guarda mediante `CatalogoRepositorio.Crear` en el catálogo `Motivo_Perm`.
 - **CP-RF04-01:** en una base de prueba, ingresar como Administrador y crear un motivo con descripción «Motivo de prueba T3» y los demás campos obligatorios válidos. Se espera un mensaje de éxito, el motivo visible en el catálogo tras recargar y su disponibilidad al registrar un permiso.
 - **Resultado obtenido y evidencia:** pendientes de ejecución. Adjuntar captura del catálogo y del selector de motivos usando datos de prueba.
+## Seguimiento T3 · SC-016 (RF-05) · Eliminar motivos de permiso
+
+- **Estado:** implementado, pendiente de validación funcional con datos de prueba.
+- **Rama y commit:** `feature/eliminar-motivos-de-permiso`, `73719bb`.
+- **Componentes:** `CatalogoRepositorio.Eliminar` y `CatalogoController.Eliminar`.
+- **Regla:** el administrador puede eliminar un motivo sin referencias. Si está asociado a un permiso, se conserva y se muestra un mensaje comprensible.
+- **Verificación técnica:** compilación web correcta, cero errores y advertencias.
+
+| Caso | Datos | Resultado esperado | Resultado obtenido y evidencia |
+| --- | --- | --- | --- |
+| CP-RF05-01 | Motivo de prueba sin permisos asociados | Desaparece del catálogo y se muestra éxito | Pendiente de ejecución |
+| CP-RF05-02 | Motivo de prueba asociado a un permiso | El motivo y el permiso se conservan; se muestra el aviso de motivo en uso | Pendiente de ejecución |
 
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
