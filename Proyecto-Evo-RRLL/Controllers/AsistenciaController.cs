@@ -53,10 +53,13 @@ public class AsistenciaController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(DateTime? desde, DateTime? hasta, string? q)
+    public async Task<IActionResult> Index(DateTime? desde, DateTime? hasta, string? q,
+        [FromServices] RRHH_FeriadoLogica feriados)
     {
         var vm = new AsistenciaViewModel { Desde = desde, Hasta = hasta ?? DateTime.Today, Busqueda = q };
         vm.Registros = await ConstruirFilasAsync(desde, hasta, q, limite: 2000);
+        var rango = Rango(desde, hasta);
+        vm.Feriados = Capa_Logica.Reglas.FeriadosEnRango.Fechas(await feriados.Listar(), rango.Desde, rango.HastaExclusivo);
         return View(vm);
     }
 

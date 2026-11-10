@@ -9,6 +9,8 @@ public class AsistenciaViewModel
     public string? Busqueda { get; set; }
 
     public List<AsistenciaFila> Registros { get; set; } = new();
+
+    public IReadOnlyList<DateTime> Feriados { get; set; } = [];
 }
 
 public class AsistenciaFila
