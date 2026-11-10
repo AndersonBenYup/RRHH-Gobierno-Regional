@@ -187,6 +187,30 @@ public class PermisoController : Controller
         return View(modelo);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> ReporteTeletrabajo(
+        int? idEmpleado, DateOnly? desde, DateOnly? hasta,
+        [FromServices] IRepositorio<PeriodoTeletrabajo> periodos)
+    {
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.IdEmpleado = idEmpleado;
+        ViewBag.Desde = desde?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+        if (desde.HasValue && hasta.HasValue && desde > hasta)
+            ModelState.AddModelError("", "La fecha de inicio no puede ser posterior a la fecha de fin.");
+
+        if (!ModelState.IsValid || !idEmpleado.HasValue || desde is not DateOnly inicio || hasta is not DateOnly fin)
+            return View(Array.Empty<PeriodoTeletrabajo>());
+
+        var registros = (await periodos.Listar())
+            .Where(p => p.IdEmpleado == idEmpleado && p.FechaInicio <= fin && p.FechaFin >= inicio)
+            .OrderBy(p => p.FechaInicio)
+            .ToList();
+        ViewBag.TotalDias = Capa_Logica.Reglas.DiasTeletrabajo.Contar(registros, inicio, fin);
+        return View(registros);
+    }
+
     // ---------- Utilidades ----------
 
     private async Task<List<(int Id, string Nombre)>> EmpleadosAsync()
