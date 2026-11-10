@@ -59,6 +59,14 @@
 - **CP-RF01-01:** registrar un horario de prueba del 10 al 15 de noviembre. Verificar que aparezca en la lista del empleado con el horario y ambas fechas tras recargar.
 - **CP-RF01-02:** intentar registrar el mismo horario con fecha final anterior a la inicial. Verificar que se muestre el mensaje de validación y que el registro no aparezca.
 - **Resultado obtenido y evidencia:** pendientes de ejecución con una base de prueba.
+## Seguimiento T3 · Teletrabajo
+
+| Solicitud | Rama y commit | Implementación | Caso y evidencia |
+| --- | --- | --- | --- |
+| SC-024 · RF-13 · Registrar periodos de teletrabajo | `feature/registro-de-teletrabajo`, `88c7765` | Permisos → Registrar teletrabajo. Guarda empleado, fechas y modalidad en `PeriodoTeletrabajo`. | CP-RF13-01: crear un periodo válido, comprobar su persistencia y rechazar fechas invertidas. Pendiente de ejecución con SQL Server. |
+| SC-025 · RF-14 · Reportar días de teletrabajo | `feature/reporte-de-dias-de-teletrabajo`, `6e4f31e` | Reporte por empleado y rango. Cuenta días calendario únicos y recorta los periodos al rango. | CP-RF14-01 y CP-RF14-02: recorte de rangos, solapamientos y cero días sin registros. Pruebas automatizadas aprobadas; captura pendiente. |
+
+Antes de la prueba funcional, ejecutar `Scripts/rf-13-crear-periodo-teletrabajo.sql` en una base de prueba. Los motivos históricos 125 y 126 quedan en el catálogo de permisos. El reporte utiliza la tabla nueva y su criterio de días calendario incluye fines de semana y feriados. Validar ese criterio con el área usuaria antes de publicar.
 
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
