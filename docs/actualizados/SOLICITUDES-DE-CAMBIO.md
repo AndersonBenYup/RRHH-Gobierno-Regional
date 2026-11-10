@@ -25,6 +25,13 @@
 - **Componente:** `ReglasPermiso.Validar`, invocado desde el alta y la edición de permisos.
 - **Estado:** implementado. La regla rechaza fechas compartidas incluso si las horas son distintas. En edición se excluye el propio permiso.
 - **Pruebas y evidencia:** las 13 pruebas de `ReglasPermisoTests` pasaron, incluido el caso de regresión CP-RF03-01 (mismo empleado y día, de 08:00 a 10:00 y de 15:00 a 16:00). También se verificaron los casos de otro empleado, días consecutivos y edición del mismo registro. Queda pendiente la evidencia funcional en pantalla.
+## Seguimiento T3 · SC-015 (RF-04) · Agregar motivos de permiso
+
+- **Estado:** implementación existente, confirmada mediante revisión del código. Pendiente de prueba funcional.
+- **Rama de seguimiento:** `feature/agregar-motivos-de-permiso`. **Commit de referencia:** `0f441ee`.
+- **Componente:** Permisos → Motivos de permiso → Nuevo. `CatalogoController.Nuevo` requiere el rol Administrador y guarda mediante `CatalogoRepositorio.Crear` en el catálogo `Motivo_Perm`.
+- **CP-RF04-01:** en una base de prueba, ingresar como Administrador y crear un motivo con descripción «Motivo de prueba T3» y los demás campos obligatorios válidos. Se espera un mensaje de éxito, el motivo visible en el catálogo tras recargar y su disponibilidad al registrar un permiso.
+- **Resultado obtenido y evidencia:** pendientes de ejecución. Adjuntar captura del catálogo y del selector de motivos usando datos de prueba.
 
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
