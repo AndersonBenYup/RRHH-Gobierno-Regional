@@ -154,6 +154,10 @@ public class CatalogoController : Controller
             TempData["MensajeExito"] = $"{CatalogoNavegacion.Items[tabla]}: registro eliminado correctamente.";
             await _bitacora.Registrar(User.Identity?.Name ?? "?", "Eliminar", CatalogoNavegacion.Items[tabla], $"clave(s)={ids}");
         }
+        catch (MotivoPermisoEnUsoException ex)
+        {
+            TempData["MensajeError"] = ex.Message;
+        }
         catch (Exception ex)
         {
             TempData["MensajeError"] = $"No se pudo eliminar el registro: {ex.Message}";

@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Reflection;
 using Capa_Entidades;
 using Capa_Entidades.Contratos;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -131,8 +132,19 @@ public class CatalogoRepositorio : ICatalogoRepositorio
         var tipo = ObtenerTipo(tabla);
         var actual = await ObtenerEntidadAsync(tipo, ConvertirClaves(tipo, ids))
             ?? throw new InvalidOperationException("Registro no encontrado");
+        if (actual is Motivo_Perm motivo
+            && await _contexto.Permiso.AnyAsync(p => p.idMotivo == motivo.idMotivo))
+            throw new MotivoPermisoEnUsoException();
+
         _contexto.Remove(actual);
-        await _contexto.SaveChangesAsync();
+        try
+        {
+            await _contexto.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (actual is Motivo_Perm && ex.InnerException is SqlException { Number: 547 })
+        {
+            throw new MotivoPermisoEnUsoException(ex);
+        }
         _cache?.Invalidar(tabla);
     }
 
