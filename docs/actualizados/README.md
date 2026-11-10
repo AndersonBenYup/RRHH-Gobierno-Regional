@@ -1,4 +1,4 @@
-# Documentos actualizados (noviembre 2026, `v1.6.0`)
+# Documentos actualizados (noviembre 2026, `v2.5.0`)
 
 Esta carpeta tiene las versiones corregidas de la documentación del curso y de los entregables.
 Los **originales no se modificaron**: `docs/*.md`, `docs/entregables/` y `SOLICITUDES-DE-CAMBIO.md` en la raíz quedan como el diagnóstico inicial.
@@ -8,9 +8,9 @@ Los **originales no se modificaron**: `docs/*.md`, `docs/entregables/` y `SOLICI
 | [`TEMAS-DEL-CURSO.md`](TEMAS-DEL-CURSO.md) | Reescrito. El original citaba clases del repositorio anterior que aquí no existen (`Numeracion`, `FichaSocialLogica`, `PersonaExtensiones`, `IUnidadDeTrabajo`, pruebas con SQLite). Se agregaron las semanas 9 y 11 y la tabla de pruebas |
 | [`INGENIERIA-INVERSA.md`](INGENIERIA-INVERSA.md) | **Nuevo** (Semana 3): reconocimiento funcional, BD (88 tablas), diagrama E-R, diccionario de datos, matriz módulos ↔ tablas y hallazgos |
 | [`GESTION-CONFIGURACION.md`](GESTION-CONFIGURACION.md) | Reescrito con el repositorio, las ramas, los commits `SC-NNN:`, los tags `v1.x`, los secretos y las pruebas reales |
-| [`GESTION-DEL-CAMBIO.md`](GESTION-DEL-CAMBIO.md) | Impacto de SC-008 a SC-011, evidencia de `v1.6.0` y flujo de trabajo real (commits a `main` con el CI como control) |
+| [`GESTION-DEL-CAMBIO.md`](GESTION-DEL-CAMBIO.md) | Impacto de SC-008 a SC-011, evidencia de `v2.5.0` y flujo de trabajo real (commits a `main` con el CI como control) |
 | [`CAMBIOS-ARQUITECTURA.md`](CAMBIOS-ARQUITECTURA.md) | Se suman los permisos por opción, la paginación genérica, el caché, el health check, `IOptions` y los servicios de Personal |
-| [`SOLICITUDES-DE-CAMBIO.md`](SOLICITUDES-DE-CAMBIO.md) | La sección 6 incluye lo cerrado en `v1.6.0` |
+| [`SOLICITUDES-DE-CAMBIO.md`](SOLICITUDES-DE-CAMBIO.md) | La sección 6 incluye lo cerrado en `v2.5.0` |
 | [`entregables/TierList_EVO-RRHH.xlsx`](entregables/TierList_EVO-RRHH.xlsx) | Estado actual: 29 ✔ y 1 ◐ (paginación en la BD: faltan Historial laboral y Vivienda) |
 | [`entregables/Plan_EVO-RRHH_4semanas.docx`](entregables/Plan_EVO-RRHH_4semanas.docx) | Conserva el diagnóstico y agrega "5. Estado al cierre" y "6. Riesgos: cómo terminaron" |
 

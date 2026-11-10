@@ -25,3 +25,6 @@ publish_test/
 # Archivos temporales de Office
 ~$*
 node_modules/
+
+# Datos de la BD normalizada (156 MB, supera el limite de GitHub)
+Scripts/bd-Normalizada/03-datos-*.sql

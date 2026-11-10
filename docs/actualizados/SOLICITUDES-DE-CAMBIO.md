@@ -1,4 +1,4 @@
-> Versión actualizada (noviembre 2026), con el cierre de `v1.6.0` en la sección 6. El original está en la raíz del repositorio (`SOLICITUDES-DE-CAMBIO.md`).
+> Versión actualizada (noviembre 2026), con el cierre de `v2.5.0` en la sección 6. El original está en la raíz del repositorio (`SOLICITUDES-DE-CAMBIO.md`).
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
@@ -194,18 +194,18 @@ Todos los commits usan el prefijo `SC-NNN:` y cada cierre tiene su etiqueta.
 
 | Código | Resultado | Versión |
 |---|---|---|
-| SC-001 | Cerrada dentro de SC-008 (fechas, horas y solapamiento de permisos) | `v1.1.0` |
-| SC-002 | Cerrada dentro de SC-009 (bloqueo de cuenta por intentos fallidos) | `v1.2.0` |
-| SC-003 | Cerrada: exportación de asistencia a CSV con `IExportadorTabla` | `v1.3.0` |
+| SC-001 | Cerrada dentro de SC-008 (fechas, horas y solapamiento de permisos) | `v2.1.0` |
+| SC-002 | Cerrada dentro de SC-009 (bloqueo de cuenta por intentos fallidos) | `v2.2.0` |
+| SC-003 | Cerrada: exportación de asistencia a CSV con `IExportadorTabla` | `v2.3.0` |
 | SC-004 | Cerrada formalmente: cadena por configuración de Azure y error claro si falta | — |
-| SC-005 | Cerrada: filtro y paginación de permisos en la BD. Ampliada en `v1.6.0`: paginador reutilizable, paginación en BD de Personal, Capacitación, Familia y Salud, marcaciones y registro diario filtrados en BD, caché de catálogos y health check `/estado` | `v1.3.0` · `v1.6.0` |
-| SC-006 | Reimplementada: contratos, `RepositorioBase`/`LogicaBase`, Lógica sin dependencia de Datos y `ArquitecturaTests`. En `v1.6.0`: `EmpleadoController` partido en servicios (18 → 5 dependencias), `IOptions` y sin sufijos `Param` | `v1.3.0` · `v1.6.0` |
+| SC-005 | Cerrada: filtro y paginación de permisos en la BD. Ampliada en `v2.5.0`: paginador reutilizable, paginación en BD de Personal, Capacitación, Familia y Salud, marcaciones y registro diario filtrados en BD, caché de catálogos y health check `/estado` | `v2.3.0` · `v2.5.0` |
+| SC-006 | Reimplementada: contratos, `RepositorioBase`/`LogicaBase`, Lógica sin dependencia de Datos y `ArquitecturaTests`. En `v2.5.0`: `EmpleadoController` partido en servicios (18 → 5 dependencias), `IOptions` y sin sufijos `Param` | `v2.3.0` · `v2.5.0` |
 | SC-007 | Registro corregido: se había hecho con Bootstrap; el rediseño con Tailwind se hizo en SC-011 | — |
-| SC-008 | Cerrada: validaciones en frontend y backend | `v1.1.0` |
-| SC-009 | Cerrada: seguridad (clave fuera del repo, cabeceras, política de claves y bloqueo). Permisos por opción (`Rol_Acceso`) en `v1.6.0` | `v1.2.0` · `v1.6.0` |
-| SC-010 | Cerrada: xUnit y `dotnet test` en el pipeline (75 pruebas en `v1.4.0`, 126 en `v1.6.0`) | `v1.4.0` |
-| SC-011 | Cerrada: rediseño visual institucional con Tailwind junto a Bootstrap; después, animaciones sutiles, Public Sans y transición entre páginas | `v1.5.0` |
+| SC-008 | Cerrada: validaciones en frontend y backend | `v2.1.0` |
+| SC-009 | Cerrada: seguridad (clave fuera del repo, cabeceras, política de claves y bloqueo). Permisos por opción (`Rol_Acceso`) en `v2.5.0` | `v2.2.0` · `v2.5.0` |
+| SC-010 | Cerrada: xUnit y `dotnet test` en el pipeline (75 pruebas en `v2.3.1`, 126 en `v2.5.0`) | `v2.3.1` |
+| SC-011 | Cerrada: rediseño visual institucional con Tailwind junto a Bootstrap; después, animaciones sutiles, Public Sans y transición entre páginas | `v2.4.0` |
 
 Detalle y evidencia de cada una: [`GESTION-DEL-CAMBIO.md`](GESTION-DEL-CAMBIO.md).
 
-**Pendiente después de `v1.6.0`:** paginación en la BD de Historial laboral y del índice de Vivienda.
+**Pendiente después de `v2.5.0`:** paginación en la BD de Historial laboral y del índice de Vivienda.

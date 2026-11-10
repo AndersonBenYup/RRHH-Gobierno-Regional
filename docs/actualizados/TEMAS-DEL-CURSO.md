@@ -48,8 +48,8 @@ Cada tipo de mantenimiento tiene al menos una solicitud de cambio real, implemen
 
 | Tipo | Solicitud | Qué se hizo |
 |---|---|---|
-| Correctivo | SC-008 (`v1.1.0`) | Validación en navegador y servidor de todos los formularios. Las reglas de permisos (fechas, horas, solapamiento) cierran SC-001 |
-| Correctivo | `v1.6.0` | La app se colgaba después de abrir las páginas con más datos (`MultipleActiveResultSets`). Marcaciones daba error a los 35 s |
+| Correctivo | SC-008 (`v2.1.0`) | Validación en navegador y servidor de todos los formularios. Las reglas de permisos (fechas, horas, solapamiento) cierran SC-001 |
+| Correctivo | `v2.5.0` | La app se colgaba después de abrir las páginas con más datos (`MultipleActiveResultSets`). Marcaciones daba error a los 35 s |
 | Adaptativo | SC-004 | La cadena de conexión y la clave del admin salen de la configuración de Azure, no del código |
 | Perfectivo | SC-003, SC-005, SC-011 | Exportación a CSV, paginación en la BD y rediseño visual |
 | Preventivo | SC-009, SC-010 | Bloqueo de cuenta, cabeceras de seguridad, permisos por opción, y `dotnet test` en el pipeline |
@@ -121,7 +121,7 @@ Ver [`INGENIERIA-INVERSA.md`](INGENIERIA-INVERSA.md). Contiene:
 
 ## Semana 8 – Gestión de la configuración
 
-Ver [`GESTION-CONFIGURACION.md`](GESTION-CONFIGURACION.md): elementos de configuración, repositorio, convención de commits `SC-NNN:`, tags `v1.1.0`–`v1.6.0`, pipeline y secretos.
+Ver [`GESTION-CONFIGURACION.md`](GESTION-CONFIGURACION.md): elementos de configuración, repositorio, convención de commits `SC-NNN:`, tags `v2.1.0`–`v2.5.0`, pipeline y secretos.
 
 ## Semana 9 – Gestión del cambio
 
@@ -133,9 +133,9 @@ Ver [`GESTION-DEL-CAMBIO.md`](GESTION-DEL-CAMBIO.md): flujo, roles, formato, mat
 
 | Código | Solicitud | Tipo | Prioridad | Decisión | Estado |
 |---|---|---|---|---|---|
-| SC-008 | Validaciones en frontend y backend (retoma SC-001) | Correctivo | Alta | Aprobada con condiciones | Cerrada, `v1.1.0` |
-| SC-009 | Seguridad: clave fuera del repo, cabeceras, política de claves y bloqueo (completa SC-002) | Preventivo | Alta | Aprobada | Cerrada, `v1.2.0`; permisos por opción en `v1.6.0` |
-| SC-010 | Pruebas xUnit y `dotnet test` en el pipeline | Preventivo | Media | Aprobada | Cerrada, `v1.4.0` (126 pruebas) |
+| SC-008 | Validaciones en frontend y backend (retoma SC-001) | Correctivo | Alta | Aprobada con condiciones | Cerrada, `v2.1.0` |
+| SC-009 | Seguridad: clave fuera del repo, cabeceras, política de claves y bloqueo (completa SC-002) | Preventivo | Alta | Aprobada | Cerrada, `v2.2.0`; permisos por opción en `v2.5.0` |
+| SC-010 | Pruebas xUnit y `dotnet test` en el pipeline | Preventivo | Media | Aprobada | Cerrada, `v2.3.1` (126 pruebas) |
 
 **Solicitud principal:** SC-008. Se eligió porque era la brecha más grande del diagnóstico: solo había 2 DataAnnotations y `ModelState` se revisaba en 15 de 89 POST.
 
@@ -155,7 +155,7 @@ Ver [`GESTION-DEL-CAMBIO.md`](GESTION-DEL-CAMBIO.md): flujo, roles, formato, mat
 ## Clean Code
 
 - Nombres del dominio en español y consistentes: `Listar`, `Obtener`, `Crear`, `Actualizar`, `Eliminar`, `Validar`, `ListarPagina`.
-- Sin sufijos de ruido en los parámetros: en `v1.6.0` se quitó `...Param` de 81 clases. Por ejemplo, `IdEmpleadoParam` pasó a `idEmpleado`.
+- Sin sufijos de ruido en los parámetros: en `v2.5.0` se quitó `...Param` de 81 clases. Por ejemplo, `IdEmpleadoParam` pasó a `idEmpleado`.
 - Reglas de negocio como funciones puras y cortas (`ReglasPermiso`, `ReglasPersona`, `ReglasBloqueo`, `ReglasAcceso`, `PoliticaClave`, `VentanaPaginas`) que se prueban sin base de datos.
 
 ## Pruebas

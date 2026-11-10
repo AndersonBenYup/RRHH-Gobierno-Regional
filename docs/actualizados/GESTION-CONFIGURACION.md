@@ -22,6 +22,8 @@ Sin gestión de configuración:
 | Pipeline | `.github/workflows/main_rrhh-gobierno-regional.yml` | Sí | Compila, prueba, publica y despliega |
 | Plantilla de solicitud de cambio | `.github/ISSUE_TEMPLATE/solicitud-de-cambio.md` | Sí | |
 | Scripts de BD | `Scripts/bd-evo-RRLL.sql`, `crear_bitacora.sql`, `sc-008-auditoria-datos.sql`, `azure/02-subir-bd.ps1` | Sí | El de auditoría es de solo lectura; la BD se sube a Azure con un `.bacpac` |
+| Esquema de la BD normalizada | `Scripts/bd-Normalizada/01-esquema-RRHH_Normalizado.sql`, `NORMALIZACION.md` | Sí | Desde `v2.0.0`. `bd-evo-RRLL.sql` es el esquema de la v1 (`RRHH_Nuevo`), solo como referencia |
+| Datos de la BD normalizada | `Scripts/bd-Normalizada/03-datos-RRHH_Normalizado.sql` | **No** | 156 MB, supera el límite de GitHub; se entrega aparte |
 | Copias de la BD | `*.bacpac` | **No** | Excluidas en `.gitignore` por su tamaño |
 | Configuración | `Proyecto-Evo-RRLL/appsettings.json`, `appsettings.Development.json` | Sí | **Sin claves ni cadenas con contraseña** |
 | Secretos locales | `dotnet user-secrets` (`UserSecretsId` en el `.csproj`) | **No** | `Seguridad:AdminClave` en desarrollo |
@@ -51,16 +53,23 @@ temas-semanas/       material de cada semana del curso
 - **Herramienta:** Git. El repositorio está en GitHub, en `AndersonBenYup/RRHH-Gobierno-Regional`.
 - **Rama:** `main` es la versión estable y la que se despliega. El equipo integra directo en `main`; la protección es el pipeline, que no despliega si una prueba falla. Los *pull requests* también ejecutan las pruebas.
 - **Mensajes de commit:** el código de la solicitud de cambio como prefijo, `SC-NNN: descripción`. Por ejemplo, `SC-009: Permisos por opcion (Rol_Acceso)…`. Todo commit se puede rastrear a una solicitud.
-- **Etiquetas:** una por solicitud cerrada (versionado semántico):
+- **Etiquetas:** una por versión entregada, con versionado semántico `MAYOR.MENOR.PARCHE`:
+  - **MAYOR:** cambio incompatible: otro esquema de BD u otra arquitectura que obliga a migrar.
+  - **MENOR:** funcionalidad nueva compatible con la versión anterior.
+  - **PARCHE:** corrección, pruebas, CI o actualización de dependencias, sin funcionalidad nueva.
 
-| Tag | Contenido |
-|---|---|
-| `v1.1.0` | SC-008 |
-| `v1.2.0` | SC-009 |
-| `v1.3.0` | SC-006, SC-005 y SC-003 |
-| `v1.4.0` | SC-010 |
-| `v1.5.0` | SC-011 |
-| `v1.6.0` | Cierre del plan de 4 semanas |
+| Versión | Tag / commit | Tipo | Contenido |
+|---|---|---|---|
+| `v1.0.0` | sin tag · `b6e340e` en `sh4ntyfps/Proyecto-Evo_RRHH` | — | Repositorio anterior: BD sin normalizar `RRHH_Nuevo` |
+| `v2.0.0` | `v2.0.0` | MAYOR | BD normalizada `RRHH_Normalizado`, arquitectura en capas con contratos, despliegue en Azure |
+| `v2.1.0` | `v2.1.0` | MENOR | SC-008 |
+| `v2.2.0` | `v2.2.0` | MENOR | SC-009 |
+| `v2.3.0` | `v2.3.0` | MENOR | SC-006, SC-005 y SC-003 |
+| `v2.3.1` | `v2.3.1` | PARCHE | SC-010 (pruebas en el pipeline y Pkcs 9.0.21) |
+| `v2.4.0` | `v2.4.0` | MENOR | SC-011 |
+| `v2.5.0` | `v2.5.0` | MENOR | Cierre del plan de 4 semanas |
+
+  El detalle de cada versión está en [`CHANGELOG.md`](../../CHANGELOG.md). La versión también va en `<Version>` de `Proyecto-Evo-RRLL.csproj`.
 
 - **No se versionan** credenciales, copias de la BD, `node_modules` ni compilados.
 

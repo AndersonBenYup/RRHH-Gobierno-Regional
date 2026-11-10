@@ -1,6 +1,6 @@
 # Cambios en la arquitectura
 
-> Versión actualizada (noviembre 2026), con lo agregado en `v1.6.0`. El original está en `docs/CAMBIOS-ARQUITECTURA.md`.
+> Versión actualizada (noviembre 2026), con lo agregado en `v2.5.0`. El original está en `docs/CAMBIOS-ARQUITECTURA.md`.
 
 Qué hay en el código hoy (repositorio de despliegue en Azure), por qué y en qué solicitud de cambio se hizo.
 Este documento reemplaza la versión heredada del repositorio anterior, que mencionaba piezas que aquí no
@@ -46,7 +46,7 @@ Proyecto-Evo-RRLL (web) ──► Capa Logica ──► Capa Entidades (entidade
 - La clave del admin solo viene de la configuración (`Seguridad:AdminClave`).
 - Bloqueo de cuenta con `ReglasBloqueo` y `BloqueoCuentaLogica`, usando los eventos de la bitácora (sin cambio de esquema).
 - `PoliticaClave`, cabeceras de seguridad y cookies endurecidas en `Program.cs`. Límites de peticiones por usuario y por IP.
-- **Permisos por opción (`v1.6.0`):**
+- **Permisos por opción (`v2.5.0`):**
   - `Capa Logica/Seguridad/ReglasAcceso` decide quién es administrador de RRHH y qué módulos ve cada rol (`Rol_Acceso`);
   - `AccesoLogica` lo calcula al iniciar sesión y deja un claim por módulo;
   - `Filtros/AccesoModuloFilter` responde 403 (`Views/Shared/SinAcceso`);
