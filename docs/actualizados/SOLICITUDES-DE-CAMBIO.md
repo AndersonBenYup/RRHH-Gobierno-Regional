@@ -65,6 +65,7 @@
 | --- | --- | --- | --- |
 | SC-024 · RF-13 · Registrar periodos de teletrabajo | `feature/registro-de-teletrabajo`, `88c7765` | Permisos → Registrar teletrabajo. Guarda empleado, fechas y modalidad en `PeriodoTeletrabajo`. | CP-RF13-01: crear un periodo válido, comprobar su persistencia y rechazar fechas invertidas. Pendiente de ejecución con SQL Server. |
 | SC-025 · RF-14 · Reportar días de teletrabajo | `feature/reporte-de-dias-de-teletrabajo`, `6e4f31e` | Reporte por empleado y rango. Cuenta días calendario únicos y recorta los periodos al rango. | CP-RF14-01 y CP-RF14-02: recorte de rangos, solapamientos y cero días sin registros. Pruebas automatizadas aprobadas; captura pendiente. |
+| SC-027 · RF-16 · Reportar quiénes realizan teletrabajo total o parcial | `feature/reporte-de-teletrabajo-total-y-parcial`, `4c92370` | El reporte permite consultar todos los empleados, muestra el nombre y distingue modalidad total y parcial. | CP-RF16-01: registrar un periodo total para A y uno parcial para B; consultar cada modalidad y comprobar que solo aparezca la persona correspondiente. Compilación correcta; prueba funcional pendiente. |
 
 Antes de la prueba funcional, ejecutar `Scripts/rf-13-crear-periodo-teletrabajo.sql` en una base de prueba. Los motivos históricos 125 y 126 quedan en el catálogo de permisos. El reporte utiliza la tabla nueva y su criterio de días calendario incluye fines de semana y feriados. Validar ese criterio con el área usuaria antes de publicar.
 

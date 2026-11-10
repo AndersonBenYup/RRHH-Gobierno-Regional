@@ -3,14 +3,16 @@
     ViewData["Title"] = "Reporte de días de teletrabajo";
     var empleados = (List<(int Id, string Nombre)>)ViewBag.Empleados;
     var idEmpleado = ViewBag.IdEmpleado as int?;
+    var parcial = ViewBag.Parcial as bool?;
+    var nombres = empleados.ToDictionary(e => e.Id, e => e.Nombre);
 }
 
 <h3>Reporte de días de teletrabajo</h3>
 <form asp-action="ReporteTeletrabajo" method="get" class="d-flex align-items-end gap-2 flex-wrap mb-3">
     <div>
         <label for="idEmpleado" class="form-label">Empleado</label>
-        <select id="idEmpleado" name="idEmpleado" class="form-select" required>
-            <option value="">(seleccionar)</option>
+        <select id="idEmpleado" name="idEmpleado" class="form-select">
+            <option value="">(todos)</option>
             @foreach (var empleado in empleados)
             {
                 <option value="@empleado.Id" selected="@(empleado.Id == idEmpleado)">@empleado.Nombre</option>
@@ -25,14 +27,25 @@
         <label for="hasta" class="form-label">Hasta</label>
         <input type="date" id="hasta" name="hasta" class="form-control" value="@ViewBag.Hasta" required />
     </div>
+    <div>
+        <label for="parcial" class="form-label">Modalidad</label>
+        <select id="parcial" name="parcial" class="form-select">
+            <option value="">Todas</option>
+            <option value="false" selected="@(parcial == false)">Total</option>
+            <option value="true" selected="@(parcial == true)">Parcial</option>
+        </select>
+    </div>
     <button type="submit" class="btn btn-primary">Consultar</button>
     <a asp-action="Teletrabajo" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary">Registrar periodo</a>
 </form>
 <div asp-validation-summary="All" class="text-danger"></div>
 
-@if (ViewBag.TotalDias is int dias)
+@if (ViewBag.ReporteConsultado == true)
 {
-    <p><strong>Días calendario con teletrabajo en el rango:</strong> @dias</p>
+    @if (ViewBag.TotalDias is int dias)
+    {
+        <p><strong>Días calendario con teletrabajo en el rango:</strong> @dias</p>
+    }
     @if (Model.Count == 0)
     {
         <p>Sin periodos en el rango.</p>
@@ -40,11 +53,12 @@
     else
     {
         <table class="table">
-            <thead><tr><th>Inicio del periodo</th><th>Fin del periodo</th><th>Modalidad</th></tr></thead>
+            <thead><tr><th>Empleado</th><th>Inicio del periodo</th><th>Fin del periodo</th><th>Modalidad</th></tr></thead>
             <tbody>
                 @foreach (var periodo in Model)
                 {
                     <tr>
+                        <td>@nombres.GetValueOrDefault(periodo.IdEmpleado, $"Empleado {periodo.IdEmpleado}")</td>
                         <td>@periodo.FechaInicio?.ToString("dd/MM/yyyy")</td>
                         <td>@periodo.FechaFin?.ToString("dd/MM/yyyy")</td>
                         <td>@(periodo.Parcial ? "Parcial" : "Total")</td>
