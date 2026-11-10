@@ -2,6 +2,12 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## Seguimiento T3 · SC-028 (RF-17) · Validar feriados en el reporte general
+
+- **Rama y commit:** `feature/feriados-en-reporte-general`, `7b5b1b1`.
+- **Componente:** Registro de Asistencia, resumen de feriados en pantalla. Cuenta cada fecha una vez dentro del rango y muestra las fechas incluidas. El total es independiente de los empleados mostrados.
+- **CP-RF17-01:** se comprobaron ambas fechas límite, fechas externas, fechas duplicadas y valores nulos. Prueba automatizada aprobada. Captura del reporte pendiente.
+
 ## Seguimiento T3 · SC-029 (RF-18) · Reportar ausencias por periodo
 
 - **Rama y commit:** `feature/reporte-de-ausencias-por-periodo`, `0b7a16f`.

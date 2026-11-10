@@ -8,6 +8,7 @@
 - RF-06: validar el límite anual de un grupo de motivos de licencia.
 - RF-13, RF-14 y RF-16: registro de teletrabajo y reporte por fechas, empleado y modalidad.
 - RF-18: consulta de ausencias por rango y motivos del catálogo.
+- RF-17: conteo de fechas únicas de feriado en el Registro de Asistencia.
 
 - Flujo de ramas de la Semana 12 y registro de solicitudes para la T3.
 
