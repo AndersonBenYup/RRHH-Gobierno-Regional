@@ -217,6 +217,31 @@ public class PermisoController : Controller
         return View(registros);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> ReporteAusencias(DateOnly? desde, DateOnly? hasta, int[]? motivos)
+    {
+        var catalogo = (await _motivoData.Listar()).Where(m => m.idMotivo is not (125 or 126))
+            .OrderBy(m => m.Descrip_Motivo).ToList();
+        var seleccion = (motivos ?? []).Intersect(catalogo.Select(m => m.idMotivo)).ToHashSet();
+        ViewBag.Catalogo = catalogo;
+        ViewBag.Seleccion = seleccion;
+        ViewBag.Desde = desde?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+        if (desde.HasValue && hasta.HasValue && desde > hasta)
+            ModelState.AddModelError("", "La fecha desde no puede ser posterior a la fecha hasta.");
+
+        if (!ModelState.IsValid || desde is not DateOnly inicio || hasta is not DateOnly fin || seleccion.Count == 0)
+            return View(Array.Empty<Permiso>());
+
+        ViewBag.Empleados = await EmpleadosAsync();
+        var resultado = (await _permisoData.Listar())
+            .Where(p => p.idMotivo is int motivo && seleccion.Contains(motivo) && p.FechaInicio is DateTime fecha
+                && DateOnly.FromDateTime(fecha) <= fin && DateOnly.FromDateTime(p.FechaFin ?? fecha) >= inicio)
+            .OrderBy(p => p.FechaInicio).ThenBy(p => p.IdEmpleado).ToList();
+        return View(resultado);
+    }
+
     // ---------- Utilidades ----------
 
     private async Task<List<(int Id, string Nombre)>> EmpleadosAsync()

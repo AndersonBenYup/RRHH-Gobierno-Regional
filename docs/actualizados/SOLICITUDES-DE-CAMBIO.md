@@ -2,6 +2,13 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## Seguimiento T3 · SC-029 (RF-18) · Reportar ausencias por periodo
+
+- **Rama y commit:** `feature/reporte-de-ausencias-por-periodo`, `0b7a16f`.
+- **Componente:** Permisos → Reporte de ausencias. Consulta permisos por fecha y motivos seleccionados en el catálogo. Incluye periodos que cruzan los límites y excluye los códigos históricos de teletrabajo 125 y 126.
+- **CP-RF18-01:** consultar del 10 al 15 con vacaciones del 8 al 10 y licencia del 16 al 18. Al seleccionar ambos motivos, solo aparece la primera persona.
+- **Estado:** compilación correcta. Pendiente ejecutar el caso funcional y guardar evidencia.
+
 ## Seguimiento T3
 
 ### SC-013 · RF-02 · Consultar el histórico de turnos
