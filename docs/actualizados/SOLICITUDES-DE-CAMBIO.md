@@ -7,7 +7,7 @@
 ### SC-013 · RF-02 · Consultar el histórico de turnos
 
 - **Estado inicial:** parcial. El historial permitía filtrar por empleado.
-- **Rama:** `feature/SC-013-rf-02`. **Implementación:** `8f07a49`.
+- **Rama:** `feature/historico-de-turnos`. **Implementación:** `8f07a49`.
 - **Componente:** Asistencia → Horarios Temporales.
 - **Regla:** incluye los turnos que se cruzan con el rango, con fechas límite incluidas. Cada límite es opcional. Para registros sin fecha de fin se usa la fecha de inicio como fin al filtrar.
 - **Verificación técnica:** el proyecto web compiló con cero errores y cero advertencias.
