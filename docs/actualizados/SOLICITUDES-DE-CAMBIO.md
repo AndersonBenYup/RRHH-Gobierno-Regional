@@ -2,6 +2,14 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## Seguimiento T3 · SC-014 (RF-03)
+
+- **Solicitud:** impedir que una persona tenga dos permisos en un mismo día. Antecedente: SC-008.
+- **Rama y commit:** `feature/SC-014-rf-03`, `8065889`.
+- **Componente:** `ReglasPermiso.Validar`, invocado desde el alta y la edición de permisos.
+- **Estado:** implementado. La regla rechaza fechas compartidas incluso si las horas son distintas. En edición se excluye el propio permiso.
+- **Pruebas y evidencia:** las 13 pruebas de `ReglasPermisoTests` pasaron, incluido el caso de regresión CP-RF03-01 (mismo empleado y día, de 08:00 a 10:00 y de 15:00 a 16:00). También se verificaron los casos de otro empleado, días consecutivos y edición del mismo registro. Queda pendiente la evidencia funcional en pantalla.
+
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
 Este documento explica las 7 solicitudes de cambio que se presentaron en la exposición de la Semana 9 (`Grupo5_EVO-RRHH_Semanas_1a9.pptx` y `temas-semanas/Grupo5_Gestion_del_Cambio.pptx`) y registradas en `docs/GESTION-DEL-CAMBIO.md`. Para cada una se revisó el código y se indica si realmente se cumplió. Sirve como base para la nueva revisión que se hace en el repositorio de despliegue en Azure, donde algunas solicitudes se reabren.
