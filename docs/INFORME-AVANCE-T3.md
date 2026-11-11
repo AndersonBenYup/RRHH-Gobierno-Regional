@@ -9,7 +9,7 @@
 
 ## 2. Resumen ejecutivo del avance
 
-La versión intermedia de `integracion/develop-sobre-main` reúne los ocho requisitos obligatorios y tres complementarios. El proyecto web compila y el conjunto automatizado registra 135 pruebas aprobadas. Quedan pendientes las pruebas funcionales con SQL Server y las capturas.
+La versión intermedia desplegada en Azure reúne los ocho requisitos obligatorios y tres complementarios. El proyecto web compila y el conjunto automatizado registra 135 pruebas aprobadas. Queda pendiente adjuntar los resultados y las capturas de las pruebas funcionales.
 
 ## 3. Avances realizados desde la T2
 
@@ -21,7 +21,7 @@ Horarios Temporales ya almacenaba periodos por persona. La regla de permisos con
 
 ## 5. Base técnica reconstruida o recuperada
 
-La solución `Proyecto-Evo-RRLL.slnx` integra la aplicación web, las capas de Entidades, Lógica, Datos y las pruebas. La aplicación utiliza SQL Server. El script `Scripts/rf-13-crear-periodo-teletrabajo.sql` agrega la tabla requerida por la versión. Se verificó la compilación; queda pendiente arrancar la versión con una base de prueba y ejecutar los flujos.
+La solución `Proyecto-Evo-RRLL.slnx` integra la aplicación web, las capas de Entidades, Lógica, Datos y las pruebas. La aplicación utiliza Azure SQL. Se ejecutó `Scripts/rf-13-crear-periodo-teletrabajo.sql` en `rrhhdb` y una consulta posterior confirmó la existencia de `dbo.PeriodoTeletrabajo`.
 
 ## 6. Arquitectura o estructura actual del sistema
 
@@ -63,7 +63,7 @@ Ver [solicitudes y trazabilidad](actualizados/SOLICITUDES-DE-CAMBIO.md) para los
 
 ## 11. Evidencias de versionado y repositorio
 
-Flujo `feature → develop → main`. La rama de integración parte de `9fed9df` y conserva la serie `v2.x` de `main`. La etiqueta publicada `v1.7.0` identifica el historial anterior. Ver [flujo de la Semana 12](SEMANA-12-VERSIONADO.md) y [changelog](../CHANGELOG.md). Adjuntar evidencia de publicación y contribuciones individuales cuando se verifiquen.
+La integración inicial en `develop` se hizo localmente. Tras la reescritura de `main`, los cambios se reaplicaron en `dev` y llegaron a `main` mediante el [PR #1](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/pull/1). GitHub Actions mostró compilación y despliegue correctos para `49e516a`, commit identificado por `v2.6.0`. La etiqueta `v1.7.0` identifica el historial anterior. La matriz distingue los hashes originales y los publicados. Queda por adjuntar evidencia de contribuciones individuales.
 
 ## 12. Casos de prueba ejecutados
 
@@ -79,7 +79,7 @@ Los permisos históricos de teletrabajo 125 y 126 requieren una decisión de mig
 
 ## 15. Plan de cierre hacia la Evaluación Final
 
-Preparar una base de prueba, ejecutar el script y validar los 11 RF con los casos de la matriz. Registrar resultados y capturas, completar carátula y responsables, revisar las reglas asumidas y preparar la publicación de la versión.
+Validar los 11 RF en la aplicación desplegada con datos ficticios. Registrar resultados y capturas, completar carátula y responsables y revisar las reglas asumidas. Continuar con los RF de vacaciones y el reporte de presencialidad en la siguiente etapa.
 
 ## 16. Conclusiones
 

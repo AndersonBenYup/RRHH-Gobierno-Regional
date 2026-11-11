@@ -4,13 +4,13 @@
 
 ## Seguimiento T3 · SC-028 (RF-17) · Validar feriados en el reporte general
 
-- **Rama y commit:** `feature/feriados-en-reporte-general`, `57aa5ef`.
+- **Rama original y commits:** `feature/feriados-en-reporte-general`, `7b5b1b1` (rama original), [`57aa5ef`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/57aa5ef) (`main`).
 - **Componente:** Registro de Asistencia, resumen de feriados en pantalla. Cuenta cada fecha una vez dentro del rango y muestra las fechas incluidas. El total es independiente de los empleados mostrados.
 - **CP-RF17-01:** se comprobaron ambas fechas límite, fechas externas, fechas duplicadas y valores nulos. Prueba automatizada aprobada. Captura del reporte pendiente.
 
 ## Seguimiento T3 · SC-029 (RF-18) · Reportar ausencias por periodo
 
-- **Rama y commit:** `feature/reporte-de-ausencias-por-periodo`, `c80c108`.
+- **Rama original y commits:** `feature/reporte-de-ausencias-por-periodo`, `0b7a16f` (rama original), [`c80c108`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/c80c108) (`main`).
 - **Componente:** Permisos → Reporte de ausencias. Consulta permisos por fecha y motivos seleccionados en el catálogo. Incluye periodos que cruzan los límites y excluye los códigos históricos de teletrabajo 125 y 126.
 - **CP-RF18-01:** consultar del 10 al 15 con vacaciones del 8 al 10 y licencia del 16 al 18. Al seleccionar ambos motivos, solo aparece la primera persona.
 - **Estado:** compilación correcta. Pendiente ejecutar el caso funcional y guardar evidencia.
@@ -20,7 +20,7 @@
 ### SC-013 · RF-02 · Consultar el histórico de turnos
 
 - **Estado inicial:** parcial. El historial permitía filtrar por empleado.
-- **Rama:** `feature/historico-de-turnos`. **Implementación:** `4100e16`.
+- **Rama:** `feature/historico-de-turnos`. **Commits:** `8f07a49` (rama original), [`4100e16`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/4100e16) (`main`).
 - **Componente:** Asistencia → Horarios Temporales.
 - **Regla:** incluye los turnos que se cruzan con el rango, con fechas límite incluidas. Cada límite es opcional. Para registros sin fecha de fin se usa la fecha de inicio como fin al filtrar.
 - **Verificación técnica:** el proyecto web compiló con cero errores y cero advertencias.
@@ -34,7 +34,7 @@
 ## Seguimiento T3 · SC-014 (RF-03)
 
 - **Solicitud:** impedir que una persona tenga dos permisos en un mismo día. Antecedente: SC-008.
-- **Rama y commit:** `feature/evitar-permisos-duplicados`, `47b5142`.
+- **Rama original y commits:** `feature/evitar-permisos-duplicados`, `8065889` (rama original), [`47b5142`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/47b5142) (`main`).
 - **Componente:** `ReglasPermiso.Validar`, invocado desde el alta y la edición de permisos.
 - **Estado:** implementado. La regla rechaza fechas compartidas incluso si las horas son distintas. En edición se excluye el propio permiso.
 - **Pruebas y evidencia:** las 13 pruebas de `ReglasPermisoTests` pasaron, incluido el caso de regresión CP-RF03-01 (mismo empleado y día, de 08:00 a 10:00 y de 15:00 a 16:00). También se verificaron los casos de otro empleado, días consecutivos y edición del mismo registro. Queda pendiente la evidencia funcional en pantalla.
@@ -48,7 +48,7 @@
 ## Seguimiento T3 · SC-016 (RF-05) · Eliminar motivos de permiso
 
 - **Estado:** implementado, pendiente de validación funcional con datos de prueba.
-- **Rama y commit:** `feature/eliminar-motivos-de-permiso`, `7c191a4`.
+- **Rama original y commits:** `feature/eliminar-motivos-de-permiso`, `73719bb` (rama original), [`7c191a4`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/7c191a4) (`main`).
 - **Componentes:** `CatalogoRepositorio.Eliminar` y `CatalogoController.Eliminar`.
 - **Regla:** el administrador puede eliminar un motivo sin referencias. Si está asociado a un permiso, se conserva y se muestra un mensaje comprensible.
 - **Verificación técnica:** compilación web correcta, cero errores y advertencias.
@@ -59,7 +59,7 @@
 | CP-RF05-02 | Motivo de prueba asociado a un permiso | El motivo y el permiso se conservan; se muestra el aviso de motivo en uso | Pendiente de ejecución |
 ## Seguimiento T3 · SC-017 (RF-06) · Validar licencias que se otorgan una sola vez al año
 
-- **Rama y commit:** `feature/licencias-una-vez-al-ano`, `66a75b1`.
+- **Rama original y commits:** `feature/licencias-una-vez-al-ano`, `543d70d` (rama original), [`66a75b1`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/66a75b1) (`main`).
 - **Componente:** `PermisoLogica.Validar` y `ReglaLicenciaAnual`, utilizados al registrar y editar permisos.
 - **Regla implementada para revisión:** los motivos 70, 76, 82 y 133 comparten un límite por empleado y año calendario de la fecha de inicio. Se excluye el permiso que se está editando.
 - **CP-RF06-01 a CP-RF06-06:** 6 pruebas automatizadas correctas. Cubren repetición del motivo, otro código del grupo, año distinto, empleado distinto, edición del propio registro y un motivo ajeno al grupo.
@@ -76,9 +76,9 @@
 
 | Solicitud | Rama y commit | Implementación | Caso y evidencia |
 | --- | --- | --- | --- |
-| SC-024 · RF-13 · Registrar periodos de teletrabajo | `feature/registro-de-teletrabajo`, `8ab3353` | Permisos → Registrar teletrabajo. Guarda empleado, fechas y modalidad en `PeriodoTeletrabajo`. | CP-RF13-01: crear un periodo válido, comprobar su persistencia y rechazar fechas invertidas. Pendiente de ejecución con SQL Server. |
-| SC-025 · RF-14 · Reportar días de teletrabajo | `feature/reporte-de-dias-de-teletrabajo`, `83679de` | Reporte por empleado y rango. Cuenta días calendario únicos y recorta los periodos al rango. | CP-RF14-01 y CP-RF14-02: recorte de rangos, solapamientos y cero días sin registros. Pruebas automatizadas aprobadas; captura pendiente. |
-| SC-027 · RF-16 · Reportar quiénes realizan teletrabajo total o parcial | `feature/reporte-de-teletrabajo-total-y-parcial`, `9aeb749` | El reporte permite consultar todos los empleados, muestra el nombre y distingue modalidad total y parcial. | CP-RF16-01: registrar un periodo total para A y uno parcial para B; consultar cada modalidad y comprobar que solo aparezca la persona correspondiente. Compilación correcta; prueba funcional pendiente. |
+| SC-024 · RF-13 · Registrar periodos de teletrabajo | `feature/registro-de-teletrabajo`, `88c7765` (rama original), [`8ab3353`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/8ab3353) (`main`) | Permisos → Registrar teletrabajo. Guarda empleado, fechas y modalidad en `PeriodoTeletrabajo`. | CP-RF13-01: crear un periodo válido, comprobar su persistencia y rechazar fechas invertidas. Pendiente de ejecución con SQL Server. |
+| SC-025 · RF-14 · Reportar días de teletrabajo | `feature/reporte-de-dias-de-teletrabajo`, `6e4f31e` (rama original), [`83679de`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/83679de) (`main`) | Reporte por empleado y rango. Cuenta días calendario únicos y recorta los periodos al rango. | CP-RF14-01 y CP-RF14-02: recorte de rangos, solapamientos y cero días sin registros. Pruebas automatizadas aprobadas; captura pendiente. |
+| SC-027 · RF-16 · Reportar quiénes realizan teletrabajo total o parcial | `feature/reporte-de-teletrabajo-total-y-parcial`, `4c92370` (rama original), [`9aeb749`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/9aeb749) (`main`) | El reporte permite consultar todos los empleados, muestra el nombre y distingue modalidad total y parcial. | CP-RF16-01: registrar un periodo total para A y uno parcial para B; consultar cada modalidad y comprobar que solo aparezca la persona correspondiente. Compilación correcta; prueba funcional pendiente. |
 
 Antes de la prueba funcional, ejecutar `Scripts/rf-13-crear-periodo-teletrabajo.sql` en una base de prueba. Los motivos históricos 125 y 126 quedan en el catálogo de permisos. El reporte utiliza la tabla nueva y su criterio de días calendario incluye fines de semana y feriados. Validar ese criterio con el área usuaria antes de publicar.
 
