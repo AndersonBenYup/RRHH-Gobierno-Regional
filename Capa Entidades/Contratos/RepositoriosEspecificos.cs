@@ -16,6 +16,22 @@ public interface IPermisoRepositorio : IRepositorio<Permiso>
 
     /// <summary>Siguiente NPermiso del empleado (MAX + 1) calculado en la BD.</summary>
     Task<int> SiguienteNumero(int idEmpleado);
+
+    /// <summary>
+    /// RF-18 / SC-005: permisos de los motivos indicados que se cruzan con el rango (límites incluidos).
+    /// Un permiso sin fecha de fin dura solo su fecha de inicio. El filtro se ejecuta en la BD.
+    /// </summary>
+    Task<List<Permiso>> ListarPorMotivosEntreFechas(IReadOnlyCollection<int> motivos, DateTime desde, DateTime hasta);
+
+    /// <summary>RF-07 a RF-12: permisos de los motivos indicados, de un empleado o de todos, filtrados en la BD.</summary>
+    Task<List<Permiso>> ListarPorMotivos(IReadOnlyCollection<int> motivos, int? idEmpleado);
+}
+
+/// <summary>RF-14 / RF-16 / SC-005: periodos de teletrabajo filtrados en la BD.</summary>
+public interface IPeriodoTeletrabajoRepositorio : IRepositorio<PeriodoTeletrabajo>
+{
+    /// <summary>Periodos que se cruzan con el rango (límites incluidos), opcionalmente de un empleado y una modalidad.</summary>
+    Task<List<PeriodoTeletrabajo>> ListarEntreFechas(int? idEmpleado, bool? parcial, DateOnly desde, DateOnly hasta);
 }
 
 public interface IPersonaRepositorio : IRepositorio<Persona>

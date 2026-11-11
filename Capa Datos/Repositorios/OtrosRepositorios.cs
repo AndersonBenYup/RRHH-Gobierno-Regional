@@ -140,3 +140,21 @@ public class BitacoraRepositorio : IBitacoraRepositorio
             .MaxAsync(b => (DateTime?)b.Fecha);
     }
 }
+
+/// <summary>RF-14 / RF-16 / SC-005: el reporte de teletrabajo filtra por fechas, empleado y modalidad en la BD.</summary>
+public class PeriodoTeletrabajoRepositorio : RepositorioBase<PeriodoTeletrabajo>, IPeriodoTeletrabajoRepositorio
+{
+    public PeriodoTeletrabajoRepositorio(EvoRRLDbContext contexto) : base(contexto) { }
+
+    public async Task<List<PeriodoTeletrabajo>> ListarEntreFechas(int? idEmpleado, bool? parcial, DateOnly desde, DateOnly hasta)
+        => await ConsultaEntreFechas(Tabla.AsNoTracking(), idEmpleado, parcial, desde, hasta).ToListAsync();
+
+    /// <summary>Consulta de <see cref="ListarEntreFechas"/>; pública para comprobar que EF la traduce a SQL.</summary>
+    public static IQueryable<PeriodoTeletrabajo> ConsultaEntreFechas(IQueryable<PeriodoTeletrabajo> periodos,
+        int? idEmpleado, bool? parcial, DateOnly desde, DateOnly hasta)
+        => periodos
+            .Where(p => (idEmpleado == null || p.IdEmpleado == idEmpleado)
+                && (parcial == null || p.Parcial == parcial)
+                && p.FechaInicio <= hasta && p.FechaFin >= desde)
+            .OrderBy(p => p.IdEmpleado).ThenBy(p => p.FechaInicio);
+}

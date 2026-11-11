@@ -30,6 +30,7 @@ public static class ConfiguracionCapaDatos
         AgregarEspecifico<IAsistenciaRepositorio, AsistenciaRepositorio, Asistencia>(servicios);
         AgregarEspecifico<IMarcacionRepositorio, MarcacionRepositorio, Marcacion>(servicios);
         AgregarEspecifico<IRegAsisDiarioRepositorio, RegAsisDiarioRepositorio, RegAsisDiario>(servicios);
+        AgregarEspecifico<IPeriodoTeletrabajoRepositorio, PeriodoTeletrabajoRepositorio, PeriodoTeletrabajo>(servicios);
 
         servicios.AddScoped<IBitacoraRepositorio, BitacoraRepositorio>();
         servicios.AddScoped<ISecuenciaService, SecuenciaService>();
