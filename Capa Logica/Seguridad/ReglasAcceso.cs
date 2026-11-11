@@ -35,7 +35,7 @@ public static class ReglasAcceso
         new("0502004", "Asistencia", ["Asistencia"]),
         new("0502005", "Feriados", ["Feriado"]),
         new("0502006", "Capacitación", ["Capacitacion"]),
-        new("0502007", "Permisos", ["Permiso"]),
+        new("0502007", "Permisos", ["Permiso", "Vacaciones"]), // RF-07 a RF-11: el reporte de vacaciones es parte de Permisos
         new("0502008", "Historial laboral", ["HistorialLaboral"]),
         new("0502009", "Comportamiento", ["Comportamiento"]),
         new("0502010", "Vivienda", ["Vivienda"]),
