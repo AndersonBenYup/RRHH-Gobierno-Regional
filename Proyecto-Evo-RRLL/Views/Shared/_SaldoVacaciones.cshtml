@@ -1,0 +1,71 @@
+@model Capa_Logica.VacacionesEmpleado
+@{
+    var r = Model.Resumen;
+}
+
+@* RF-07 a RF-10: saldo de vacaciones de un empleado y los permisos que lo explican. *@
+<div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-secondary small">Generadas (RF-07)</div>
+            <div class="fs-4 fw-semibold">@VacacionesFormato.Dias(r.Generadas)</div>
+            <div class="text-secondary small">@r.AniosCumplidos año(s) × 30 días</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-secondary small">Gozadas</div>
+            <div class="fs-4 fw-semibold">@VacacionesFormato.Dias(r.Gozadas)</div>
+            <div class="text-secondary small">media jornada = 0,5 (RF-10)</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-secondary small">Pendientes de goce (RF-08)</div>
+            <div class="fs-4 fw-semibold @(r.Pendientes < 0 ? "text-danger" : "")">@VacacionesFormato.Dias(r.Pendientes)</div>
+            @if (r.Pendientes < 0)
+            {
+                <div class="text-danger small">vacaciones adelantadas</div>
+            }
+        </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-secondary small">Truncas (RF-09)</div>
+            <div class="fs-4 fw-semibold">@VacacionesFormato.Dias(r.Truncas)</div>
+            <div class="text-secondary small">2,5 días por mes del año en curso</div>
+        </div></div>
+    </div>
+</div>
+
+<p class="text-secondary small">
+    Ingreso: @r.FechaIngreso.ToString("dd/MM/yyyy") · Corte: @r.FechaCorte.ToString("dd/MM/yyyy")
+    @if (Model.Cesado) { <span class="badge text-bg-secondary ms-1">Cesado</span> }
+</p>
+
+<h5 class="mt-4">Vacaciones gozadas</h5>
+@if (Model.Goces.Count == 0)
+{
+    <p>No hay permisos de vacaciones desde la fecha de ingreso.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead><tr><th>N.º</th><th>Inicio</th><th>Fin</th><th>Modalidad</th><th class="text-end">Días</th></tr></thead>
+            <tbody>
+                @foreach (var p in Model.Goces)
+                {
+                    var goce = Capa_Logica.Reglas.GoceVacaciones.Desde(p)!;
+                    <tr>
+                        <td>@p.NPermiso</td>
+                        <td>@p.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                        <td>@((p.FechaFin ?? p.FechaInicio)?.ToString("dd/MM/yyyy"))</td>
+                        <td>@(goce.PorHoras ? $"Media jornada ({p.Hora_Sal:HH\\:mm}–{p.Hora_Ret:HH\\:mm})" : "Día completo")</td>
+                        <td class="text-end">@VacacionesFormato.Dias(Capa_Logica.Reglas.CalculoVacaciones.DiasGozados(goce, r.FechaIngreso, r.FechaCorte))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

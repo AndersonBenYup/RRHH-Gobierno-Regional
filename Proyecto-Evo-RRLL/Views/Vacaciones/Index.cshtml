@@ -1,0 +1,118 @@
+@model List<VacacionesFila>
+@{
+    ViewData["Title"] = "Reporte de vacaciones";
+    var idEmpleado = ViewBag.IdEmpleado as int?;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)> ?? new List<(int, string)>();
+    var cesados = (bool)ViewBag.Cesados;
+    var totales = (VacacionesTotales)ViewBag.Totales;
+}
+
+@* RF-07, RF-08, RF-09 y RF-11: reporte de vacaciones de todo el personal. *@
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Reporte de vacaciones</h3>
+        <span class="text-secondary small">30 días por año completo de servicio desde la fecha de ingreso</span>
+    </div>
+    <a asp-action="Exportar" asp-route-corte="@ViewBag.Corte" asp-route-idEmpleado="@idEmpleado" asp-route-cesados="@cesados"
+       class="btn btn-outline-primary"><i class="bi bi-filetype-csv me-1"></i>Exportar CSV</a>
+</div>
+
+@if ((bool)ViewBag.SinMotivos)
+{
+    <div class="alert alert-warning">
+        No hay motivos de permiso de vacaciones en el catálogo (su descripción debe contener «vacación»).
+        Sin ellos no se descuentan días gozados.
+    </div>
+}
+
+<form asp-action="Index" method="get" class="row g-3 align-items-end mb-3">
+    <div class="col-md-3">
+        <label for="corte" class="form-label">Fecha de corte</label>
+        <input type="date" id="corte" name="corte" value="@ViewBag.Corte" class="form-control" />
+    </div>
+    <div class="col-md-5">
+        <label for="idEmpleado" class="form-label">Empleado</label>
+        <select id="idEmpleado" name="idEmpleado" class="form-select">
+            <option value="">(todos)</option>
+            @foreach (var e in empleados)
+            {
+                <option value="@e.Id" selected="@(idEmpleado == e.Id)">@e.Nombre</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="cesados" name="cesados" value="true" checked="@cesados" />
+            <label class="form-check-label" for="cesados">Incluir cesados</label>
+        </div>
+    </div>
+    <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Consultar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Empleado</th>
+                <th>Ingreso</th>
+                <th class="text-end">Años</th>
+                <th class="text-end">Generadas</th>
+                <th class="text-end">Gozadas</th>
+                <th class="text-end">Pendientes</th>
+                <th class="text-end">Truncas</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="8" class="text-center text-secondary">Sin empleados con fecha de ingreso para los filtros elegidos.</td></tr>
+            }
+            @foreach (var f in Model)
+            {
+                var r = f.Datos.Resumen;
+                <tr>
+                    <td>
+                        @f.Empleado
+                        @if (f.Datos.Cesado) { <span class="badge text-bg-secondary ms-1">Cesado</span> }
+                    </td>
+                    <td>@r.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                    <td class="text-end">@r.AniosCumplidos</td>
+                    <td class="text-end">@VacacionesFormato.Dias(r.Generadas)</td>
+                    <td class="text-end">@VacacionesFormato.Dias(r.Gozadas)</td>
+                    <td class="text-end @(r.Pendientes < 0 ? "text-danger" : "")">@VacacionesFormato.Dias(r.Pendientes)</td>
+                    <td class="text-end">@VacacionesFormato.Dias(r.Truncas)</td>
+                    <td class="text-end">
+                        <a asp-action="Detalle" asp-route-idEmpleado="@f.Datos.IdEmpleado" asp-route-corte="@ViewBag.Corte"
+                           class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver detalle"><i class="bi bi-eye"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        @if (Model.Count > 0)
+        {
+            <tfoot>
+                <tr class="fw-semibold">
+                    <td colspan="3">Total (todas las páginas)</td>
+                    <td class="text-end">@VacacionesFormato.Dias(totales.Generadas)</td>
+                    <td class="text-end">@VacacionesFormato.Dias(totales.Gozadas)</td>
+                    <td class="text-end">@VacacionesFormato.Dias(totales.Pendientes)</td>
+                    <td class="text-end">@VacacionesFormato.Dias(totales.Truncas)</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        }
+    </table>
+</div>
+
+@if (ViewBag.Paginador is PaginadorModelo paginador)
+{
+    <partial name="_Paginador" model="paginador" />
+}
+
+<div class="d-flex gap-2 mt-3">
+    <a asp-controller="Permiso" asp-action="Index" class="btn btn-outline-secondary btn-sm">Volver a permisos</a>
+</div>
