@@ -2,6 +2,13 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## SC-026 · RF-15 · Reportar labores presenciales y días de teletrabajo por persona
+
+- Rama: `feature/presencialidad-y-teletrabajo`. Base del PR: `dev`.
+- En Permisos → Reporte de días de teletrabajo, seleccionar empleado, rango y relojes presenciales. El acceso al conteo de marcaciones requiere también permiso para Asistencia.
+- Se cuenta una vez cada fecha con una marcación en los relojes seleccionados. Si en una fecha hay marcación y teletrabajo, la fecha figura en ambos totales. Confirmar con el área usuaria qué relojes representan asistencia presencial.
+- CP-RF15-01: en un rango con dos marcaciones del empleado A en un mismo día en un reloj seleccionado, otra en un reloj excluido y un periodo de teletrabajo de dos días, esperar un día de marcación presencial y dos días de teletrabajo. Repetir con un usuario sin acceso a Asistencia y verificar que el filtro no esté disponible. Pendiente de prueba funcional con SQL Server.
+
 ## Seguimiento T3 · SC-028 (RF-17) · Validar feriados en el reporte general
 
 - **Rama original y commits:** `feature/feriados-en-reporte-general`, `7b5b1b1` (rama original), [`57aa5ef`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/57aa5ef) (`main`).
