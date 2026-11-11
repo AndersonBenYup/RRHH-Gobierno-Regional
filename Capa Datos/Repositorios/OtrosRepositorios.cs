@@ -47,6 +47,14 @@ public class MarcacionRepositorio : RepositorioBase<Marcacion>, IMarcacionReposi
 {
     public MarcacionRepositorio(EvoRRLDbContext contexto) : base(contexto) { }
 
+    public Task<int> ContarDiasPorDispositivos(int idEmpleado, DateTime desde, DateTime hasta, string[] dispositivos)
+        => Tabla.AsNoTracking()
+            .Where(m => m.IdEmpleado == idEmpleado && m.Fecha >= desde && m.Fecha <= hasta
+                && m.CodDispositivo != null && dispositivos.Contains(m.CodDispositivo))
+            .Select(m => m.Fecha.Date)
+            .Distinct()
+            .CountAsync();
+
     public async Task<List<Marcacion>> ListarRecientes(int? idEmpleado, DateTime? desde, DateTime? hasta, int maximo)
     {
         var consulta = Tabla.AsNoTracking();

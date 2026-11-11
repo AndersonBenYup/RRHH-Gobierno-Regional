@@ -41,6 +41,7 @@ public interface IAsistenciaRepositorio : IRepositorio<Asistencia>
 public interface IMarcacionRepositorio : IRepositorio<Marcacion>
 {
     Task<List<Marcacion>> ListarRecientes(int? idEmpleado, DateTime? desde, DateTime? hasta, int maximo);
+    Task<int> ContarDiasPorDispositivos(int idEmpleado, DateTime desde, DateTime hasta, string[] dispositivos);
 }
 
 /// <summary>Registro diario de asistencia: el filtro y el límite se aplican en la BD (más de 250 000 filas).</summary>

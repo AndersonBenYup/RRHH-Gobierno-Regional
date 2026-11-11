@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecto_Evo_RRLL.Models.ViewModels;
 using Proyecto_Evo_RRLL.Utilidades;
+using Proyecto_Evo_RRLL.Seguridad;
 
 namespace Proyecto_Evo_RRLL.Controllers;
 
@@ -189,9 +190,25 @@ public class PermisoController : Controller
 
     [HttpGet]
     public async Task<IActionResult> ReporteTeletrabajo(
-        int? idEmpleado, DateOnly? desde, DateOnly? hasta, bool? parcial,
-        [FromServices] IRepositorio<PeriodoTeletrabajo> periodos)
+        int? idEmpleado, DateOnly? desde, DateOnly? hasta, bool? parcial, string[]? dispositivosPresenciales,
+        [FromServices] IRepositorio<PeriodoTeletrabajo> periodos,
+        [FromServices] IMarcacionRepositorio marcaciones,
+        [FromServices] DispositivoMarcacionLogica dispositivos)
     {
+        var seleccion = dispositivosPresenciales ?? [];
+        if (User.PuedeVer("Asistencia"))
+        {
+            var catalogo = await dispositivos.Listar();
+            ViewBag.Dispositivos = catalogo.OrderBy(d => d.Descripcion).ThenBy(d => d.Codigo).ToList();
+            if (seleccion.Except(catalogo.Select(d => d.Codigo), StringComparer.Ordinal).Any())
+                ModelState.AddModelError("", "Seleccione dispositivos presenciales del catálogo.");
+            if (seleccion.Length > 0 && !idEmpleado.HasValue)
+                ModelState.AddModelError("", "Seleccione un empleado para consultar sus días presenciales.");
+        }
+        else if (seleccion.Length > 0)
+            return Forbid();
+
+        ViewBag.DispositivosSeleccionados = seleccion;
         ViewBag.Empleados = await EmpleadosAsync();
         ViewBag.IdEmpleado = idEmpleado;
         ViewBag.Parcial = parcial;
@@ -213,7 +230,12 @@ public class PermisoController : Controller
             .ToList();
         ViewBag.ReporteConsultado = true;
         if (idEmpleado.HasValue)
+        {
             ViewBag.TotalDias = Capa_Logica.Reglas.DiasTeletrabajo.Contar(registros, inicio, fin);
+            if (seleccion.Length > 0)
+                ViewBag.DiasPresenciales = await marcaciones.ContarDiasPorDispositivos(idEmpleado.Value,
+                    inicio.ToDateTime(TimeOnly.MinValue), fin.ToDateTime(TimeOnly.MaxValue), seleccion);
+        }
         return View(registros);
     }
 
