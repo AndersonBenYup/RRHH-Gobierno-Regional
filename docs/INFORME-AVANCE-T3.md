@@ -9,11 +9,11 @@
 
 ## 2. Resumen ejecutivo del avance
 
-La versión intermedia desplegada en Azure reúne los ocho requisitos obligatorios y tres complementarios. El proyecto web compila y el conjunto automatizado registra 135 pruebas aprobadas. Queda pendiente adjuntar los resultados y las capturas de las pruebas funcionales.
+La versión `v2.6.0`, desplegada en Azure, reúne los ocho requisitos obligatorios y tres complementarios. Las versiones `v2.7.0` a `v2.9.0`, integradas en `dev`, completan los 18 RF del área usuaria: presencialidad y teletrabajo (RF-15), vacaciones (RF-07 a RF-11) y la consulta personal de vacaciones (RF-12). El proyecto web compila sin advertencias y el conjunto automatizado registra 166 pruebas aprobadas. Queda pendiente adjuntar los resultados y las capturas de las pruebas funcionales.
 
 ## 3. Avances realizados desde la T2
 
-La matriz anterior de solicitudes se amplió con los RF de la T3. Se agregó el filtro al historial de turnos, se completaron reglas de permisos, se incorporó el registro de teletrabajo y se añadieron reportes.
+La matriz anterior de solicitudes se amplió con los RF de la T3. Se agregó el filtro al historial de turnos, se completaron reglas de permisos, se incorporó el registro de teletrabajo y se añadieron reportes. Después se agregaron el módulo de vacaciones y la consulta personal, y los reportes de ausencias y teletrabajo pasaron a filtrarse en la BD.
 
 ## 4. Actualización del diagnóstico técnico
 
@@ -41,11 +41,18 @@ ASP.NET Core MVC recibe y valida las solicitudes. La capa lógica aplica las reg
 | RF-14 | Reportar días de teletrabajo | Total de días calendario únicos por empleado |
 | RF-16 | Reportar quiénes realizan teletrabajo total o parcial | Reporte por rango y modalidad |
 | RF-17 | Validar feriados en el reporte general | Conteo de fechas únicas en Registro de Asistencia |
-| RF-18 | Reportar ausencias por periodo | Consulta por rango y motivos seleccionados |
+| RF-18 | Reportar ausencias por periodo | Consulta por rango y motivos seleccionados, filtrada en la BD |
+| RF-15 | Reportar labores presenciales y teletrabajo por persona | Días con marcación en relojes presenciales y días de teletrabajo (`v2.7.0`) |
+| RF-07 | Reportar vacaciones generadas | 30 días por año completo de servicio (`v2.8.0`) |
+| RF-08 | Reportar vacaciones pendientes de goce | Generadas − gozadas; negativo indica adelanto (`v2.8.0`) |
+| RF-09 | Reportar vacaciones truncas | 2,5 días por mes del año en curso (`v2.8.0`) |
+| RF-10 | Contabilizar vacaciones desde media jornada | Por horas = 0,5 días, mínimo 4 horas (`v2.8.0`) |
+| RF-11 | Generar reporte de vacaciones | Menú Vacaciones con totales, detalle y CSV (`v2.8.0`) |
+| RF-12 | Consulta de vacaciones para el usuario final | Menú Mis vacaciones, solo el empleado de la propia cuenta (`v2.9.0`) |
 
 ## 8. Requerimientos pendientes
 
-RF-07 a RF-12 y RF-15 quedan fuera de la selección complementaria de esta versión. Los 11 RF de la tabla requieren pruebas funcionales con datos de prueba. Confirmar el agrupamiento de motivos de licencia y el criterio de días calendario para teletrabajo.
+No quedan RF sin implementar. Los 18 RF requieren pruebas funcionales con datos de prueba en la aplicación desplegada. Confirmar el agrupamiento de motivos de licencia y el criterio de días calendario para teletrabajo.
 
 ## 9. Evidencias de refactorización aplicada
 
@@ -67,7 +74,7 @@ La integración inicial en `develop` se hizo localmente. Tras la reescritura de 
 
 ## 12. Casos de prueba ejecutados
 
-Compilación web con cero errores y cero advertencias. Resultado de `dotnet test`: 135 aprobadas, cero fallidas y cero omitidas. Entre ellas, 13 casos de reglas de permisos, 6 de licencia anual, 2 de conteo de teletrabajo y 1 de feriados. Los resultados de pantalla con SQL Server están pendientes y se registrarán en la matriz.
+Compilación web con cero errores y cero advertencias. Resultado de `dotnet test`: 166 aprobadas, cero fallidas y cero omitidas. Entre ellas, 13 casos de reglas de permisos, 6 de licencia anual, 2 de conteo de teletrabajo, 1 de feriados, 21 del cálculo de vacaciones, 5 de la lógica de vacaciones y 3 que comprueban que los reportes se traducen a SQL. Los resultados de pantalla con SQL Server están pendientes y se registrarán en la matriz.
 
 ## 13. Problemas técnicos encontrados
 
@@ -75,15 +82,15 @@ El borrado de motivos en uso chocaba con referencias de permisos. Los registros 
 
 ## 14. Riesgos pendientes
 
-Los permisos históricos de teletrabajo 125 y 126 requieren una decisión de migración. El script nuevo debe ejecutarse en la base de destino antes de usar el módulo. Debe validarse con el área usuaria si los días calendario y el grupo de motivos de licencia coinciden con el criterio institucional.
+Los permisos históricos de teletrabajo 125 y 126 requieren una decisión de migración. El script nuevo debe ejecutarse en la base de destino antes de usar el módulo. Debe validarse con el área usuaria si los días calendario y el grupo de motivos de licencia coinciden con el criterio institucional. Las vacaciones dependen de que cada empleado tenga fecha de ingreso en su periodo laboral y de que los motivos de vacaciones contengan «vacación» en su descripción. La consulta personal (RF-12) requiere vincular cada usuario con su empleado en «Usuarios y roles».
 
 ## 15. Plan de cierre hacia la Evaluación Final
 
-Validar los 11 RF en la aplicación desplegada con datos ficticios. Registrar resultados y capturas, completar carátula y responsables y revisar las reglas asumidas. Continuar con los RF de vacaciones y el reporte de presencialidad en la siguiente etapa.
+Revisar y fusionar `dev` en `main` mediante un PR para desplegar `v2.7.0` a `v2.9.0`. Validar los 18 RF en la aplicación desplegada con datos ficticios, registrar resultados y capturas, completar carátula y responsables y revisar las reglas asumidas.
 
 ## 16. Conclusiones
 
-El repositorio contiene una versión intermedia compilable con turnos, permisos, teletrabajo y tres reportes complementarios. El historial permite rastrear implementación y pruebas automatizadas.
+El repositorio contiene una versión compilable con turnos, permisos, teletrabajo, presencialidad, vacaciones y la consulta personal: los 8 RF obligatorios y los 10 complementarios. El historial permite rastrear implementación y pruebas automatizadas.
 
 ## 17. Recomendaciones
 

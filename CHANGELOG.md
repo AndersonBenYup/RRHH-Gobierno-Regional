@@ -11,6 +11,19 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.9.0] - 2026-11-11
+
+Con esta versión están implementados los 18 RF de la Evaluación T3 (8 obligatorios y 10 complementarios).
+
+### Agregado
+- RF-12 (SC-023): menú **Mis vacaciones** para todos los usuarios. Cada uno ve solo el saldo y los goces del empleado vinculado a su cuenta (`Usuario.IdEmpleado`); si la cuenta no está vinculada, se explica cómo hacerlo en «Usuarios y roles».
+
+### Cambiado
+- Informe de avance T3 y matriz de solicitudes con SC-018 a SC-023, SC-026 y la ampliación de SC-005.
+- `<Version>2.9.0</Version>`.
+
+Pruebas: 166 en verde.
+
 ## [2.8.0] - 2026-11-11
 
 Vacaciones (RF-07 a RF-11). Regla verificada con el área usuaria: 30 días calendario por cada año completo de servicio desde la fecha de ingreso; es la misma para los D. Leg. 276, 1057 (Ley 29849) y 713.
@@ -202,7 +215,8 @@ Primera versión completa, en el repositorio anterior [`sh4ntyfps/Proyecto-Evo_R
 ### Seguridad
 - **17-sep:** validación de catálogos, roles de administrador y clave de seed configurable.
 
-[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.8.0...HEAD
+[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.0...HEAD
+[2.9.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.5.0...v2.6.0

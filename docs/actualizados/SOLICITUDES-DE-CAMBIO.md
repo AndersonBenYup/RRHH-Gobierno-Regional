@@ -4,10 +4,29 @@
 
 ## SC-026 · RF-15 · Reportar labores presenciales y días de teletrabajo por persona
 
-- Rama: `feature/presencialidad-y-teletrabajo`. Base del PR: `dev`.
+- Rama: `feature/presencialidad-y-teletrabajo`, commit `20da2b7`. Integrada en `dev` y publicada en `v2.7.0`.
 - En Permisos → Reporte de días de teletrabajo, seleccionar empleado, rango y relojes presenciales. El acceso al conteo de marcaciones requiere también permiso para Asistencia.
 - Se cuenta una vez cada fecha con una marcación en los relojes seleccionados. Si en una fecha hay marcación y teletrabajo, la fecha figura en ambos totales. Confirmar con el área usuaria qué relojes representan asistencia presencial.
 - CP-RF15-01: en un rango con dos marcaciones del empleado A en un mismo día en un reloj seleccionado, otra en un reloj excluido y un periodo de teletrabajo de dos días, esperar un día de marcación presencial y dos días de teletrabajo. Repetir con un usuario sin acceso a Asistencia y verificar que el filtro no esté disponible. Pendiente de prueba funcional con SQL Server.
+
+## Seguimiento T3 · SC-005 (ampliación) · Reportes de ausencias y teletrabajo filtrados en la BD
+
+- **Rama y commit:** `feature/reportes-filtrados-en-bd`, `45aab45`. Versión `v2.7.0`.
+- **Cambio:** `ReporteAusencias` (RF-18) y `ReporteTeletrabajo` (RF-14, RF-15 y RF-16) traían toda la tabla y filtraban en memoria. Ahora usan `IPermisoRepositorio.ListarPorMotivosEntreFechas` e `IPeriodoTeletrabajoRepositorio.ListarEntreFechas`.
+- **Prueba:** `ConsultasEnBdTests` comprueba con `ToQueryString()` que EF traduce los filtros a SQL (3 pruebas aprobadas).
+
+## Seguimiento T3 · Vacaciones (SC-018 a SC-023)
+
+Regla verificada con el área usuaria: 30 días calendario por cada año completo de servicio desde la fecha de ingreso del último periodo laboral. Es la misma para los D. Leg. 276, 1057 (Ley 29849) y 713. Los motivos de vacaciones se reconocen porque su descripción contiene «vacación».
+
+| Solicitud | Rama y commit | Implementación | Caso y evidencia |
+| --- | --- | --- | --- |
+| SC-018 · RF-07 · Reportar vacaciones generadas | `feature/vacaciones-generadas-pendientes-truncas`, `a315341` (`v2.8.0`) | `CalculoVacaciones.AniosCumplidos`; columna Generadas en Vacaciones. | CP-RF07-01: ingreso 01/03/2024; al 27/02/2025 hay 0 años, al 28/02/2025 1 año (30 días) y al 28/02/2026 2 años. Prueba automatizada aprobada; captura pendiente. |
+| SC-019 · RF-08 · Reportar vacaciones pendientes de goce | `a315341` (`v2.8.0`) | Pendientes = generadas − gozadas; en rojo si es negativo (adelanto). | CP-RF08-01: 30 generadas, 10 días completos y una media jornada gozados: 19,5 pendientes. Prueba automatizada aprobada; captura pendiente. |
+| SC-020 · RF-09 · Reportar vacaciones truncas | `a315341` (`v2.8.0`) | `CalculoVacaciones.Truncas`: 2,5 días por mes completo del año en curso y la parte proporcional de los días restantes. Para un cesado se calcula a su fecha de salida. | CP-RF09-01: ingreso 01/03/2024, corte 15/05/2026: 2 meses y 15 días = 6,25. CP-RF09-02: cesado el 31/03/2026 con ingreso 01/01/2025: 7,5 truncas. Pruebas aprobadas. |
+| SC-021 · RF-10 · Contabilizar vacaciones desde media jornada | `a315341` (`v2.8.0`) | Un permiso de vacaciones por horas cuenta 0,5 días. `PermisoLogica.Validar` exige al menos 4 horas. | CP-RF10-01: vacaciones de 08:00 a 12:00 descuentan 0,5. CP-RF10-02: vacaciones de 08:00 a 10:00 se rechazan; una licencia de 2 horas se acepta. Pruebas aprobadas; captura del mensaje pendiente. |
+| SC-022 · RF-11 · Generar reporte de vacaciones | `a315341` (`v2.8.0`) | Menú **Vacaciones** (módulo Permisos, `0502007`): fecha de corte, empleado, cesados, totales, detalle y **Exportar CSV**. | CP-RF11-01: consultar al corte de hoy, abrir el detalle de un empleado y exportar; el CSV debe tener las mismas filas y totales. Pendiente de ejecución. |
+| SC-023 · RF-12 · Consulta personal de vacaciones | `feature/consulta-personal-de-vacaciones`, `3ac9f98` (`v2.9.0`) | Menú **Mis vacaciones**, visible para todos los usuarios. Muestra solo el empleado vinculado a la cuenta (`Usuario.IdEmpleado`); no recibe el empleado por parámetro. | CP-RF12-01: vincular un usuario de prueba con un empleado en «Usuarios y roles», iniciar sesión y comprobar su saldo y sus goces. CP-RF12-02: un usuario sin empleado vinculado ve el aviso. Pendiente de ejecución. |
 
 ## Seguimiento T3 · SC-028 (RF-17) · Validar feriados en el reporte general
 
