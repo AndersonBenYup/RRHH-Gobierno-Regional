@@ -191,7 +191,7 @@ public class PermisoController : Controller
     [HttpGet]
     public async Task<IActionResult> ReporteTeletrabajo(
         int? idEmpleado, DateOnly? desde, DateOnly? hasta, bool? parcial, string[]? dispositivosPresenciales,
-        [FromServices] IRepositorio<PeriodoTeletrabajo> periodos,
+        [FromServices] IPeriodoTeletrabajoRepositorio periodos,
         [FromServices] IMarcacionRepositorio marcaciones,
         [FromServices] DispositivoMarcacionLogica dispositivos)
     {
@@ -221,13 +221,8 @@ public class PermisoController : Controller
         if (!ModelState.IsValid || desde is not DateOnly inicio || hasta is not DateOnly fin)
             return View(Array.Empty<PeriodoTeletrabajo>());
 
-        var registros = (await periodos.Listar())
-            .Where(p => (!idEmpleado.HasValue || p.IdEmpleado == idEmpleado)
-                && (!parcial.HasValue || p.Parcial == parcial)
-                && p.FechaInicio <= fin && p.FechaFin >= inicio)
-            .OrderBy(p => p.IdEmpleado)
-            .ThenBy(p => p.FechaInicio)
-            .ToList();
+        // SC-005: empleado, modalidad y rango se filtran en SQL Server.
+        var registros = await periodos.ListarEntreFechas(idEmpleado, parcial, inicio, fin);
         ViewBag.ReporteConsultado = true;
         if (idEmpleado.HasValue)
         {
@@ -257,11 +252,8 @@ public class PermisoController : Controller
             return View(Array.Empty<Permiso>());
 
         ViewBag.Empleados = await EmpleadosAsync();
-        var resultado = (await _permisoData.Listar())
-            .Where(p => p.idMotivo is int motivo && seleccion.Contains(motivo) && p.FechaInicio is DateTime fecha
-                && DateOnly.FromDateTime(fecha) <= fin && DateOnly.FromDateTime(p.FechaFin ?? fecha) >= inicio)
-            .OrderBy(p => p.FechaInicio).ThenBy(p => p.IdEmpleado).ToList();
-        return View(resultado);
+        // SC-005: el rango y los motivos se filtran en SQL Server; antes se traía toda la tabla de permisos.
+        return View(await _permisoData.ListarAusencias(seleccion, inicio, fin));
     }
 
     // ---------- Utilidades ----------

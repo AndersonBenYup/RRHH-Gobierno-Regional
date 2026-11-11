@@ -23,6 +23,10 @@ public class PermisoLogica : LogicaBase<Permiso>
     /// <summary>SC-005: siguiente número correlativo del empleado calculado en la BD.</summary>
     public Task<int> SiguienteNumero(int idEmpleado) => _permisos.SiguienteNumero(idEmpleado);
 
+    /// <summary>RF-18 / SC-005: ausencias de los motivos elegidos que se cruzan con el rango, filtradas en la BD.</summary>
+    public Task<List<Permiso>> ListarAusencias(IReadOnlyCollection<int> motivos, DateOnly desde, DateOnly hasta)
+        => _permisos.ListarPorMotivosEntreFechas(motivos, desde.ToDateTime(TimeOnly.MinValue), hasta.ToDateTime(TimeOnly.MinValue));
+
     /// <summary>SC-008: reglas de negocio (fechas, horas y solapamiento) que se revisan antes de guardar.</summary>
     public async Task<List<ErrorValidacion>> Validar(Permiso permiso)
     {

@@ -34,4 +34,35 @@ public class PermisoRepositorio : RepositorioBase<Permiso>, IPermisoRepositorio
 
     public async Task<int> SiguienteNumero(int idEmpleado)
         => (await Tabla.Where(p => p.IdEmpleado == idEmpleado).MaxAsync(p => (int?)p.NPermiso) ?? 0) + 1;
+
+    public async Task<List<Permiso>> ListarPorMotivosEntreFechas(IReadOnlyCollection<int> motivos, DateTime desde, DateTime hasta)
+        => motivos.Count == 0 ? [] : await ConsultaPorMotivosEntreFechas(Tabla.AsNoTracking(), motivos, desde, hasta).ToListAsync();
+
+    public async Task<List<Permiso>> ListarPorMotivos(IReadOnlyCollection<int> motivos, int? idEmpleado)
+        => motivos.Count == 0 ? [] : await ConsultaPorMotivos(Tabla.AsNoTracking(), motivos, idEmpleado).ToListAsync();
+
+    /// <summary>Consulta de <see cref="ListarPorMotivosEntreFechas"/>; pública para comprobar que EF la traduce a SQL.</summary>
+    public static IQueryable<Permiso> ConsultaPorMotivosEntreFechas(IQueryable<Permiso> permisos,
+        IReadOnlyCollection<int> motivos, DateTime desde, DateTime hasta)
+    {
+        var lista = motivos.ToList();
+        var inicio = desde.Date;
+        var fin = hasta.Date;
+        return permisos
+            .Where(p => p.idMotivo != null && lista.Contains(p.idMotivo.Value)
+                && p.FechaInicio != null && p.FechaInicio <= fin
+                && (p.FechaFin ?? p.FechaInicio) >= inicio)
+            .OrderBy(p => p.FechaInicio).ThenBy(p => p.IdEmpleado);
+    }
+
+    /// <summary>Consulta de <see cref="ListarPorMotivos"/>; pública para comprobar que EF la traduce a SQL.</summary>
+    public static IQueryable<Permiso> ConsultaPorMotivos(IQueryable<Permiso> permisos,
+        IReadOnlyCollection<int> motivos, int? idEmpleado)
+    {
+        var lista = motivos.ToList();
+        return permisos
+            .Where(p => p.idMotivo != null && lista.Contains(p.idMotivo.Value)
+                && (idEmpleado == null || p.IdEmpleado == idEmpleado))
+            .OrderBy(p => p.IdEmpleado).ThenBy(p => p.FechaInicio);
+    }
 }
