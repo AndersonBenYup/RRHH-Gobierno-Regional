@@ -4,16 +4,20 @@ using Capa_Entidades;
 
 namespace Capa_Logica.Reglas;
 
-/// <summary>Un permiso de vacaciones ya gozado: rango de fechas y si fue por horas (media jornada).</summary>
-public sealed record GoceVacaciones(DateOnly Inicio, DateOnly Fin, bool PorHoras)
+/// <summary>
+/// Un permiso de vacaciones ya gozado: rango de fechas y si cuenta como media jornada (0,5 por día).
+/// Es media jornada si se registró por horas o si su motivo es de media jornada («1/2 JORNADA VACACIONES»):
+/// en la BD esos permisos están con <c>Dia = 1</c> y sin horas.
+/// </summary>
+public sealed record GoceVacaciones(DateOnly Inicio, DateOnly Fin, bool MediaJornada)
 {
-    public static GoceVacaciones? Desde(Permiso permiso)
+    public static GoceVacaciones? Desde(Permiso permiso, bool motivoDeMediaJornada = false)
     {
         if (permiso.FechaInicio is not DateTime inicio)
             return null;
         var fin = permiso.FechaFin ?? inicio;
-        return new GoceVacaciones(DateOnly.FromDateTime(inicio), DateOnly.FromDateTime(fin),
-            permiso.Dia != true && permiso.Hora_Sal is not null && permiso.Hora_Ret is not null);
+        var porHoras = permiso.Dia != true && permiso.Hora_Sal is not null && permiso.Hora_Ret is not null;
+        return new GoceVacaciones(DateOnly.FromDateTime(inicio), DateOnly.FromDateTime(fin), porHoras || motivoDeMediaJornada);
     }
 }
 
@@ -76,7 +80,7 @@ public static class CalculoVacaciones
 
     /// <summary>
     /// RF-10: días que descuenta un goce dentro de [desde, hasta]. Por día completo cuenta cada día calendario;
-    /// por horas cuenta media jornada (0,5) por cada día.
+    /// media jornada (por horas o por motivo) cuenta 0,5 por cada día.
     /// </summary>
     public static decimal DiasGozados(GoceVacaciones goce, DateOnly desde, DateOnly hasta)
     {
@@ -85,7 +89,7 @@ public static class CalculoVacaciones
         if (fin < inicio)
             return 0;
         var dias = fin.DayNumber - inicio.DayNumber + 1;
-        return goce.PorHoras ? dias * MediaJornada : dias;
+        return goce.MediaJornada ? dias * MediaJornada : dias;
     }
 
     /// <summary>RF-07 a RF-10: saldo a la fecha de corte. Solo cuentan los goces entre el ingreso y el corte.</summary>
@@ -109,13 +113,25 @@ public static class CalculoVacaciones
     /// Así no se fijan códigos de motivo que cambian entre bases de datos.
     /// </summary>
     public static bool EsMotivoDeVacaciones(string? descripcion)
+        => SinTildes(descripcion).Contains("VACACION", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Motivo de vacaciones por media jornada, p. ej. «1/2 JORNADA VACACIONES» o «MEDIA JORNADA».</summary>
+    public static bool EsMotivoDeMediaJornada(string? descripcion)
     {
-        if (string.IsNullOrWhiteSpace(descripcion))
-            return false;
-        var sinTildes = new StringBuilder();
-        foreach (var c in descripcion.Normalize(NormalizationForm.FormD))
+        var texto = SinTildes(descripcion);
+        return EsMotivoDeVacaciones(texto)
+               && (texto.Contains("1/2 JORNADA", StringComparison.OrdinalIgnoreCase)
+                   || texto.Contains("MEDIA JORNADA", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string SinTildes(string? texto)
+    {
+        if (string.IsNullOrWhiteSpace(texto))
+            return "";
+        var resultado = new StringBuilder();
+        foreach (var c in texto.Normalize(NormalizationForm.FormD))
             if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-                sinTildes.Append(c);
-        return sinTildes.ToString().Contains("VACACION", StringComparison.OrdinalIgnoreCase);
+                resultado.Append(c);
+        return resultado.ToString();
     }
 }

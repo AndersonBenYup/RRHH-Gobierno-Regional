@@ -31,7 +31,8 @@ public class VacacionesController : Controller
     {
         var fecha = corte ?? DateOnly.FromDateTime(DateTime.Today);
         var empleados = await _empleados.EmpleadosAsync();
-        var filas = await FilasAsync(fecha, idEmpleado, cesados, empleados);
+        var reporte = await _vacaciones.Generar(fecha, idEmpleado, cesados);
+        var filas = Filas(reporte, empleados);
 
         var tamanoPagina = VentanaPaginas.NormalizarTamano(tamano, TamanoPagina);
         var totalPaginas = Math.Max(1, (int)Math.Ceiling(filas.Count / (double)tamanoPagina));
@@ -42,6 +43,7 @@ public class VacacionesController : Controller
         ViewBag.Corte = fecha.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         ViewBag.Cesados = cesados;
         ViewBag.SinMotivos = (await _vacaciones.MotivosDeVacaciones()).Count == 0;
+        ViewBag.SinFechaDeIngreso = reporte.SinFechaDeIngreso;
         ViewBag.Totales = new VacacionesTotales(
             filas.Sum(f => f.Datos.Resumen.Generadas), filas.Sum(f => f.Datos.Resumen.Gozadas),
             filas.Sum(f => f.Datos.Resumen.Pendientes), filas.Sum(f => f.Datos.Resumen.Truncas));
@@ -66,7 +68,7 @@ public class VacacionesController : Controller
             new[] { "IdEmpleado", "Empleado", "Estado", "Fecha de ingreso", "Fecha de corte", "Años cumplidos",
                     "Generadas", "Gozadas", "Pendientes", "Truncas" }
         };
-        foreach (var f in await FilasAsync(fecha, idEmpleado, cesados, await _empleados.EmpleadosAsync()))
+        foreach (var f in Filas(await _vacaciones.Generar(fecha, idEmpleado, cesados), await _empleados.EmpleadosAsync()))
         {
             var r = f.Datos.Resumen;
             filas.Add(new string?[]
@@ -92,11 +94,10 @@ public class VacacionesController : Controller
         return View(await _vacaciones.DeEmpleado(idEmpleado, fecha));
     }
 
-    private async Task<List<VacacionesFila>> FilasAsync(DateOnly corte, int? idEmpleado, bool cesados,
-        List<(int Id, string Nombre)> empleados)
+    private static List<VacacionesFila> Filas(ReporteVacaciones reporte, List<(int Id, string Nombre)> empleados)
     {
         var nombres = empleados.ToDictionary(e => e.Id, e => e.Nombre);
-        return (await _vacaciones.Reporte(corte, idEmpleado, cesados))
+        return reporte.Empleados
             .Select(v => new VacacionesFila(nombres.GetValueOrDefault(v.IdEmpleado, $"(Empleado {v.IdEmpleado})"), v))
             .OrderBy(f => f.Empleado, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
