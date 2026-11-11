@@ -11,6 +11,17 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.7.0] - 2026-11-11
+
+### Agregado
+- RF-15 (SC-026): en el reporte de teletrabajo, días con marcación en los relojes presenciales elegidos junto a los días de teletrabajo del empleado. El conteo de marcaciones se hace en la BD y requiere acceso a Asistencia.
+
+### Cambiado
+- Los reportes de ausencias (RF-18) y de teletrabajo (RF-14, RF-15 y RF-16) filtran fechas, motivos, empleado y modalidad en la BD con `IPermisoRepositorio` e `IPeriodoTeletrabajoRepositorio`; antes traían toda la tabla (SC-005).
+- `<Version>2.7.0</Version>` en `Proyecto-Evo-RRLL.csproj`.
+
+Pruebas: 138 en verde (3 nuevas comprueban con `ToQueryString()` que EF traduce los filtros a SQL).
+
 ## [2.6.0] - 2026-11-11
 
 ### Agregado
@@ -174,7 +185,8 @@ Primera versión completa, en el repositorio anterior [`sh4ntyfps/Proyecto-Evo_R
 ### Seguridad
 - **17-sep:** validación de catálogos, roles de administrador y clave de seed configurable.
 
-[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.6.0...HEAD
+[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.7.0...HEAD
+[2.7.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.3.1...v2.4.0
