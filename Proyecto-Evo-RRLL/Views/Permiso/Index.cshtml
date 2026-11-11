@@ -77,4 +77,6 @@
 <div class="d-flex gap-2 mt-3">
     <a asp-controller="Catalogo" asp-action="Index" asp-route-tabla="TipoPermiso" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list-check me-1"></i>Tipos de permiso</a>
     <a asp-controller="Catalogo" asp-action="Index" asp-route-tabla="Motivo_Perm" class="btn btn-outline-secondary btn-sm"><i class="bi bi-list-ul me-1"></i>Motivos de permiso</a>
+    <a asp-action="Teletrabajo" asp-route-idEmpleado="@ViewBag.IdEmpleado" class="btn btn-outline-secondary btn-sm">Registrar teletrabajo</a>
+    <a asp-action="ReporteAusencias" class="btn btn-outline-secondary btn-sm">Reporte de ausencias</a>
 </div>

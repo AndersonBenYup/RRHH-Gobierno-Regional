@@ -1,0 +1,62 @@
+@model IReadOnlyList<Permiso>
+@{
+    ViewData["Title"] = "Reporte de ausencias por periodo";
+    var catalogo = (List<Motivo_Perm>)ViewBag.Catalogo;
+    var seleccion = (HashSet<int>)ViewBag.Seleccion;
+    var empleados = ViewBag.Empleados as List<(int Id, string Nombre)>;
+    var nombres = empleados?.ToDictionary(e => e.Id, e => e.Nombre);
+    var motivos = catalogo.ToDictionary(m => m.idMotivo, m => m.Descrip_Motivo);
+}
+
+<h3>Reporte de ausencias por periodo</h3>
+<form asp-action="ReporteAusencias" method="get" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <label for="desde" class="form-label">Desde</label>
+        <input type="date" id="desde" name="desde" value="@ViewBag.Desde" class="form-control" required />
+    </div>
+    <div class="col-md-3">
+        <label for="hasta" class="form-label">Hasta</label>
+        <input type="date" id="hasta" name="hasta" value="@ViewBag.Hasta" class="form-control" required />
+    </div>
+    <div class="col-md-6">
+        <label for="motivos" class="form-label">Motivos de ausencia</label>
+        <select id="motivos" name="motivos" class="form-select" multiple required>
+            @foreach (var motivo in catalogo)
+            {
+                <option value="@motivo.idMotivo" selected="@seleccion.Contains(motivo.idMotivo)">@motivo.Descrip_Motivo</option>
+            }
+        </select>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Consultar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver a permisos</a>
+    </div>
+</form>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+@if (nombres is not null)
+{
+    @if (Model.Count == 0)
+    {
+        <p>Sin registros para las fechas y motivos seleccionados.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead><tr><th>Empleado</th><th>Motivo</th><th>Inicio</th><th>Fin</th></tr></thead>
+                <tbody>
+                    @foreach (var permiso in Model)
+                    {
+                        <tr>
+                            <td>@nombres.GetValueOrDefault(permiso.IdEmpleado, $"Empleado {permiso.IdEmpleado}")</td>
+                            <td>@motivos.GetValueOrDefault(permiso.idMotivo.GetValueOrDefault())</td>
+                            <td>@permiso.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                            <td>@((permiso.FechaFin ?? permiso.FechaInicio)?.ToString("dd/MM/yyyy"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
