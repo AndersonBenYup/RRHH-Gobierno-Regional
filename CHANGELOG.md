@@ -11,6 +11,23 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.8.0] - 2026-11-11
+
+Vacaciones (RF-07 a RF-11). Regla verificada con el área usuaria: 30 días calendario por cada año completo de servicio desde la fecha de ingreso; es la misma para los D. Leg. 276, 1057 (Ley 29849) y 713.
+
+### Agregado
+- RF-07 (SC-018): vacaciones generadas, 30 días por año cumplido desde `PeriodoLaboral.FechaIngreso` (último periodo del empleado).
+- RF-08 (SC-019): pendientes de goce = generadas − gozadas. Un saldo negativo indica vacaciones adelantadas.
+- RF-09 (SC-020): truncas, 2,5 días por mes completo del año en curso y la parte proporcional de los días restantes. Para un cesado se calculan a su fecha de salida.
+- RF-10 (SC-021): un permiso de vacaciones por horas cuenta 0,5 días y debe cubrir al menos media jornada (4 horas); si no, el alta o la edición del permiso muestra el error.
+- RF-11 (SC-022): menú **Vacaciones** (módulo Permisos, `0502007`) con fecha de corte, filtro por empleado, cesados, totales, detalle por empleado y exportación CSV.
+- `CalculoVacaciones` (reglas puras) y `VacacionesLogica`. Los motivos de vacaciones se reconocen por su descripción («vacación»), sin fijar códigos.
+
+### Cambiado
+- `<Version>2.8.0</Version>`.
+
+Pruebas: 166 en verde (21 del cálculo y 5 de la lógica de vacaciones).
+
 ## [2.7.0] - 2026-11-11
 
 ### Agregado
@@ -185,7 +202,8 @@ Primera versión completa, en el repositorio anterior [`sh4ntyfps/Proyecto-Evo_R
 ### Seguridad
 - **17-sep:** validación de catálogos, roles de administrador y clave de seed configurable.
 
-[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.7.0...HEAD
+[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.8.0...HEAD
+[2.8.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.4.0...v2.5.0
