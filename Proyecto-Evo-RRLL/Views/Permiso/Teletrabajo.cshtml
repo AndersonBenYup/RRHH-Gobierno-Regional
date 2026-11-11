@@ -1,0 +1,40 @@
+@model PeriodoTeletrabajo
+@{
+    ViewData["Title"] = "Registrar periodo de teletrabajo";
+    var empleados = (List<(int Id, string Nombre)>)ViewBag.Empleados;
+}
+
+<h3>Registrar periodo de teletrabajo</h3>
+<form asp-action="Teletrabajo" method="post" class="row g-3">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-6">
+        <label asp-for="IdEmpleado" class="form-label">Empleado</label>
+        <select asp-for="IdEmpleado" class="form-select" required>
+            <option value="">(seleccionar)</option>
+            @foreach (var empleado in empleados)
+            {
+                <option value="@empleado.Id">@empleado.Nombre</option>
+            }
+        </select>
+        <span asp-validation-for="IdEmpleado" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="FechaInicio" class="form-label">Fecha de inicio</label>
+        <input asp-for="FechaInicio" type="date" class="form-control" required />
+        <span asp-validation-for="FechaInicio" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="FechaFin" class="form-label">Fecha de fin</label>
+        <input asp-for="FechaFin" type="date" class="form-control" required />
+        <span asp-validation-for="FechaFin" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <input asp-for="Parcial" class="form-check-input" />
+        <label asp-for="Parcial" class="form-check-label">Teletrabajo parcial</label>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver a permisos</a>
+        <a asp-action="ReporteTeletrabajo" asp-route-idEmpleado="@Model.IdEmpleado" class="btn btn-outline-secondary">Consultar reporte</a>
+    </div>
+</form>

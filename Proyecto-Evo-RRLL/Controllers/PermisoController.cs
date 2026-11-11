@@ -150,6 +150,98 @@ public class PermisoController : Controller
         return RedirectToAction(nameof(Index), new { idEmpleado });
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Teletrabajo(int? idEmpleado)
+    {
+        ViewBag.Empleados = await EmpleadosAsync();
+        return View(new PeriodoTeletrabajo { IdEmpleado = idEmpleado ?? 0 });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Teletrabajo(
+        [Bind("IdEmpleado,FechaInicio,FechaFin,Parcial")] PeriodoTeletrabajo modelo,
+        [FromServices] IRepositorio<PeriodoTeletrabajo> periodos,
+        [FromServices] ILogger<PermisoController> logger)
+    {
+        var empleados = await EmpleadosAsync();
+        if (ModelState.IsValid && !empleados.Any(e => e.Id == modelo.IdEmpleado))
+            ModelState.AddModelError(nameof(modelo.IdEmpleado), "Seleccione un empleado válido.");
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                await periodos.Crear(modelo);
+                TempData["MensajeExito"] = "Periodo de teletrabajo registrado.";
+                return RedirectToAction(nameof(Teletrabajo), new { idEmpleado = modelo.IdEmpleado });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "No se pudo registrar el periodo de teletrabajo.");
+                ModelState.AddModelError("", "No se pudo guardar el periodo. Verifique si ya está registrado.");
+            }
+        }
+
+        ViewBag.Empleados = empleados;
+        return View(modelo);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ReporteTeletrabajo(
+        int? idEmpleado, DateOnly? desde, DateOnly? hasta, bool? parcial,
+        [FromServices] IRepositorio<PeriodoTeletrabajo> periodos)
+    {
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.IdEmpleado = idEmpleado;
+        ViewBag.Parcial = parcial;
+        ViewBag.Desde = desde?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+        if (desde.HasValue && hasta.HasValue && desde > hasta)
+            ModelState.AddModelError("", "La fecha de inicio no puede ser posterior a la fecha de fin.");
+
+        if (!ModelState.IsValid || desde is not DateOnly inicio || hasta is not DateOnly fin)
+            return View(Array.Empty<PeriodoTeletrabajo>());
+
+        var registros = (await periodos.Listar())
+            .Where(p => (!idEmpleado.HasValue || p.IdEmpleado == idEmpleado)
+                && (!parcial.HasValue || p.Parcial == parcial)
+                && p.FechaInicio <= fin && p.FechaFin >= inicio)
+            .OrderBy(p => p.IdEmpleado)
+            .ThenBy(p => p.FechaInicio)
+            .ToList();
+        ViewBag.ReporteConsultado = true;
+        if (idEmpleado.HasValue)
+            ViewBag.TotalDias = Capa_Logica.Reglas.DiasTeletrabajo.Contar(registros, inicio, fin);
+        return View(registros);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ReporteAusencias(DateOnly? desde, DateOnly? hasta, int[]? motivos)
+    {
+        var catalogo = (await _motivoData.Listar()).Where(m => m.idMotivo is not (125 or 126))
+            .OrderBy(m => m.Descrip_Motivo).ToList();
+        var seleccion = (motivos ?? []).Intersect(catalogo.Select(m => m.idMotivo)).ToHashSet();
+        ViewBag.Catalogo = catalogo;
+        ViewBag.Seleccion = seleccion;
+        ViewBag.Desde = desde?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+        if (desde.HasValue && hasta.HasValue && desde > hasta)
+            ModelState.AddModelError("", "La fecha desde no puede ser posterior a la fecha hasta.");
+
+        if (!ModelState.IsValid || desde is not DateOnly inicio || hasta is not DateOnly fin || seleccion.Count == 0)
+            return View(Array.Empty<Permiso>());
+
+        ViewBag.Empleados = await EmpleadosAsync();
+        var resultado = (await _permisoData.Listar())
+            .Where(p => p.idMotivo is int motivo && seleccion.Contains(motivo) && p.FechaInicio is DateTime fecha
+                && DateOnly.FromDateTime(fecha) <= fin && DateOnly.FromDateTime(p.FechaFin ?? fecha) >= inicio)
+            .OrderBy(p => p.FechaInicio).ThenBy(p => p.IdEmpleado).ToList();
+        return View(resultado);
+    }
+
     // ---------- Utilidades ----------
 
     private async Task<List<(int Id, string Nombre)>> EmpleadosAsync()

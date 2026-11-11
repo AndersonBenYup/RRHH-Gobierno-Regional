@@ -12,6 +12,9 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 ## [Sin publicar]
 
 ### Agregado
+- RF-02, RF-03, RF-05 y RF-06: historial de turnos por fechas y validaciones de permisos, motivos y licencias.
+- RF-13, RF-14 y RF-16: registro y reporte de teletrabajo.
+- RF-17 y RF-18: resumen de feriados y reporte de ausencias por periodo.
 - Este `CHANGELOG.md`, con la historia del sistema desde la v1.0.0.
 - Esquema de la BD normalizada en el repositorio: `Scripts/bd-Normalizada/01-esquema-RRHH_Normalizado.sql`, `NORMALIZACION.md` y un README con el orden de ejecución. Los datos (`03-datos`, 156 MB) quedan fuera por el límite de GitHub.
 - `<Version>2.5.0</Version>` en `Proyecto-Evo-RRLL.csproj`: la aplicación sabe qué versión es.
