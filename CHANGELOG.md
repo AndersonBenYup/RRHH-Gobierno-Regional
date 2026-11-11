@@ -11,6 +11,18 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.9.1] - 2026-11-11
+
+Corrección del cálculo de vacaciones tras revisar los datos reales de `rrhhdb` (solo lectura, `Scripts/verificar-bd-v2.9.0*.sql`).
+
+### Corregido
+- RF-07/RF-09 (SC-018, SC-020): la fecha de ingreso ya no depende solo de `PeriodoLaboral`, que existe para 833 de 3338 empleados y, en muchos activos, termina hace años (datos migrados). Un activo usa su último periodo si sigue abierto y, si no, `Empleado.FechaIngreso`; ya no se le trata como cesado por un periodo antiguo cerrado. Un inactivo usa su último periodo cerrado.
+- El reporte avisa cuántos empleados se omiten por no tener fecha de ingreso vigente.
+- RF-10 (SC-021): los permisos «1/2 JORNADA VACACIONES» están registrados con `Dia = 1` y sin horas; ahora descuentan 0,5 por día por su motivo y no un día completo. El detalle muestra los días que descuenta cada permiso.
+
+Pruebas: 176 en verde.
+
+
 ## [2.9.0] - 2026-11-11
 
 Con esta versión están implementados los 18 RF de la Evaluación T3 (8 obligatorios y 10 complementarios).
@@ -29,7 +41,7 @@ Pruebas: 166 en verde.
 Vacaciones (RF-07 a RF-11). Regla verificada con el área usuaria: 30 días calendario por cada año completo de servicio desde la fecha de ingreso; es la misma para los D. Leg. 276, 1057 (Ley 29849) y 713.
 
 ### Agregado
-- RF-07 (SC-018): vacaciones generadas, 30 días por año cumplido desde `PeriodoLaboral.FechaIngreso` (último periodo del empleado).
+- RF-07 (SC-018): vacaciones generadas, 30 días por año cumplido desde `PeriodoLaboral.FechaIngreso` (último periodo del empleado; corregido en 2.9.1).
 - RF-08 (SC-019): pendientes de goce = generadas − gozadas. Un saldo negativo indica vacaciones adelantadas.
 - RF-09 (SC-020): truncas, 2,5 días por mes completo del año en curso y la parte proporcional de los días restantes. Para un cesado se calculan a su fecha de salida.
 - RF-10 (SC-021): un permiso de vacaciones por horas cuenta 0,5 días y debe cubrir al menos media jornada (4 horas); si no, el alta o la edición del permiso muestra el error.
@@ -215,7 +227,8 @@ Primera versión completa, en el repositorio anterior [`sh4ntyfps/Proyecto-Evo_R
 ### Seguridad
 - **17-sep:** validación de catálogos, roles de administrador y clave de seed configurable.
 
-[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.0...HEAD
+[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.1...HEAD
+[2.9.1]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.0...v2.9.1
 [2.9.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.6.0...v2.7.0

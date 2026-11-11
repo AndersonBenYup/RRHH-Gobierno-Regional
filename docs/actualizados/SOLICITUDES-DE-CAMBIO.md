@@ -28,6 +28,11 @@ Regla verificada con el área usuaria: 30 días calendario por cada año complet
 | SC-022 · RF-11 · Generar reporte de vacaciones | `a315341` (`v2.8.0`) | Menú **Vacaciones** (módulo Permisos, `0502007`): fecha de corte, empleado, cesados, totales, detalle y **Exportar CSV**. | CP-RF11-01: consultar al corte de hoy, abrir el detalle de un empleado y exportar; el CSV debe tener las mismas filas y totales. Pendiente de ejecución. |
 | SC-023 · RF-12 · Consulta personal de vacaciones | `feature/consulta-personal-de-vacaciones`, `3ac9f98` (`v2.9.0`) | Menú **Mis vacaciones**, visible para todos los usuarios. Muestra solo el empleado vinculado a la cuenta (`Usuario.IdEmpleado`); no recibe el empleado por parámetro. | CP-RF12-01: vincular un usuario de prueba con un empleado en «Usuarios y roles», iniciar sesión y comprobar su saldo y sus goces. CP-RF12-02: un usuario sin empleado vinculado ve el aviso. Pendiente de ejecución. |
 
+**Corrección `v2.9.1` (SC-018, SC-020 y SC-021)**, rama `feature/vacaciones-fecha-ingreso-media-jornada`. Tras revisar `rrhhdb` en modo solo lectura:
+- La fecha de ingreso de un activo es la de su periodo laboral abierto o, si no lo tiene, `Empleado.FechaIngreso`. Un inactivo usa su último periodo cerrado. El reporte indica cuántos empleados no tienen fecha vigente.
+- Los permisos «1/2 JORNADA VACACIONES» (registrados con `Dia = 1` y sin horas) descuentan 0,5 por día.
+- CP-RF07-02: un activo con periodo cerrado en 2011 e ingreso 15/04/2008 en su ficha aparece como activo, calculado desde 2008. CP-RF10-03: un permiso de 1/2 jornada de dos días descuenta 1 día. Pruebas automatizadas aprobadas (176).
+
 ## Seguimiento T3 · SC-028 (RF-17) · Validar feriados en el reporte general
 
 - **Rama original y commits:** `feature/feriados-en-reporte-general`, `7b5b1b1` (rama original), [`57aa5ef`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/57aa5ef) (`main`).

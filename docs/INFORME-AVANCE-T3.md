@@ -9,7 +9,7 @@
 
 ## 2. Resumen ejecutivo del avance
 
-La versión `v2.6.0`, desplegada en Azure, reúne los ocho requisitos obligatorios y tres complementarios. Las versiones `v2.7.0` a `v2.9.0`, integradas en `dev`, completan los 18 RF del área usuaria: presencialidad y teletrabajo (RF-15), vacaciones (RF-07 a RF-11) y la consulta personal de vacaciones (RF-12). El proyecto web compila sin advertencias y el conjunto automatizado registra 166 pruebas aprobadas. Queda pendiente adjuntar los resultados y las capturas de las pruebas funcionales.
+La versión `v2.6.0`, desplegada en Azure, reúne los ocho requisitos obligatorios y tres complementarios. Las versiones `v2.7.0` a `v2.9.0`, integradas en `dev`, completan los 18 RF del área usuaria: presencialidad y teletrabajo (RF-15), vacaciones (RF-07 a RF-11) y la consulta personal de vacaciones (RF-12). La `v2.9.1` corrige el cálculo de vacaciones con los datos reales de la BD (fecha de ingreso y permisos de media jornada). El proyecto web compila sin advertencias y el conjunto automatizado registra 176 pruebas aprobadas. Queda pendiente adjuntar los resultados y las capturas de las pruebas funcionales.
 
 ## 3. Avances realizados desde la T2
 
@@ -86,7 +86,7 @@ Los permisos históricos de teletrabajo 125 y 126 requieren una decisión de mig
 
 ## 15. Plan de cierre hacia la Evaluación Final
 
-Revisar y fusionar `dev` en `main` mediante un PR para desplegar `v2.7.0` a `v2.9.0`. Validar los 18 RF en la aplicación desplegada con datos ficticios, registrar resultados y capturas, completar carátula y responsables y revisar las reglas asumidas.
+Revisar y fusionar `dev` en `main` mediante un PR para desplegar `v2.7.0` a `v2.9.1`. Validar los 18 RF en la aplicación desplegada con datos ficticios, registrar resultados y capturas, completar carátula y responsables y revisar las reglas asumidas.
 
 ## 16. Conclusiones
 

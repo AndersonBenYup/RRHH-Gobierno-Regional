@@ -25,6 +25,14 @@
     </div>
 }
 
+@if (ViewBag.SinFechaDeIngreso is int sinFecha && sinFecha > 0)
+{
+    <div class="alert alert-info">
+        @sinFecha empleado(s) no aparecen porque no tienen fecha de ingreso vigente: ni un periodo laboral abierto
+        ni fecha de ingreso en su ficha (o, si están inactivos, sin fecha de salida). Complete esos datos en «Personal».
+    </div>
+}
+
 <form asp-action="Index" method="get" class="row g-3 align-items-end mb-3">
     <div class="col-md-3">
         <label for="corte" class="form-label">Fecha de corte</label>

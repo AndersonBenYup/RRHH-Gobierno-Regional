@@ -51,8 +51,8 @@ public class CalculoVacacionesTests
     {
         GoceVacaciones[] goces =
         [
-            new(new DateOnly(2025, 7, 1), new DateOnly(2025, 7, 10), PorHoras: false),
-            new(new DateOnly(2025, 8, 4), new DateOnly(2025, 8, 4), PorHoras: true)
+            new(new DateOnly(2025, 7, 1), new DateOnly(2025, 7, 10), MediaJornada: false),
+            new(new DateOnly(2025, 8, 4), new DateOnly(2025, 8, 4), MediaJornada: true)
         ];
 
         var resumen = CalculoVacaciones.Calcular(Ingreso, new DateOnly(2025, 12, 31), goces);
@@ -114,7 +114,7 @@ public class CalculoVacacionesTests
             Hora_Ret = new TimeOnly(12, 0)
         })!;
 
-        Assert.True(goce.PorHoras);
+        Assert.True(goce.MediaJornada);
         Assert.Equal(0.5m, CalculoVacaciones.DiasGozados(goce, DateOnly.MinValue, DateOnly.MaxValue));
     }
 
@@ -126,4 +126,27 @@ public class CalculoVacacionesTests
     [InlineData(null, false)]
     public void Reconoce_los_motivos_de_vacaciones_por_su_descripcion(string? descripcion, bool esperado)
         => Assert.Equal(esperado, CalculoVacaciones.EsMotivoDeVacaciones(descripcion));
+
+    // En la BD los permisos «1/2 JORNADA VACACIONES» están con Dia = 1 y sin horas: cuentan 0,5 por su motivo.
+    [Fact]
+    public void Un_permiso_de_motivo_media_jornada_cuenta_medio_dia_aunque_no_tenga_horas()
+    {
+        var permiso = new Permiso { Dia = true, FechaInicio = new DateTime(2024, 2, 12), FechaFin = new DateTime(2024, 2, 13) };
+
+        var goce = GoceVacaciones.Desde(permiso, motivoDeMediaJornada: true)!;
+
+        Assert.True(goce.MediaJornada);
+        Assert.Equal(1m, CalculoVacaciones.DiasGozados(goce, DateOnly.MinValue, DateOnly.MaxValue));
+        Assert.Equal(2m, CalculoVacaciones.DiasGozados(GoceVacaciones.Desde(permiso)!, DateOnly.MinValue, DateOnly.MaxValue));
+    }
+
+    [Theory]
+    [InlineData("1/2 JORNADA VACACIONES", true)]
+    [InlineData("Media jornada de vacación", true)]
+    [InlineData("PERMISO A CTA DE VACACIONES", false)]
+    [InlineData("VACACIONES", false)]
+    [InlineData("1/2 JORNADA ONOMÁSTICO", false)]
+    [InlineData(null, false)]
+    public void Reconoce_los_motivos_de_media_jornada(string? descripcion, bool esperado)
+        => Assert.Equal(esperado, CalculoVacaciones.EsMotivoDeMediaJornada(descripcion));
 }

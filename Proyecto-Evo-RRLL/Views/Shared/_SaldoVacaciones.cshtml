@@ -54,15 +54,18 @@ else
         <table class="table table-sm align-middle">
             <thead><tr><th>N.º</th><th>Inicio</th><th>Fin</th><th>Modalidad</th><th class="text-end">Días</th></tr></thead>
             <tbody>
-                @foreach (var p in Model.Goces)
+                @foreach (var g in Model.Goces)
                 {
-                    var goce = Capa_Logica.Reglas.GoceVacaciones.Desde(p)!;
+                    var p = g.Permiso;
+                    var modalidad = !g.Goce.MediaJornada ? "Día completo"
+                        : p.Hora_Sal is not null && p.Hora_Ret is not null ? $"Media jornada ({p.Hora_Sal:HH\\:mm}–{p.Hora_Ret:HH\\:mm})"
+                        : "Media jornada";
                     <tr>
                         <td>@p.NPermiso</td>
                         <td>@p.FechaInicio?.ToString("dd/MM/yyyy")</td>
                         <td>@((p.FechaFin ?? p.FechaInicio)?.ToString("dd/MM/yyyy"))</td>
-                        <td>@(goce.PorHoras ? $"Media jornada ({p.Hora_Sal:HH\\:mm}–{p.Hora_Ret:HH\\:mm})" : "Día completo")</td>
-                        <td class="text-end">@VacacionesFormato.Dias(Capa_Logica.Reglas.CalculoVacaciones.DiasGozados(goce, r.FechaIngreso, r.FechaCorte))</td>
+                        <td>@modalidad</td>
+                        <td class="text-end">@VacacionesFormato.Dias(g.Dias)</td>
                     </tr>
                 }
             </tbody>
