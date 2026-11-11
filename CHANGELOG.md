@@ -11,6 +11,8 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.6.0] - 2026-11-11
+
 ### Agregado
 - RF-02, RF-03, RF-05 y RF-06: historial de turnos por fechas y validaciones de permisos, motivos y licencias.
 - RF-13, RF-14 y RF-16: registro y reporte de teletrabajo.
@@ -172,7 +174,8 @@ Primera versión completa, en el repositorio anterior [`sh4ntyfps/Proyecto-Evo_R
 ### Seguridad
 - **17-sep:** validación de catálogos, roles de administrador y clave de seed configurable.
 
-[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.5.0...HEAD
+[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.6.0...HEAD
+[2.6.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.3.0...v2.3.1
