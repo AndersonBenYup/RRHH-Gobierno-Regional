@@ -23,7 +23,7 @@
     @* SC-011: sistema visual institucional (Tailwind, compilado desde Estilos/app.css) *@
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
 </head>
-<body>
+<body data-url-buscar-documento="@(User.Identity?.IsAuthenticated == true ? Url.Action("PorDocumento", "BuscarEmpleado") : null)">
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
     <div id="splashLoader" class="splash-loader">

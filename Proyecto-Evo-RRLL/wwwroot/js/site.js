@@ -17,6 +17,7 @@
         initCargaTablas();
         initBotonesCarga();
         initTooltips();
+        initSelectBuscable();
     });
 
     // SC-011: con "reducir movimiento" activado no se desplaza nada; solo quedan los fundidos.
@@ -607,6 +608,141 @@
     function initTooltips() {
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
             bootstrap.Tooltip.getOrCreateInstance(el);
+        });
+    }
+
+    /* ---------- SC-031: desplegables con buscador ----------
+       Se agrega un cuadro de búsqueda encima de:
+         - todo desplegable de empleado (name="idEmpleado"/"IdEmpleado"): busca por nombre o por N.º de documento;
+         - todo desplegable simple con muchas opciones (> 20): busca por el texto de la opción.
+       Se excluye uno con data-sin-buscador; se fuerza con data-buscador.
+       El documento se busca en el servidor (BuscarEmpleado/PorDocumento), que solo devuelve Id de empleado:
+       los documentos no se envían a la página. Enter elige la primera coincidencia; Esc limpia. */
+    var MIN_OPCIONES_BUSCADOR = 20;
+
+    function sinTildes(texto) {
+        return (texto || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    }
+
+    function initSelectBuscable(raiz) {
+        var urlDocumento = document.body.getAttribute('data-url-buscar-documento') || '';
+        (raiz || document).querySelectorAll('select').forEach(function (select) {
+            if (select.dataset.buscadorListo || select.multiple || select.hasAttribute('data-sin-buscador')) return;
+            var esEmpleado = /^idempleado$/i.test(select.name || '');
+            if (!esEmpleado && !select.hasAttribute('data-buscador') && select.options.length <= MIN_OPCIONES_BUSCADOR) return;
+            select.dataset.buscadorListo = '1';
+            hacerBuscable(select, esEmpleado && urlDocumento ? urlDocumento : null);
+        });
+    }
+    window.evoSelectBuscable = initSelectBuscable;
+
+    function hacerBuscable(select, urlDocumento) {
+        var opciones = Array.prototype.slice.call(select.options).map(function (o) {
+            return { opcion: o, texto: sinTildes(o.text) };
+        });
+        var etiqueta = select.id ? document.querySelector('label[for="' + select.id + '"]') : null;
+        var nombreCampo = etiqueta ? etiqueta.textContent.trim() : 'la lista';
+
+        var caja = document.createElement('div');
+        caja.className = 'evo-buscador-select';
+        var input = document.createElement('input');
+        input.type = 'search';
+        input.className = 'form-control form-control-sm';
+        input.autocomplete = 'off';
+        input.placeholder = urlDocumento ? 'Buscar por nombre o N.º de documento…' : 'Buscar…';
+        input.setAttribute('aria-label', 'Buscar en ' + nombreCampo);
+        var contador = document.createElement('small');
+        contador.className = 'evo-buscador-contador text-secondary';
+        contador.setAttribute('aria-live', 'polite');
+        caja.appendChild(input);
+        caja.appendChild(contador);
+        select.parentNode.insertBefore(caja, select);
+
+        var idsDocumento = null;   // Id de empleado que coinciden por documento (null = no se buscó)
+        var esperaTexto = null, esperaDocumento = null, ultimaConsulta = '';
+
+        function filtrar() {
+            var tokens = sinTildes(input.value).trim().split(/\s+/).filter(Boolean);
+            var actual = select.value;
+            var visibles = [], coincidencias = 0;
+            opciones.forEach(function (item) {
+                var o = item.opcion;
+                var esVacia = o.value === '';
+                var coincide = tokens.length === 0
+                    || tokens.every(function (t) { return item.texto.indexOf(t) !== -1; })
+                    || (idsDocumento !== null && idsDocumento.indexOf(o.value) !== -1);
+                if (coincide && !esVacia) coincidencias++;
+                // La opción vacía y la elegida se mantienen siempre, para no cambiar el valor sin querer.
+                if (coincide || esVacia || o.value === actual) visibles.push(o);
+            });
+            select.replaceChildren.apply(select, visibles);
+            select.value = actual;
+            contador.textContent = tokens.length === 0 ? ''
+                : coincidencias === 0 ? 'Sin coincidencias'
+                : coincidencias === 1 ? '1 coincidencia' : coincidencias + ' coincidencias';
+        }
+
+        function buscarDocumento() {
+            var digitos = input.value.replace(/[\s.\-]/g, '');
+            if (!urlDocumento || !/^\d{3,}$/.test(digitos)) {
+                if (idsDocumento !== null) { idsDocumento = null; filtrar(); }
+                return;
+            }
+            if (digitos === ultimaConsulta) return;
+            ultimaConsulta = digitos;
+            contador.textContent = 'Buscando…';
+            fetch(urlDocumento + '?numero=' + encodeURIComponent(digitos), { headers: { 'Accept': 'application/json' } })
+                .then(function (r) { return r.ok ? r.json() : []; })
+                .then(function (ids) {
+                    if (ultimaConsulta !== digitos) return;   // llegó tarde: ya se escribió otra cosa
+                    idsDocumento = ids.map(String);
+                    filtrar();
+                })
+                .catch(function () { idsDocumento = []; filtrar(); });
+        }
+
+        function elegirPrimera() {
+            for (var i = 0; i < select.options.length; i++) {
+                var o = select.options[i];
+                if (o.value === '' || o.disabled) continue;
+                if (select.value !== o.value) {
+                    select.value = o.value;
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                return true;
+            }
+            return false;
+        }
+
+        input.addEventListener('input', function () {
+            clearTimeout(esperaTexto);
+            clearTimeout(esperaDocumento);
+            ultimaConsulta = '';
+            idsDocumento = null;
+            esperaTexto = setTimeout(filtrar, 120);
+            esperaDocumento = setTimeout(buscarDocumento, 300);
+        });
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();   // no enviar el formulario desde el buscador
+                clearTimeout(esperaTexto);
+                filtrar();
+                if (elegirPrimera()) select.focus();
+            } else if (e.key === 'Escape' && input.value) {
+                e.preventDefault();
+                input.value = '';
+                idsDocumento = null;
+                ultimaConsulta = '';
+                filtrar();
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                select.focus();
+            }
+        });
+        // Si el formulario se reinicia, se restauran todas las opciones.
+        if (select.form) select.form.addEventListener('reset', function () {
+            input.value = ''; idsDocumento = null; ultimaConsulta = '';
+            setTimeout(filtrar, 0);
         });
     }
 

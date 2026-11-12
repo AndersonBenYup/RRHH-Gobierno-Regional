@@ -2,6 +2,12 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## SC-031 · Desplegables con buscador por nombre o número de documento
+
+| SC | Rama / commit | Qué se hizo | Caso de prueba y evidencia |
+|---|---|---|---|
+| SC-031 · Buscar empleados en los desplegables | `main` (`v2.10.0`) | Con 3338 empleados, elegir uno en un desplegable era lento. `site.js` (`initSelectBuscable`) agrega un buscador a todo desplegable de empleado y a los desplegables de más de 20 opciones, sin cambiar las vistas. La búsqueda por documento usa `BusquedaEmpleadoLogica` (filtra en la BD) y `BuscarEmpleadoController`, que solo devuelve Id de empleado. | CP-SC031-01: un documento lleva a todos los vínculos de empleado de esa persona (prueba automatizada). CP-SC031-02: en Permisos → Registrar teletrabajo, escribir parte del nombre sin tildes o 3 o más dígitos del DNI, pulsar Enter y comprobar que queda elegido el empleado. Las pruebas automatizadas (187) y una prueba de interfaz local aprobadas; falta la captura en la aplicación. |
+
 ## SC-030 · Recuperación de marcaciones y asistencias sin horario (corrección de datos)
 
 | SC | Rama / commit | Qué se hizo | Caso de prueba y evidencia |

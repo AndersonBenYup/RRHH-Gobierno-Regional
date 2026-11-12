@@ -11,6 +11,21 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.10.0] - 2026-11-11
+
+### Agregado
+- SC-031: **desplegables con buscador**. Encima de cada desplegable de empleado aparece un cuadro «Buscar por nombre o N.º de documento». La búsqueda por nombre no distingue tildes ni mayúsculas. Lo mismo pasa con cualquier desplegable de más de 20 opciones, que se busca por su texto, como distritos o cargos.
+  - Funciona en todas las pantallas sin cambiar las vistas: registro de teletrabajo, permisos, reportes, asistencia, historial laboral, familia, etc.
+  - Enter elige la primera coincidencia y Esc limpia. La opción elegida nunca se pierde al filtrar.
+  - El documento se busca en la BD con `BusquedaEmpleadoLogica` y `GET BuscarEmpleado/PorDocumento`. Solo se devuelven Id de empleado: los documentos no se envían a la página.
+  - Un desplegable se excluye con `data-sin-buscador` o se fuerza con `data-buscador`.
+
+### Cambiado
+- `<Version>2.10.0</Version>`.
+
+Pruebas: 187 en verde.
+
+
 ## [2.9.2] - 2026-11-11
 
 Corrección de datos SC-030. El código de la aplicación no cambia.
@@ -244,7 +259,8 @@ Primera versión completa, en el repositorio anterior [`sh4ntyfps/Proyecto-Evo_R
 ### Seguridad
 - **17-sep:** validación de catálogos, roles de administrador y clave de seed configurable.
 
-[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.2...HEAD
+[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.10.0...HEAD
+[2.10.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.2...v2.10.0
 [2.9.2]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.1...v2.9.2
 [2.9.1]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.0...v2.9.1
 [2.9.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.8.0...v2.9.0
