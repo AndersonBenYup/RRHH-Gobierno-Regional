@@ -1,10 +1,14 @@
 # Semana 12 · Gestión de versiones
 
-La integración actual parte de `origin/main` (`9fed9df`, versión base `v2.5.0`). El historial de `develop` anterior se conserva como referencia.
+El trabajo inicial se integró localmente en `develop`. Cuando se reescribió `main`, se reaplicaron nueve commits de código y se consolidó la documentación en `dev`, a partir de `9fed9df`. El [PR #1](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/pull/1) integró `dev` a `main` en `49e516a`. Los hashes cambiaron al reaplicar los commits. La matriz registra ambos.
 
-1. Crear una rama `feature/<funcionalidad>` desde `develop`, por ejemplo `feature/historico-de-turnos`. Registrar los códigos RF y SC en la matriz y el pull request. Si la funcionalidad ya tiene rama, actualizarla desde `develop` antes de empezar.
-2. Registrar el cambio con un mensaje descriptivo, por ejemplo `SC-014 (RF-03): validar permisos duplicados por día`. Enlazar el caso de prueba y su evidencia en el pull request a `develop`.
-3. Integrar en `develop` tras revisar el cambio y su evidencia. Cuando haya una versión aprobada, abrir un pull request de `develop` a `main`, actualizar el changelog y etiquetar el commit publicado.
+Para los próximos cambios, el flujo es `feature → dev → main`.
+
+1. Crear una rama nueva desde `dev` al empezar cada funcionalidad. Usar nombres como `feature/registro-vacaciones` e incluir RF y SC en el PR.
+2. Abrir el PR hacia `dev` con el caso de prueba y su evidencia. Integrarlo después de la revisión.
+3. Abrir un PR de `dev` a `main` al preparar una versión. Actualizar el changelog y etiquetar el commit desplegado.
+
+`develop`, `integracion/develop-sobre-main`, `docs/semana12-versionado` y las ramas `feature/*` publicadas para la T3 quedan como referencias. Las siete ramas que se reservaron para RF-07 a RF-12 y RF-15 son puntos de partida del historial anterior. Crear sus ramas de trabajo desde `dev` al empezar.
 
 El flujo de Azure se ejecuta en pushes y pull requests a `main` y por lanzamiento manual. Los pull requests ejecutan la compilación sin desplegar. Un push a `main` activa el despliegue.
 

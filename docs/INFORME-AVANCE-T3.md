@@ -9,11 +9,11 @@
 
 ## 2. Resumen ejecutivo del avance
 
-La versión intermedia de `integracion/develop-sobre-main` reúne los ocho requisitos obligatorios y tres complementarios. El proyecto web compila y el conjunto automatizado registra 135 pruebas aprobadas. Quedan pendientes las pruebas funcionales con SQL Server y las capturas.
+La versión `v2.6.0`, desplegada en Azure, reúne los ocho requisitos obligatorios y tres complementarios. Las versiones `v2.7.0` a `v2.9.0`, integradas en `dev`, completan los 18 RF del área usuaria: presencialidad y teletrabajo (RF-15), vacaciones (RF-07 a RF-11) y la consulta personal de vacaciones (RF-12). La `v2.9.1` corrige el cálculo de vacaciones con los datos reales de la BD (fecha de ingreso y permisos de media jornada). El proyecto web compila sin advertencias y el conjunto automatizado registra 176 pruebas aprobadas. Queda pendiente adjuntar los resultados y las capturas de las pruebas funcionales.
 
 ## 3. Avances realizados desde la T2
 
-La matriz anterior de solicitudes se amplió con los RF de la T3. Se agregó el filtro al historial de turnos, se completaron reglas de permisos, se incorporó el registro de teletrabajo y se añadieron reportes.
+La matriz anterior de solicitudes se amplió con los RF de la T3. Se agregó el filtro al historial de turnos, se completaron reglas de permisos, se incorporó el registro de teletrabajo y se añadieron reportes. Después se agregaron el módulo de vacaciones y la consulta personal, y los reportes de ausencias y teletrabajo pasaron a filtrarse en la BD.
 
 ## 4. Actualización del diagnóstico técnico
 
@@ -21,7 +21,7 @@ Horarios Temporales ya almacenaba periodos por persona. La regla de permisos con
 
 ## 5. Base técnica reconstruida o recuperada
 
-La solución `Proyecto-Evo-RRLL.slnx` integra la aplicación web, las capas de Entidades, Lógica, Datos y las pruebas. La aplicación utiliza SQL Server. El script `Scripts/rf-13-crear-periodo-teletrabajo.sql` agrega la tabla requerida por la versión. Se verificó la compilación; queda pendiente arrancar la versión con una base de prueba y ejecutar los flujos.
+La solución `Proyecto-Evo-RRLL.slnx` integra la aplicación web, las capas de Entidades, Lógica, Datos y las pruebas. La aplicación utiliza Azure SQL. Se ejecutó `Scripts/rf-13-crear-periodo-teletrabajo.sql` en `rrhhdb` y una consulta posterior confirmó la existencia de `dbo.PeriodoTeletrabajo`.
 
 ## 6. Arquitectura o estructura actual del sistema
 
@@ -41,11 +41,18 @@ ASP.NET Core MVC recibe y valida las solicitudes. La capa lógica aplica las reg
 | RF-14 | Reportar días de teletrabajo | Total de días calendario únicos por empleado |
 | RF-16 | Reportar quiénes realizan teletrabajo total o parcial | Reporte por rango y modalidad |
 | RF-17 | Validar feriados en el reporte general | Conteo de fechas únicas en Registro de Asistencia |
-| RF-18 | Reportar ausencias por periodo | Consulta por rango y motivos seleccionados |
+| RF-18 | Reportar ausencias por periodo | Consulta por rango y motivos seleccionados, filtrada en la BD |
+| RF-15 | Reportar labores presenciales y teletrabajo por persona | Días con marcación en relojes presenciales y días de teletrabajo (`v2.7.0`) |
+| RF-07 | Reportar vacaciones generadas | 30 días por año completo de servicio (`v2.8.0`) |
+| RF-08 | Reportar vacaciones pendientes de goce | Generadas − gozadas; negativo indica adelanto (`v2.8.0`) |
+| RF-09 | Reportar vacaciones truncas | 2,5 días por mes del año en curso (`v2.8.0`) |
+| RF-10 | Contabilizar vacaciones desde media jornada | Por horas = 0,5 días, mínimo 4 horas (`v2.8.0`) |
+| RF-11 | Generar reporte de vacaciones | Menú Vacaciones con totales, detalle y CSV (`v2.8.0`) |
+| RF-12 | Consulta de vacaciones para el usuario final | Menú Mis vacaciones, solo el empleado de la propia cuenta (`v2.9.0`) |
 
 ## 8. Requerimientos pendientes
 
-RF-07 a RF-12 y RF-15 quedan fuera de la selección complementaria de esta versión. Los 11 RF de la tabla requieren pruebas funcionales con datos de prueba. Confirmar el agrupamiento de motivos de licencia y el criterio de días calendario para teletrabajo.
+No quedan RF sin implementar. Los 18 RF requieren pruebas funcionales con datos de prueba en la aplicación desplegada. Confirmar el agrupamiento de motivos de licencia y el criterio de días calendario para teletrabajo.
 
 ## 9. Evidencias de refactorización aplicada
 
@@ -63,11 +70,11 @@ Ver [solicitudes y trazabilidad](actualizados/SOLICITUDES-DE-CAMBIO.md) para los
 
 ## 11. Evidencias de versionado y repositorio
 
-Flujo `feature → develop → main`. La rama de integración parte de `9fed9df` y conserva la serie `v2.x` de `main`. La etiqueta publicada `v1.7.0` identifica el historial anterior. Ver [flujo de la Semana 12](SEMANA-12-VERSIONADO.md) y [changelog](../CHANGELOG.md). Adjuntar evidencia de publicación y contribuciones individuales cuando se verifiquen.
+La integración inicial en `develop` se hizo localmente. Tras la reescritura de `main`, los cambios se reaplicaron en `dev` y llegaron a `main` mediante el [PR #1](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/pull/1). GitHub Actions mostró compilación y despliegue correctos para `49e516a`, commit identificado por `v2.6.0`. La etiqueta `v1.7.0` identifica el historial anterior. La matriz distingue los hashes originales y los publicados. Queda por adjuntar evidencia de contribuciones individuales.
 
 ## 12. Casos de prueba ejecutados
 
-Compilación web con cero errores y cero advertencias. Resultado de `dotnet test`: 135 aprobadas, cero fallidas y cero omitidas. Entre ellas, 13 casos de reglas de permisos, 6 de licencia anual, 2 de conteo de teletrabajo y 1 de feriados. Los resultados de pantalla con SQL Server están pendientes y se registrarán en la matriz.
+Compilación web con cero errores y cero advertencias. Resultado de `dotnet test`: 166 aprobadas, cero fallidas y cero omitidas. Entre ellas, 13 casos de reglas de permisos, 6 de licencia anual, 2 de conteo de teletrabajo, 1 de feriados, 21 del cálculo de vacaciones, 5 de la lógica de vacaciones y 3 que comprueban que los reportes se traducen a SQL. Los resultados de pantalla con SQL Server están pendientes y se registrarán en la matriz.
 
 ## 13. Problemas técnicos encontrados
 
@@ -75,15 +82,15 @@ El borrado de motivos en uso chocaba con referencias de permisos. Los registros 
 
 ## 14. Riesgos pendientes
 
-Los permisos históricos de teletrabajo 125 y 126 requieren una decisión de migración. El script nuevo debe ejecutarse en la base de destino antes de usar el módulo. Debe validarse con el área usuaria si los días calendario y el grupo de motivos de licencia coinciden con el criterio institucional.
+Los permisos históricos de teletrabajo 125 y 126 requieren una decisión de migración. El script nuevo debe ejecutarse en la base de destino antes de usar el módulo. Debe validarse con el área usuaria si los días calendario y el grupo de motivos de licencia coinciden con el criterio institucional. Las vacaciones dependen de que cada empleado tenga fecha de ingreso en su periodo laboral y de que los motivos de vacaciones contengan «vacación» en su descripción. La consulta personal (RF-12) requiere vincular cada usuario con su empleado en «Usuarios y roles».
 
 ## 15. Plan de cierre hacia la Evaluación Final
 
-Preparar una base de prueba, ejecutar el script y validar los 11 RF con los casos de la matriz. Registrar resultados y capturas, completar carátula y responsables, revisar las reglas asumidas y preparar la publicación de la versión.
+Revisar y fusionar `dev` en `main` mediante un PR para desplegar `v2.7.0` a `v2.9.1`. Validar los 18 RF en la aplicación desplegada con datos ficticios, registrar resultados y capturas, completar carátula y responsables y revisar las reglas asumidas.
 
 ## 16. Conclusiones
 
-El repositorio contiene una versión intermedia compilable con turnos, permisos, teletrabajo y tres reportes complementarios. El historial permite rastrear implementación y pruebas automatizadas.
+El repositorio contiene una versión compilable con turnos, permisos, teletrabajo, presencialidad, vacaciones y la consulta personal: los 8 RF obligatorios y los 10 complementarios. El historial permite rastrear implementación y pruebas automatizadas.
 
 ## 17. Recomendaciones
 

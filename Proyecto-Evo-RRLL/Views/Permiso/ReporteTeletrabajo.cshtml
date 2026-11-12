@@ -5,6 +5,8 @@
     var idEmpleado = ViewBag.IdEmpleado as int?;
     var parcial = ViewBag.Parcial as bool?;
     var nombres = empleados.ToDictionary(e => e.Id, e => e.Nombre);
+    var dispositivos = ViewBag.Dispositivos as List<DispositivoMarcacion>;
+    var seleccion = ViewBag.DispositivosSeleccionados as string[] ?? [];
 }
 
 <h3>Reporte de días de teletrabajo</h3>
@@ -35,6 +37,20 @@
             <option value="true" selected="@(parcial == true)">Parcial</option>
         </select>
     </div>
+    @if (dispositivos is not null)
+    {
+        <div>
+            <label for="dispositivosPresenciales" class="form-label">Relojes presenciales</label>
+            <select id="dispositivosPresenciales" name="dispositivosPresenciales" class="form-select" multiple>
+                @foreach (var dispositivo in dispositivos)
+                {
+                    <option value="@dispositivo.Codigo" selected="@seleccion.Contains(dispositivo.Codigo)">
+                        @(dispositivo.Descripcion ?? dispositivo.Codigo)
+                    </option>
+                }
+            </select>
+        </div>
+    }
     <button type="submit" class="btn btn-primary">Consultar</button>
     <a asp-action="Teletrabajo" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary">Registrar periodo</a>
 </form>
@@ -45,6 +61,11 @@
     @if (ViewBag.TotalDias is int dias)
     {
         <p><strong>Días calendario con teletrabajo en el rango:</strong> @dias</p>
+    }
+    @if (ViewBag.DiasPresenciales is int diasPresenciales)
+    {
+        <p><strong>Días con marcación presencial en los relojes seleccionados:</strong> @diasPresenciales</p>
+        <p class="text-secondary">Una fecha con marcación y teletrabajo se cuenta en ambos totales.</p>
     }
     @if (Model.Count == 0)
     {

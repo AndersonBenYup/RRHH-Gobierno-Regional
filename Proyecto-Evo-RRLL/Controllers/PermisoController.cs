@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecto_Evo_RRLL.Models.ViewModels;
 using Proyecto_Evo_RRLL.Utilidades;
+using Proyecto_Evo_RRLL.Seguridad;
 
 namespace Proyecto_Evo_RRLL.Controllers;
 
@@ -189,9 +190,25 @@ public class PermisoController : Controller
 
     [HttpGet]
     public async Task<IActionResult> ReporteTeletrabajo(
-        int? idEmpleado, DateOnly? desde, DateOnly? hasta, bool? parcial,
-        [FromServices] IRepositorio<PeriodoTeletrabajo> periodos)
+        int? idEmpleado, DateOnly? desde, DateOnly? hasta, bool? parcial, string[]? dispositivosPresenciales,
+        [FromServices] IPeriodoTeletrabajoRepositorio periodos,
+        [FromServices] IMarcacionRepositorio marcaciones,
+        [FromServices] DispositivoMarcacionLogica dispositivos)
     {
+        var seleccion = dispositivosPresenciales ?? [];
+        if (User.PuedeVer("Asistencia"))
+        {
+            var catalogo = await dispositivos.Listar();
+            ViewBag.Dispositivos = catalogo.OrderBy(d => d.Descripcion).ThenBy(d => d.Codigo).ToList();
+            if (seleccion.Except(catalogo.Select(d => d.Codigo), StringComparer.Ordinal).Any())
+                ModelState.AddModelError("", "Seleccione dispositivos presenciales del catálogo.");
+            if (seleccion.Length > 0 && !idEmpleado.HasValue)
+                ModelState.AddModelError("", "Seleccione un empleado para consultar sus días presenciales.");
+        }
+        else if (seleccion.Length > 0)
+            return Forbid();
+
+        ViewBag.DispositivosSeleccionados = seleccion;
         ViewBag.Empleados = await EmpleadosAsync();
         ViewBag.IdEmpleado = idEmpleado;
         ViewBag.Parcial = parcial;
@@ -204,16 +221,16 @@ public class PermisoController : Controller
         if (!ModelState.IsValid || desde is not DateOnly inicio || hasta is not DateOnly fin)
             return View(Array.Empty<PeriodoTeletrabajo>());
 
-        var registros = (await periodos.Listar())
-            .Where(p => (!idEmpleado.HasValue || p.IdEmpleado == idEmpleado)
-                && (!parcial.HasValue || p.Parcial == parcial)
-                && p.FechaInicio <= fin && p.FechaFin >= inicio)
-            .OrderBy(p => p.IdEmpleado)
-            .ThenBy(p => p.FechaInicio)
-            .ToList();
+        // SC-005: empleado, modalidad y rango se filtran en SQL Server.
+        var registros = await periodos.ListarEntreFechas(idEmpleado, parcial, inicio, fin);
         ViewBag.ReporteConsultado = true;
         if (idEmpleado.HasValue)
+        {
             ViewBag.TotalDias = Capa_Logica.Reglas.DiasTeletrabajo.Contar(registros, inicio, fin);
+            if (seleccion.Length > 0)
+                ViewBag.DiasPresenciales = await marcaciones.ContarDiasPorDispositivos(idEmpleado.Value,
+                    inicio.ToDateTime(TimeOnly.MinValue), fin.ToDateTime(TimeOnly.MaxValue), seleccion);
+        }
         return View(registros);
     }
 
@@ -235,11 +252,8 @@ public class PermisoController : Controller
             return View(Array.Empty<Permiso>());
 
         ViewBag.Empleados = await EmpleadosAsync();
-        var resultado = (await _permisoData.Listar())
-            .Where(p => p.idMotivo is int motivo && seleccion.Contains(motivo) && p.FechaInicio is DateTime fecha
-                && DateOnly.FromDateTime(fecha) <= fin && DateOnly.FromDateTime(p.FechaFin ?? fecha) >= inicio)
-            .OrderBy(p => p.FechaInicio).ThenBy(p => p.IdEmpleado).ToList();
-        return View(resultado);
+        // SC-005: el rango y los motivos se filtran en SQL Server; antes se traía toda la tabla de permisos.
+        return View(await _permisoData.ListarAusencias(seleccion, inicio, fin));
     }
 
     // ---------- Utilidades ----------
