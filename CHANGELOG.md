@@ -11,6 +11,23 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.9.2] - 2026-11-11
+
+Corrección de datos SC-030. El código de la aplicación no cambia.
+
+### Corregido
+- SC-030: recuperación de **104 984 marcaciones y 1720 asistencias de 2024** que la limpieza de huérfanos de `bd-Datos.sql` borró por tener `idHorario` NULL (`LEFT JOIN ... WHERE h.idHorario IS NULL` también elimina los NULL). Pertenecen a 844 empleados existentes; 151 se habían quedado sin ninguna marcación.
+
+### Agregado
+- `Scripts/recuperacion/`: generador reproducible, script de recuperación (transaccional, no duplica y no modifica filas existentes), verificación de solo lectura y reversión controlada.
+- Tipo de marcación `M` (marca sin reloj ni horario) y descripciones de N, T y X, marcadas como «por confirmar» por RRHH.
+- `docs/actualizados/SC-030-RECUPERACION-MARCACIONES.md`, con causa, evidencia, alcance, procedimiento, criterios de aceptación y acta de conformidad de RRHH. Anexo por empleado en `docs/actualizados/anexos/`.
+- `Scripts/comparar-bd-con-carga-03.sql`: comparación de solo lectura de `rrhhdb` con la carga normalizada.
+
+### Cambiado
+- `<Version>2.9.2</Version>`.
+
+
 ## [2.9.1] - 2026-11-11
 
 Corrección del cálculo de vacaciones tras revisar los datos reales de `rrhhdb` (solo lectura, `Scripts/verificar-bd-v2.9.0*.sql`).
@@ -227,7 +244,8 @@ Primera versión completa, en el repositorio anterior [`sh4ntyfps/Proyecto-Evo_R
 ### Seguridad
 - **17-sep:** validación de catálogos, roles de administrador y clave de seed configurable.
 
-[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.1...HEAD
+[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.2...HEAD
+[2.9.2]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.1...v2.9.2
 [2.9.1]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.0...v2.9.1
 [2.9.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.7.0...v2.8.0
