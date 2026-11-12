@@ -53,10 +53,13 @@ public class AsistenciaController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(DateTime? desde, DateTime? hasta, string? q)
+    public async Task<IActionResult> Index(DateTime? desde, DateTime? hasta, string? q,
+        [FromServices] RRHH_FeriadoLogica feriados)
     {
         var vm = new AsistenciaViewModel { Desde = desde, Hasta = hasta ?? DateTime.Today, Busqueda = q };
         vm.Registros = await ConstruirFilasAsync(desde, hasta, q, limite: 2000);
+        var rango = Rango(desde, hasta);
+        vm.Feriados = Capa_Logica.Reglas.FeriadosEnRango.Fechas(await feriados.Listar(), rango.Desde, rango.HastaExclusivo);
         return View(vm);
     }
 
@@ -293,16 +296,28 @@ public class AsistenciaController : Controller
     // ---------- Horarios temporales ----------
 
     [HttpGet]
-    public async Task<IActionResult> HorariosTemporal(int? idEmpleado)
+    public async Task<IActionResult> HorariosTemporal(int? idEmpleado, DateOnly? desde, DateOnly? hasta)
     {
-        var registros = (await _horarioTemporalData.Listar())
-            .Where(h => idEmpleado is null || h.idEmpleado == idEmpleado)
-            .OrderByDescending(h => h.FechaInicio);
+        if (desde.HasValue && hasta.HasValue && desde > hasta)
+            ModelState.AddModelError("", "La fecha desde debe ser anterior o igual a la fecha hasta.");
+
+        var registros = new List<HorarioTemporal>();
+        if (ModelState.IsValid)
+        {
+            registros = (await _horarioTemporalData.Listar())
+                .Where(h => idEmpleado is null || h.idEmpleado == idEmpleado)
+                .Where(h => !desde.HasValue || (h.FechaFin ?? h.FechaInicio) >= desde)
+                .Where(h => !hasta.HasValue || h.FechaInicio <= hasta)
+                .OrderByDescending(h => h.FechaInicio)
+                .ToList();
+        }
 
         ViewBag.IdEmpleado = idEmpleado;
+        ViewBag.Desde = desde?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
         ViewBag.Empleados = await EmpleadosAsync();
         ViewBag.Horarios = await _horarioData.Listar();
-        return View(registros.ToList());
+        return View(registros);
     }
 
     [HttpGet]

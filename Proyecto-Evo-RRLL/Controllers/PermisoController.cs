@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecto_Evo_RRLL.Models.ViewModels;
 using Proyecto_Evo_RRLL.Utilidades;
+using Proyecto_Evo_RRLL.Seguridad;
 
 namespace Proyecto_Evo_RRLL.Controllers;
 
@@ -148,6 +149,111 @@ public class PermisoController : Controller
         if (actual is not null)
             await _permisoData.Eliminar(actual);
         return RedirectToAction(nameof(Index), new { idEmpleado });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Teletrabajo(int? idEmpleado)
+    {
+        ViewBag.Empleados = await EmpleadosAsync();
+        return View(new PeriodoTeletrabajo { IdEmpleado = idEmpleado ?? 0 });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Teletrabajo(
+        [Bind("IdEmpleado,FechaInicio,FechaFin,Parcial")] PeriodoTeletrabajo modelo,
+        [FromServices] IRepositorio<PeriodoTeletrabajo> periodos,
+        [FromServices] ILogger<PermisoController> logger)
+    {
+        var empleados = await EmpleadosAsync();
+        if (ModelState.IsValid && !empleados.Any(e => e.Id == modelo.IdEmpleado))
+            ModelState.AddModelError(nameof(modelo.IdEmpleado), "Seleccione un empleado válido.");
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                await periodos.Crear(modelo);
+                TempData["MensajeExito"] = "Periodo de teletrabajo registrado.";
+                return RedirectToAction(nameof(Teletrabajo), new { idEmpleado = modelo.IdEmpleado });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "No se pudo registrar el periodo de teletrabajo.");
+                ModelState.AddModelError("", "No se pudo guardar el periodo. Verifique si ya está registrado.");
+            }
+        }
+
+        ViewBag.Empleados = empleados;
+        return View(modelo);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ReporteTeletrabajo(
+        int? idEmpleado, DateOnly? desde, DateOnly? hasta, bool? parcial, string[]? dispositivosPresenciales,
+        [FromServices] IPeriodoTeletrabajoRepositorio periodos,
+        [FromServices] IMarcacionRepositorio marcaciones,
+        [FromServices] DispositivoMarcacionLogica dispositivos)
+    {
+        var seleccion = dispositivosPresenciales ?? [];
+        if (User.PuedeVer("Asistencia"))
+        {
+            var catalogo = await dispositivos.Listar();
+            ViewBag.Dispositivos = catalogo.OrderBy(d => d.Descripcion).ThenBy(d => d.Codigo).ToList();
+            if (seleccion.Except(catalogo.Select(d => d.Codigo), StringComparer.Ordinal).Any())
+                ModelState.AddModelError("", "Seleccione dispositivos presenciales del catálogo.");
+            if (seleccion.Length > 0 && !idEmpleado.HasValue)
+                ModelState.AddModelError("", "Seleccione un empleado para consultar sus días presenciales.");
+        }
+        else if (seleccion.Length > 0)
+            return Forbid();
+
+        ViewBag.DispositivosSeleccionados = seleccion;
+        ViewBag.Empleados = await EmpleadosAsync();
+        ViewBag.IdEmpleado = idEmpleado;
+        ViewBag.Parcial = parcial;
+        ViewBag.Desde = desde?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+        if (desde.HasValue && hasta.HasValue && desde > hasta)
+            ModelState.AddModelError("", "La fecha de inicio no puede ser posterior a la fecha de fin.");
+
+        if (!ModelState.IsValid || desde is not DateOnly inicio || hasta is not DateOnly fin)
+            return View(Array.Empty<PeriodoTeletrabajo>());
+
+        // SC-005: empleado, modalidad y rango se filtran en SQL Server.
+        var registros = await periodos.ListarEntreFechas(idEmpleado, parcial, inicio, fin);
+        ViewBag.ReporteConsultado = true;
+        if (idEmpleado.HasValue)
+        {
+            ViewBag.TotalDias = Capa_Logica.Reglas.DiasTeletrabajo.Contar(registros, inicio, fin);
+            if (seleccion.Length > 0)
+                ViewBag.DiasPresenciales = await marcaciones.ContarDiasPorDispositivos(idEmpleado.Value,
+                    inicio.ToDateTime(TimeOnly.MinValue), fin.ToDateTime(TimeOnly.MaxValue), seleccion);
+        }
+        return View(registros);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ReporteAusencias(DateOnly? desde, DateOnly? hasta, int[]? motivos)
+    {
+        var catalogo = (await _motivoData.Listar()).Where(m => m.idMotivo is not (125 or 126))
+            .OrderBy(m => m.Descrip_Motivo).ToList();
+        var seleccion = (motivos ?? []).Intersect(catalogo.Select(m => m.idMotivo)).ToHashSet();
+        ViewBag.Catalogo = catalogo;
+        ViewBag.Seleccion = seleccion;
+        ViewBag.Desde = desde?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+        if (desde.HasValue && hasta.HasValue && desde > hasta)
+            ModelState.AddModelError("", "La fecha desde no puede ser posterior a la fecha hasta.");
+
+        if (!ModelState.IsValid || desde is not DateOnly inicio || hasta is not DateOnly fin || seleccion.Count == 0)
+            return View(Array.Empty<Permiso>());
+
+        ViewBag.Empleados = await EmpleadosAsync();
+        // SC-005: el rango y los motivos se filtran en SQL Server; antes se traía toda la tabla de permisos.
+        return View(await _permisoData.ListarAusencias(seleccion, inicio, fin));
     }
 
     // ---------- Utilidades ----------

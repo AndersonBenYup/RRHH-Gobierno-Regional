@@ -16,6 +16,22 @@ public interface IPermisoRepositorio : IRepositorio<Permiso>
 
     /// <summary>Siguiente NPermiso del empleado (MAX + 1) calculado en la BD.</summary>
     Task<int> SiguienteNumero(int idEmpleado);
+
+    /// <summary>
+    /// RF-18 / SC-005: permisos de los motivos indicados que se cruzan con el rango (límites incluidos).
+    /// Un permiso sin fecha de fin dura solo su fecha de inicio. El filtro se ejecuta en la BD.
+    /// </summary>
+    Task<List<Permiso>> ListarPorMotivosEntreFechas(IReadOnlyCollection<int> motivos, DateTime desde, DateTime hasta);
+
+    /// <summary>RF-07 a RF-12: permisos de los motivos indicados, de un empleado o de todos, filtrados en la BD.</summary>
+    Task<List<Permiso>> ListarPorMotivos(IReadOnlyCollection<int> motivos, int? idEmpleado);
+}
+
+/// <summary>RF-14 / RF-16 / SC-005: periodos de teletrabajo filtrados en la BD.</summary>
+public interface IPeriodoTeletrabajoRepositorio : IRepositorio<PeriodoTeletrabajo>
+{
+    /// <summary>Periodos que se cruzan con el rango (límites incluidos), opcionalmente de un empleado y una modalidad.</summary>
+    Task<List<PeriodoTeletrabajo>> ListarEntreFechas(int? idEmpleado, bool? parcial, DateOnly desde, DateOnly hasta);
 }
 
 public interface IPersonaRepositorio : IRepositorio<Persona>
@@ -41,6 +57,7 @@ public interface IAsistenciaRepositorio : IRepositorio<Asistencia>
 public interface IMarcacionRepositorio : IRepositorio<Marcacion>
 {
     Task<List<Marcacion>> ListarRecientes(int? idEmpleado, DateTime? desde, DateTime? hasta, int maximo);
+    Task<int> ContarDiasPorDispositivos(int idEmpleado, DateTime desde, DateTime hasta, string[] dispositivos);
 }
 
 /// <summary>Registro diario de asistencia: el filtro y el límite se aplican en la BD (más de 250 000 filas).</summary>

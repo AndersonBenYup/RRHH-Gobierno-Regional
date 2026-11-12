@@ -36,6 +36,14 @@
     </div>
 </form>
 
+<div class="alert alert-secondary">
+    <strong>Feriados del periodo: @Model.Feriados.Count</strong>
+    @if (Model.Feriados.Count > 0)
+    {
+        <span> (@string.Join(", ", Model.Feriados.Select(fecha => fecha.ToString("dd/MM/yyyy"))))</span>
+    }
+</div>
+
 @if (Model.Registros.Count == 0)
 {
     <div class="alert alert-info">Sin registros para los filtros indicados.</div>

@@ -99,6 +99,15 @@
                         <i class="bi bi-calendar-check"></i><span>Permisos</span>
                     </a>
                 }
+                @if (User.PuedeVer("Vacaciones"))
+                {
+                    <a class="sidebar-link @(controlador == "Vacaciones" ? "active" : "")" asp-controller="Vacaciones" asp-action="Index">@if (controlador == "Vacaciones") { <span class="sidebar-indicador" aria-hidden="true"></span> }
+                        <i class="bi bi-sun"></i><span>Vacaciones</span>
+                    </a>
+                }
+                <a class="sidebar-link @(controlador == "MisVacaciones" ? "active" : "")" asp-controller="MisVacaciones" asp-action="Index">@if (controlador == "MisVacaciones") { <span class="sidebar-indicador" aria-hidden="true"></span> }
+                    <i class="bi bi-person-badge"></i><span>Mis vacaciones</span>
+                </a>
                 @if (User.PuedeVer("HistorialLaboral"))
                 {
                     <a class="sidebar-link @(controlador == "HistorialLaboral" ? "active" : "")" asp-controller="HistorialLaboral" asp-action="Index">@if (controlador == "HistorialLaboral") { <span class="sidebar-indicador" aria-hidden="true"></span> }

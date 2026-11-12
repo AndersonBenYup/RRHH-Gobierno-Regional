@@ -43,15 +43,14 @@ public static class ReglasPermiso
             && o.NPermiso != permiso.NPermiso
             && SeSolapan(permiso, o));
         if (choque is not null)
-            errores.Add(new("", $"El permiso se cruza con el permiso N.º {choque.NPermiso} del mismo empleado " +
-                                $"({Rango(choque)}). Cambie las fechas u horas."));
+            errores.Add(new("", $"El empleado ya tiene el permiso N.º {choque.NPermiso} en ese periodo " +
+                                $"({Rango(choque)}). Cambie las fechas."));
 
         return errores;
     }
 
     /// <summary>
-    /// Dos permisos se solapan si sus días se cruzan y, cuando ambos son por horas en un solo día,
-    /// también se cruzan sus horarios.
+    /// RF-03: dos permisos se solapan si comparten al menos un día, independientemente de sus horas.
     /// </summary>
     public static bool SeSolapan(Permiso a, Permiso b)
     {
@@ -62,13 +61,7 @@ public static class ReglasPermiso
         var aFin = (a.FechaFin ?? a.FechaInicio).Value.Date;
         var bIni = b.FechaInicio.Value.Date;
         var bFin = (b.FechaFin ?? b.FechaInicio).Value.Date;
-        if (aIni > bFin || bIni > aFin)
-            return false;
-
-        if (EsPorHoras(a) && EsPorHoras(b) && aIni == aFin && bIni == bFin)
-            return a.Hora_Sal < b.Hora_Ret && b.Hora_Sal < a.Hora_Ret;
-
-        return true;
+        return aIni <= bFin && bIni <= aFin;
     }
 
     private static bool EsPorHoras(Permiso p)

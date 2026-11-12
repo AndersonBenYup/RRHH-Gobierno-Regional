@@ -19,3 +19,5 @@ La app usa esta base de datos desde la **v2.0.0**. La v1.0.0 (repositorio anteri
 ```
 
 `NORMALIZACION.md` también describe una ruta larga, que parte de `RRHH_Nuevo` y usa `02-migracion-desde-RRHH_Nuevo.sql`. Ese script solo está en la rama `dev_branch` del repositorio anterior (`sh4ntyfps/Proyecto-Evo_RRHH`). No hace falta para levantar el sistema.
+
+Para probar el registro y reporte de teletrabajo, ejecutar [rf-13-crear-periodo-teletrabajo.sql](../rf-13-crear-periodo-teletrabajo.sql) sobre la base normalizada ya creada.

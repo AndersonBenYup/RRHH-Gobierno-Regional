@@ -11,7 +11,82 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.9.2] - 2026-11-11
+
+Corrección de datos SC-030. El código de la aplicación no cambia.
+
+### Corregido
+- SC-030: recuperación de **104 984 marcaciones y 1720 asistencias de 2024** que la limpieza de huérfanos de `bd-Datos.sql` borró por tener `idHorario` NULL (`LEFT JOIN ... WHERE h.idHorario IS NULL` también elimina los NULL). Pertenecen a 844 empleados existentes; 151 se habían quedado sin ninguna marcación.
+
 ### Agregado
+- `Scripts/recuperacion/`: generador reproducible, script de recuperación (transaccional, no duplica y no modifica filas existentes), verificación de solo lectura y reversión controlada.
+- Tipo de marcación `M` (marca sin reloj ni horario) y descripciones de N, T y X, marcadas como «por confirmar» por RRHH.
+- `docs/actualizados/SC-030-RECUPERACION-MARCACIONES.md`, con causa, evidencia, alcance, procedimiento, criterios de aceptación y acta de conformidad de RRHH. Anexo por empleado en `docs/actualizados/anexos/`.
+- `Scripts/comparar-bd-con-carga-03.sql`: comparación de solo lectura de `rrhhdb` con la carga normalizada.
+
+### Cambiado
+- `<Version>2.9.2</Version>`.
+
+
+## [2.9.1] - 2026-11-11
+
+Corrección del cálculo de vacaciones tras revisar los datos reales de `rrhhdb` (solo lectura, `Scripts/verificar-bd-v2.9.0*.sql`).
+
+### Corregido
+- RF-07/RF-09 (SC-018, SC-020): la fecha de ingreso ya no depende solo de `PeriodoLaboral`, que existe para 833 de 3338 empleados y, en muchos activos, termina hace años (datos migrados). Un activo usa su último periodo si sigue abierto y, si no, `Empleado.FechaIngreso`; ya no se le trata como cesado por un periodo antiguo cerrado. Un inactivo usa su último periodo cerrado.
+- El reporte avisa cuántos empleados se omiten por no tener fecha de ingreso vigente.
+- RF-10 (SC-021): los permisos «1/2 JORNADA VACACIONES» están registrados con `Dia = 1` y sin horas; ahora descuentan 0,5 por día por su motivo y no un día completo. El detalle muestra los días que descuenta cada permiso.
+
+Pruebas: 176 en verde.
+
+
+## [2.9.0] - 2026-11-11
+
+Con esta versión están implementados los 18 RF de la Evaluación T3 (8 obligatorios y 10 complementarios).
+
+### Agregado
+- RF-12 (SC-023): menú **Mis vacaciones** para todos los usuarios. Cada uno ve solo el saldo y los goces del empleado vinculado a su cuenta (`Usuario.IdEmpleado`); si la cuenta no está vinculada, se explica cómo hacerlo en «Usuarios y roles».
+
+### Cambiado
+- Informe de avance T3 y matriz de solicitudes con SC-018 a SC-023, SC-026 y la ampliación de SC-005.
+- `<Version>2.9.0</Version>`.
+
+Pruebas: 166 en verde.
+
+## [2.8.0] - 2026-11-11
+
+Vacaciones (RF-07 a RF-11). Regla verificada con el área usuaria: 30 días calendario por cada año completo de servicio desde la fecha de ingreso; es la misma para los D. Leg. 276, 1057 (Ley 29849) y 713.
+
+### Agregado
+- RF-07 (SC-018): vacaciones generadas, 30 días por año cumplido desde `PeriodoLaboral.FechaIngreso` (último periodo del empleado; corregido en 2.9.1).
+- RF-08 (SC-019): pendientes de goce = generadas − gozadas. Un saldo negativo indica vacaciones adelantadas.
+- RF-09 (SC-020): truncas, 2,5 días por mes completo del año en curso y la parte proporcional de los días restantes. Para un cesado se calculan a su fecha de salida.
+- RF-10 (SC-021): un permiso de vacaciones por horas cuenta 0,5 días y debe cubrir al menos media jornada (4 horas); si no, el alta o la edición del permiso muestra el error.
+- RF-11 (SC-022): menú **Vacaciones** (módulo Permisos, `0502007`) con fecha de corte, filtro por empleado, cesados, totales, detalle por empleado y exportación CSV.
+- `CalculoVacaciones` (reglas puras) y `VacacionesLogica`. Los motivos de vacaciones se reconocen por su descripción («vacación»), sin fijar códigos.
+
+### Cambiado
+- `<Version>2.8.0</Version>`.
+
+Pruebas: 166 en verde (21 del cálculo y 5 de la lógica de vacaciones).
+
+## [2.7.0] - 2026-11-11
+
+### Agregado
+- RF-15 (SC-026): en el reporte de teletrabajo, días con marcación en los relojes presenciales elegidos junto a los días de teletrabajo del empleado. El conteo de marcaciones se hace en la BD y requiere acceso a Asistencia.
+
+### Cambiado
+- Los reportes de ausencias (RF-18) y de teletrabajo (RF-14, RF-15 y RF-16) filtran fechas, motivos, empleado y modalidad en la BD con `IPermisoRepositorio` e `IPeriodoTeletrabajoRepositorio`; antes traían toda la tabla (SC-005).
+- `<Version>2.7.0</Version>` en `Proyecto-Evo-RRLL.csproj`.
+
+Pruebas: 138 en verde (3 nuevas comprueban con `ToQueryString()` que EF traduce los filtros a SQL).
+
+## [2.6.0] - 2026-11-11
+
+### Agregado
+- RF-02, RF-03, RF-05 y RF-06: historial de turnos por fechas y validaciones de permisos, motivos y licencias.
+- RF-13, RF-14 y RF-16: registro y reporte de teletrabajo.
+- RF-17 y RF-18: resumen de feriados y reporte de ausencias por periodo.
 - Este `CHANGELOG.md`, con la historia del sistema desde la v1.0.0.
 - Esquema de la BD normalizada en el repositorio: `Scripts/bd-Normalizada/01-esquema-RRHH_Normalizado.sql`, `NORMALIZACION.md` y un README con el orden de ejecución. Los datos (`03-datos`, 156 MB) quedan fuera por el límite de GitHub.
 - `<Version>2.5.0</Version>` en `Proyecto-Evo-RRLL.csproj`: la aplicación sabe qué versión es.
@@ -169,7 +244,13 @@ Primera versión completa, en el repositorio anterior [`sh4ntyfps/Proyecto-Evo_R
 ### Seguridad
 - **17-sep:** validación de catálogos, roles de administrador y clave de seed configurable.
 
-[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.5.0...HEAD
+[Sin publicar]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.2...HEAD
+[2.9.2]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.1...v2.9.2
+[2.9.1]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.9.0...v2.9.1
+[2.9.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.8.0...v2.9.0
+[2.8.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.7.0...v2.8.0
+[2.7.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.6.0...v2.7.0
+[2.6.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/compare/v2.3.0...v2.3.1

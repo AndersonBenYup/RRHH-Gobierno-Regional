@@ -2,6 +2,123 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## SC-030 · Recuperación de marcaciones y asistencias sin horario (corrección de datos)
+
+| SC | Rama / commit | Qué se hizo | Caso de prueba y evidencia |
+|---|---|---|---|
+| SC-030 · Datos de asistencia perdidos en la carga | `feature/recuperar-marcaciones-sin-horario` (`v2.9.2`) | La limpieza de huérfanos de `bd-Datos.sql` borró 104 984 marcaciones y 1720 asistencias de 2024 que solo tenían `idHorario` NULL; pertenecen a 844 empleados existentes y 151 se quedaron sin marcaciones. `Scripts/recuperacion/recuperar-marcaciones-sin-horario.sql` las reinserta desde el original, sin tocar filas existentes; incluye verificación y reversión. | CP-SC030-01: `verificar-recuperacion.sql` pasa de SIN RECUPERAR (200 184 / 153 964) a RECUPERADO (305 168 / 155 684) con integridad en 0. CP-SC030-02: RRHH comprueba en la aplicación tres empleados del anexo sin marcaciones previas. Justificación, anexo y conformidad de RRHH: [`SC-030-RECUPERACION-MARCACIONES.md`](SC-030-RECUPERACION-MARCACIONES.md). Pendiente de ejecución y de firma. |
+
+## SC-026 · RF-15 · Reportar labores presenciales y días de teletrabajo por persona
+
+- Rama: `feature/presencialidad-y-teletrabajo`, commit `20da2b7`. Integrada en `dev` y publicada en `v2.7.0`.
+- En Permisos → Reporte de días de teletrabajo, seleccionar empleado, rango y relojes presenciales. El acceso al conteo de marcaciones requiere también permiso para Asistencia.
+- Se cuenta una vez cada fecha con una marcación en los relojes seleccionados. Si en una fecha hay marcación y teletrabajo, la fecha figura en ambos totales. Confirmar con el área usuaria qué relojes representan asistencia presencial.
+- CP-RF15-01: en un rango con dos marcaciones del empleado A en un mismo día en un reloj seleccionado, otra en un reloj excluido y un periodo de teletrabajo de dos días, esperar un día de marcación presencial y dos días de teletrabajo. Repetir con un usuario sin acceso a Asistencia y verificar que el filtro no esté disponible. Pendiente de prueba funcional con SQL Server.
+
+## Seguimiento T3 · SC-005 (ampliación) · Reportes de ausencias y teletrabajo filtrados en la BD
+
+- **Rama y commit:** `feature/reportes-filtrados-en-bd`, `45aab45`. Versión `v2.7.0`.
+- **Cambio:** `ReporteAusencias` (RF-18) y `ReporteTeletrabajo` (RF-14, RF-15 y RF-16) traían toda la tabla y filtraban en memoria. Ahora usan `IPermisoRepositorio.ListarPorMotivosEntreFechas` e `IPeriodoTeletrabajoRepositorio.ListarEntreFechas`.
+- **Prueba:** `ConsultasEnBdTests` comprueba con `ToQueryString()` que EF traduce los filtros a SQL (3 pruebas aprobadas).
+
+## Seguimiento T3 · Vacaciones (SC-018 a SC-023)
+
+Regla verificada con el área usuaria: 30 días calendario por cada año completo de servicio desde la fecha de ingreso del último periodo laboral. Es la misma para los D. Leg. 276, 1057 (Ley 29849) y 713. Los motivos de vacaciones se reconocen porque su descripción contiene «vacación».
+
+| Solicitud | Rama y commit | Implementación | Caso y evidencia |
+| --- | --- | --- | --- |
+| SC-018 · RF-07 · Reportar vacaciones generadas | `feature/vacaciones-generadas-pendientes-truncas`, `a315341` (`v2.8.0`) | `CalculoVacaciones.AniosCumplidos`; columna Generadas en Vacaciones. | CP-RF07-01: ingreso 01/03/2024; al 27/02/2025 hay 0 años, al 28/02/2025 1 año (30 días) y al 28/02/2026 2 años. Prueba automatizada aprobada; captura pendiente. |
+| SC-019 · RF-08 · Reportar vacaciones pendientes de goce | `a315341` (`v2.8.0`) | Pendientes = generadas − gozadas; en rojo si es negativo (adelanto). | CP-RF08-01: 30 generadas, 10 días completos y una media jornada gozados: 19,5 pendientes. Prueba automatizada aprobada; captura pendiente. |
+| SC-020 · RF-09 · Reportar vacaciones truncas | `a315341` (`v2.8.0`) | `CalculoVacaciones.Truncas`: 2,5 días por mes completo del año en curso y la parte proporcional de los días restantes. Para un cesado se calcula a su fecha de salida. | CP-RF09-01: ingreso 01/03/2024, corte 15/05/2026: 2 meses y 15 días = 6,25. CP-RF09-02: cesado el 31/03/2026 con ingreso 01/01/2025: 7,5 truncas. Pruebas aprobadas. |
+| SC-021 · RF-10 · Contabilizar vacaciones desde media jornada | `a315341` (`v2.8.0`) | Un permiso de vacaciones por horas cuenta 0,5 días. `PermisoLogica.Validar` exige al menos 4 horas. | CP-RF10-01: vacaciones de 08:00 a 12:00 descuentan 0,5. CP-RF10-02: vacaciones de 08:00 a 10:00 se rechazan; una licencia de 2 horas se acepta. Pruebas aprobadas; captura del mensaje pendiente. |
+| SC-022 · RF-11 · Generar reporte de vacaciones | `a315341` (`v2.8.0`) | Menú **Vacaciones** (módulo Permisos, `0502007`): fecha de corte, empleado, cesados, totales, detalle y **Exportar CSV**. | CP-RF11-01: consultar al corte de hoy, abrir el detalle de un empleado y exportar; el CSV debe tener las mismas filas y totales. Pendiente de ejecución. |
+| SC-023 · RF-12 · Consulta personal de vacaciones | `feature/consulta-personal-de-vacaciones`, `3ac9f98` (`v2.9.0`) | Menú **Mis vacaciones**, visible para todos los usuarios. Muestra solo el empleado vinculado a la cuenta (`Usuario.IdEmpleado`); no recibe el empleado por parámetro. | CP-RF12-01: vincular un usuario de prueba con un empleado en «Usuarios y roles», iniciar sesión y comprobar su saldo y sus goces. CP-RF12-02: un usuario sin empleado vinculado ve el aviso. Pendiente de ejecución. |
+
+**Corrección `v2.9.1` (SC-018, SC-020 y SC-021)**, rama `feature/vacaciones-fecha-ingreso-media-jornada`. Tras revisar `rrhhdb` en modo solo lectura:
+- La fecha de ingreso de un activo es la de su periodo laboral abierto o, si no lo tiene, `Empleado.FechaIngreso`. Un inactivo usa su último periodo cerrado. El reporte indica cuántos empleados no tienen fecha vigente.
+- Los permisos «1/2 JORNADA VACACIONES» (registrados con `Dia = 1` y sin horas) descuentan 0,5 por día.
+- CP-RF07-02: un activo con periodo cerrado en 2011 e ingreso 15/04/2008 en su ficha aparece como activo, calculado desde 2008. CP-RF10-03: un permiso de 1/2 jornada de dos días descuenta 1 día. Pruebas automatizadas aprobadas (176).
+
+## Seguimiento T3 · SC-028 (RF-17) · Validar feriados en el reporte general
+
+- **Rama original y commits:** `feature/feriados-en-reporte-general`, `7b5b1b1` (rama original), [`57aa5ef`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/57aa5ef) (`main`).
+- **Componente:** Registro de Asistencia, resumen de feriados en pantalla. Cuenta cada fecha una vez dentro del rango y muestra las fechas incluidas. El total es independiente de los empleados mostrados.
+- **CP-RF17-01:** se comprobaron ambas fechas límite, fechas externas, fechas duplicadas y valores nulos. Prueba automatizada aprobada. Captura del reporte pendiente.
+
+## Seguimiento T3 · SC-029 (RF-18) · Reportar ausencias por periodo
+
+- **Rama original y commits:** `feature/reporte-de-ausencias-por-periodo`, `0b7a16f` (rama original), [`c80c108`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/c80c108) (`main`).
+- **Componente:** Permisos → Reporte de ausencias. Consulta permisos por fecha y motivos seleccionados en el catálogo. Incluye periodos que cruzan los límites y excluye los códigos históricos de teletrabajo 125 y 126.
+- **CP-RF18-01:** consultar del 10 al 15 con vacaciones del 8 al 10 y licencia del 16 al 18. Al seleccionar ambos motivos, solo aparece la primera persona.
+- **Estado:** compilación correcta. Pendiente ejecutar el caso funcional y guardar evidencia.
+
+## Seguimiento T3
+
+### SC-013 · RF-02 · Consultar el histórico de turnos
+
+- **Estado inicial:** parcial. El historial permitía filtrar por empleado.
+- **Rama:** `feature/historico-de-turnos`. **Commits:** `8f07a49` (rama original), [`4100e16`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/4100e16) (`main`).
+- **Componente:** Asistencia → Horarios Temporales.
+- **Regla:** incluye los turnos que se cruzan con el rango, con fechas límite incluidas. Cada límite es opcional. Para registros sin fecha de fin se usa la fecha de inicio como fin al filtrar.
+- **Verificación técnica:** el proyecto web compiló con cero errores y cero advertencias.
+- **Estado:** implementado, pendiente de validación funcional y evidencia de pantalla.
+
+| Caso | Datos de prueba | Resultado esperado | Estado |
+| --- | --- | --- | --- |
+| CP-RF02-01 | Buscar al empleado A del 10 al 15 de noviembre. Turnos de A del 8 al 10, del 15 al 16 y del 16 al 18. Turno de B del 12 al 13. | Aparecen los primeros dos turnos de A. | Pendiente |
+| CP-RF02-02 | Buscar desde el 15 de noviembre con un turno del 15 sin fecha de fin y otro terminado el 14. | Aparece el turno del 15. | Pendiente |
+| CP-RF02-03 | Ingresar desde el 16 hasta el 15 de noviembre. | Se muestra el mensaje de rango inválido. | Pendiente |
+## Seguimiento T3 · SC-014 (RF-03)
+
+- **Solicitud:** impedir que una persona tenga dos permisos en un mismo día. Antecedente: SC-008.
+- **Rama original y commits:** `feature/evitar-permisos-duplicados`, `8065889` (rama original), [`47b5142`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/47b5142) (`main`).
+- **Componente:** `ReglasPermiso.Validar`, invocado desde el alta y la edición de permisos.
+- **Estado:** implementado. La regla rechaza fechas compartidas incluso si las horas son distintas. En edición se excluye el propio permiso.
+- **Pruebas y evidencia:** las 13 pruebas de `ReglasPermisoTests` pasaron, incluido el caso de regresión CP-RF03-01 (mismo empleado y día, de 08:00 a 10:00 y de 15:00 a 16:00). También se verificaron los casos de otro empleado, días consecutivos y edición del mismo registro. Queda pendiente la evidencia funcional en pantalla.
+## Seguimiento T3 · SC-015 (RF-04) · Agregar motivos de permiso
+
+- **Estado:** implementación existente, confirmada mediante revisión del código. Pendiente de prueba funcional.
+- **Rama de seguimiento:** `feature/agregar-motivos-de-permiso`. **Commit de referencia:** `0f441ee`.
+- **Componente:** Permisos → Motivos de permiso → Nuevo. `CatalogoController.Nuevo` requiere el rol Administrador y guarda mediante `CatalogoRepositorio.Crear` en el catálogo `Motivo_Perm`.
+- **CP-RF04-01:** en una base de prueba, ingresar como Administrador y crear un motivo con descripción «Motivo de prueba T3» y los demás campos obligatorios válidos. Se espera un mensaje de éxito, el motivo visible en el catálogo tras recargar y su disponibilidad al registrar un permiso.
+- **Resultado obtenido y evidencia:** pendientes de ejecución. Adjuntar captura del catálogo y del selector de motivos usando datos de prueba.
+## Seguimiento T3 · SC-016 (RF-05) · Eliminar motivos de permiso
+
+- **Estado:** implementado, pendiente de validación funcional con datos de prueba.
+- **Rama original y commits:** `feature/eliminar-motivos-de-permiso`, `73719bb` (rama original), [`7c191a4`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/7c191a4) (`main`).
+- **Componentes:** `CatalogoRepositorio.Eliminar` y `CatalogoController.Eliminar`.
+- **Regla:** el administrador puede eliminar un motivo sin referencias. Si está asociado a un permiso, se conserva y se muestra un mensaje comprensible.
+- **Verificación técnica:** compilación web correcta, cero errores y advertencias.
+
+| Caso | Datos | Resultado esperado | Resultado obtenido y evidencia |
+| --- | --- | --- | --- |
+| CP-RF05-01 | Motivo de prueba sin permisos asociados | Desaparece del catálogo y se muestra éxito | Pendiente de ejecución |
+| CP-RF05-02 | Motivo de prueba asociado a un permiso | El motivo y el permiso se conservan; se muestra el aviso de motivo en uso | Pendiente de ejecución |
+## Seguimiento T3 · SC-017 (RF-06) · Validar licencias que se otorgan una sola vez al año
+
+- **Rama original y commits:** `feature/licencias-una-vez-al-ano`, `543d70d` (rama original), [`66a75b1`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/66a75b1) (`main`).
+- **Componente:** `PermisoLogica.Validar` y `ReglaLicenciaAnual`, utilizados al registrar y editar permisos.
+- **Regla implementada para revisión:** los motivos 70, 76, 82 y 133 comparten un límite por empleado y año calendario de la fecha de inicio. Se excluye el permiso que se está editando.
+- **CP-RF06-01 a CP-RF06-06:** 6 pruebas automatizadas correctas. Cubren repetición del motivo, otro código del grupo, año distinto, empleado distinto, edición del propio registro y un motivo ajeno al grupo.
+- **Estado:** implementado según el supuesto indicado. Pendiente de confirmación del área usuaria y de evidencia funcional en la aplicación con una base de prueba.
+## Seguimiento T3 · SC-012 (RF-01) · Registrar turnos por periodos de fechas
+
+- **Estado:** implementación existente, verificada en el código. Pendiente de prueba funcional.
+- **Rama de seguimiento:** `feature/registro-de-turnos`. **Referencias:** `0f441ee` (alta) y `b042915` (validación del formulario).
+- **Componente:** Asistencia → Horarios Temporales → Nuevo horario. `AsistenciaController.HorarioTemporalNuevo` guarda el horario asignado y las fechas del empleado en `HorarioTemporal`.
+- **CP-RF01-01:** registrar un horario de prueba del 10 al 15 de noviembre. Verificar que aparezca en la lista del empleado con el horario y ambas fechas tras recargar.
+- **CP-RF01-02:** intentar registrar el mismo horario con fecha final anterior a la inicial. Verificar que se muestre el mensaje de validación y que el registro no aparezca.
+- **Resultado obtenido y evidencia:** pendientes de ejecución con una base de prueba.
+## Seguimiento T3 · Teletrabajo
+
+| Solicitud | Rama y commit | Implementación | Caso y evidencia |
+| --- | --- | --- | --- |
+| SC-024 · RF-13 · Registrar periodos de teletrabajo | `feature/registro-de-teletrabajo`, `88c7765` (rama original), [`8ab3353`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/8ab3353) (`main`) | Permisos → Registrar teletrabajo. Guarda empleado, fechas y modalidad en `PeriodoTeletrabajo`. | CP-RF13-01: crear un periodo válido, comprobar su persistencia y rechazar fechas invertidas. Pendiente de ejecución con SQL Server. |
+| SC-025 · RF-14 · Reportar días de teletrabajo | `feature/reporte-de-dias-de-teletrabajo`, `6e4f31e` (rama original), [`83679de`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/83679de) (`main`) | Reporte por empleado y rango. Cuenta días calendario únicos y recorta los periodos al rango. | CP-RF14-01 y CP-RF14-02: recorte de rangos, solapamientos y cero días sin registros. Pruebas automatizadas aprobadas; captura pendiente. |
+| SC-027 · RF-16 · Reportar quiénes realizan teletrabajo total o parcial | `feature/reporte-de-teletrabajo-total-y-parcial`, `4c92370` (rama original), [`9aeb749`](https://github.com/AndersonBenYup/RRHH-Gobierno-Regional/commit/9aeb749) (`main`) | El reporte permite consultar todos los empleados, muestra el nombre y distingue modalidad total y parcial. | CP-RF16-01: registrar un periodo total para A y uno parcial para B; consultar cada modalidad y comprobar que solo aparezca la persona correspondiente. Compilación correcta; prueba funcional pendiente. |
+
+Antes de la prueba funcional, ejecutar `Scripts/rf-13-crear-periodo-teletrabajo.sql` en una base de prueba. Los motivos históricos 125 y 126 quedan en el catálogo de permisos. El reporte utiliza la tabla nueva y su criterio de días calendario incluye fines de semana y feriados. Validar ese criterio con el área usuaria antes de publicar.
+
 Revisión del repositorio **`sh4ntyfps/Proyecto-Evo_RRHH`**, rama `dev_branch`, commit `a04f97e` (2 de noviembre de 2026).
 
 Este documento explica las 7 solicitudes de cambio que se presentaron en la exposición de la Semana 9 (`Grupo5_EVO-RRHH_Semanas_1a9.pptx` y `temas-semanas/Grupo5_Gestion_del_Cambio.pptx`) y registradas en `docs/GESTION-DEL-CAMBIO.md`. Para cada una se revisó el código y se indica si realmente se cumplió. Sirve como base para la nueva revisión que se hace en el repositorio de despliegue en Azure, donde algunas solicitudes se reabren.

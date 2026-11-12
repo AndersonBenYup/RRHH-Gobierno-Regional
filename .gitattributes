@@ -1,0 +1,4 @@
+
+# SC-030: se conservan los bytes exactos para que el SHA-256 documentado siga siendo válido
+Scripts/recuperacion/recuperar-marcaciones-sin-horario.sql -text
+docs/actualizados/anexos/SC-030-empleados-afectados.csv -text

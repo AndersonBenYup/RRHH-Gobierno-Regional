@@ -210,6 +210,11 @@ public class EvoRRLDbContext : DbContext
                 entity.HasOne<Empleado>().WithMany().HasForeignKey(e => e.idEmpleado);
                 entity.HasOne<Horario>().WithMany().HasForeignKey(e => e.HorarioAsignado);
             });
+            modelBuilder.Entity<PeriodoTeletrabajo>(entity =>
+            {
+                entity.ToTable("PeriodoTeletrabajo");
+                entity.HasOne<Empleado>().WithMany().HasForeignKey(e => e.IdEmpleado).OnDelete(DeleteBehavior.Restrict);
+            });
             modelBuilder.Entity<Local>(entity =>
             {
             });

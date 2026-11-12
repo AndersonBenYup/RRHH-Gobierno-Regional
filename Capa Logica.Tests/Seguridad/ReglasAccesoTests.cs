@@ -80,6 +80,8 @@ public class ReglasAccesoTests
     [InlineData("Empleado", "0502001")]
     [InlineData("familiasalud", "0502003")]
     [InlineData("Catalogo", "0502012")]
+    [InlineData("Vacaciones", "0502007")]
+    [InlineData("MisVacaciones", null)]
     [InlineData("Home", null)]
     [InlineData("SeguridadAdmin", null)]
     public void Cada_controller_pertenece_a_un_modulo(string controller, string? codigo)

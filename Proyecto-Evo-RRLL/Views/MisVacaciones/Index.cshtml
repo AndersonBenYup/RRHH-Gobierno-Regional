@@ -1,0 +1,24 @@
+@model MisVacacionesModelo
+@{
+    ViewData["Title"] = "Mis vacaciones";
+}
+
+@* RF-12: consulta personal de vacaciones pendientes y usadas. *@
+<div class="mb-3">
+    <h3 class="mb-0">Mis vacaciones</h3>
+    <span class="text-secondary small">@Model.Nombre</span>
+</div>
+
+@if (Model.Aviso is not null)
+{
+    <div class="alert alert-info">@Model.Aviso</div>
+}
+
+@if (Model.Vacaciones is not null)
+{
+    <partial name="_SaldoVacaciones" model="Model.Vacaciones" />
+    <p class="text-secondary small mt-3">
+        Se generan 30 días por cada año completo de servicio. Las vacaciones por horas cuentan como media jornada (0,5 días).
+        Para solicitar vacaciones, comuníquese con Recursos Humanos.
+    </p>
+}
