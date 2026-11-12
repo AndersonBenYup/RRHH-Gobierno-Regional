@@ -26,7 +26,16 @@
 
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">@col.Nombre</label>
-                        @if (col.Tipo == "string")
+                        @if (Model.Tabla == "Motivo_Perm" && col.Nombre == "TipoModalidad")
+                        {
+                            var modalidadActual = valorActual?.ToString() ?? "";
+                            <select class="form-select" name="@col.Nombre">
+                                <option value="">(seleccione)</option>
+                                <option value="C" selected="@(modalidadActual == "C")">Completo</option>
+                                <option value="P" selected="@(modalidadActual == "P")">Parcial</option>
+                            </select>
+                        }
+                        else if (col.Tipo == "string")
                         {
                             <input type="text" class="form-control" name="@col.Nombre" value="@(valorActual?.ToString() ?? "")" @(esEdicion && col.EsClave ? "readonly" : "") />
                         }

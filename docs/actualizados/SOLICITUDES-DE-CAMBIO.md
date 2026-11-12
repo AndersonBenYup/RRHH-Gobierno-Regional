@@ -2,6 +2,12 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## SC-032 · Modalidad del motivo de permiso como desplegable y buscador propio en los mantenedores
+
+| SC | Rama / commit | Qué se hizo | Caso de prueba y evidencia |
+|---|---|---|---|
+| SC-032 · Dos mejoras de usabilidad en catálogos | `main` | (1) En Catálogos → Motivos de Permiso, el campo `TipoModalidad` (la BD solo admite `C`/`P`) se editaba como texto libre; ahora es un desplegable «Completo»/«Parcial» (`Views/Catalogo/Nuevo.cshtml`), y el listado muestra el texto en vez de la letra (`Views/Catalogo/Index.cshtml`). (2) Ningún mantenedor (los 33 catálogos genéricos y otros como Feriados, Comportamiento, Capacitación, Familia, Salud, Historial Laboral, Vivienda, Locales, Roles) tenía un buscador visible pegado a su lista — solo el buscador global de la barra superior, sin relación obvia con la tabla. `site.js` (`initDataTables`) agrega un cuadro «Buscar en la tabla...» encima de cada tabla sin paginación de servidor, sin tocar las vistas. | CP-SC032-01: Catálogos → Motivos de Permiso → Nuevo: TipoModalidad se ve como desplegable, se guarda como `C`/`P` y el listado muestra «Completo»/«Parcial». CP-SC032-02: en cualquier catálogo con varios registros (p. ej. Tenencia de Vivienda), escribir en el nuevo buscador filtra las filas en vivo sin perder el orden ni el paginador. Pruebas automatizadas (187) en verde; falta la captura en la aplicación. |
+
 ## SC-031 · Desplegables con buscador por nombre o número de documento
 
 | SC | Rama / commit | Qué se hizo | Caso de prueba y evidencia |

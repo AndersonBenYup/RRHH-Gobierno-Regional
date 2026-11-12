@@ -928,3 +928,6 @@ html[data-bs-theme="dark"] .skeleton::after {
 .evo-buscador-select { display: flex; align-items: center; gap: .5rem; margin-bottom: .3rem; }
 .evo-buscador-select .form-control { flex: 1 1 auto; min-width: 0; }
 .evo-buscador-contador { flex: none; font-size: .75rem; white-space: nowrap; }
+
+/* SC-032: buscador propio por tabla en los mantenedores (site.js, initDataTables) */
+.evo-buscador-tabla { max-width: 320px; margin-bottom: .6rem; }

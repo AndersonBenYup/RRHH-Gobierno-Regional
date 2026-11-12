@@ -66,7 +66,12 @@ else
                     <tr>
                         @foreach (var col in columnasVisibles)
                         {
-                            <td class="@(col.EsClave ? "fw-semibold" : "")">@(fila[col.Nombre] ?? "&nbsp;")</td>
+                            var valor = fila[col.Nombre];
+                            if (Model.Tabla == "Motivo_Perm" && col.Nombre == "TipoModalidad")
+                            {
+                                valor = valor?.ToString() switch { "C" => "Completo", "P" => "Parcial", var otro => otro };
+                            }
+                            <td class="@(col.EsClave ? "fw-semibold" : "")">@(valor ?? "&nbsp;")</td>
                         }
                         @if (puedeEditar)
                         {

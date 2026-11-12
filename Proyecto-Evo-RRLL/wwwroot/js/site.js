@@ -133,9 +133,10 @@
                 });
             });
 
+            var inputLocal = null;
+
             function terminoBusqueda() {
-                var input = document.getElementById('siteSearch');
-                return input ? input.value.trim().toLowerCase() : '';
+                return inputLocal ? inputLocal.value.trim().toLowerCase() : '';
             }
 
             function esNumerica(idx) {
@@ -235,10 +236,20 @@
                 });
             }
 
-            var inputGlobal = document.getElementById('siteSearch');
-            if (inputGlobal) {
-                inputGlobal.addEventListener('input', function () { state.page = 1; aplicar(); });
-            }
+            // SC-032: buscador propio por tabla, pegado a cada mantenedor (antes solo filtraba
+            // el buscador global de la barra superior, lejos visualmente de la lista).
+            var cajaBusqueda = document.createElement('div');
+            cajaBusqueda.className = 'evo-buscador-select evo-buscador-tabla';
+            inputLocal = document.createElement('input');
+            inputLocal.type = 'search';
+            inputLocal.className = 'form-control form-control-sm';
+            inputLocal.autocomplete = 'off';
+            inputLocal.placeholder = 'Buscar en la tabla...';
+            inputLocal.setAttribute('aria-label', 'Buscar en la tabla');
+            cajaBusqueda.appendChild(inputLocal);
+            var anclaBusqueda = wrapper || table;
+            anclaBusqueda.parentNode.insertBefore(cajaBusqueda, anclaBusqueda);
+            inputLocal.addEventListener('input', function () { state.page = 1; aplicar(); });
 
             asegurarToolbar();
             aplicar();

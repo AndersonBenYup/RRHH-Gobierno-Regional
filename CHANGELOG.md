@@ -11,6 +11,18 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.11.0] - 2026-11-11
+
+### Agregado
+- SC-032: **modalidad del motivo de permiso como desplegable**. En Catálogos → Motivos de Permiso, `TipoModalidad` (la BD solo admite `C`/`P`) se edita ahora como un desplegable «Completo»/«Parcial»; el listado muestra el texto en vez de la letra cruda.
+- SC-032: **buscador propio por tabla en los mantenedores**. `site.js` (`initDataTables`) agrega un cuadro «Buscar en la tabla...» encima de cada tabla sin paginación de servidor, sin tocar las vistas — cubre los 33 catálogos genéricos y el resto de mantenedores simples (Feriados, Comportamiento, Capacitación, Familia, Salud, Historial Laboral, Vivienda, Locales, Roles).
+
+### Cambiado
+- `<Version>2.11.0</Version>`.
+
+Pruebas: 187 en verde.
+
+
 ## [2.10.0] - 2026-11-11
 
 ### Agregado
