@@ -2,6 +2,12 @@
 
 # Solicitudes de cambio (SC-001 a SC-007): estado real
 
+## SC-030 · Recuperación de marcaciones y asistencias sin horario (corrección de datos)
+
+| SC | Rama / commit | Qué se hizo | Caso de prueba y evidencia |
+|---|---|---|---|
+| SC-030 · Datos de asistencia perdidos en la carga | `feature/recuperar-marcaciones-sin-horario` (`v2.9.2`) | La limpieza de huérfanos de `bd-Datos.sql` borró 104 984 marcaciones y 1720 asistencias de 2024 que solo tenían `idHorario` NULL; pertenecen a 844 empleados existentes y 151 se quedaron sin marcaciones. `Scripts/recuperacion/recuperar-marcaciones-sin-horario.sql` las reinserta desde el original, sin tocar filas existentes; incluye verificación y reversión. | CP-SC030-01: `verificar-recuperacion.sql` pasa de SIN RECUPERAR (200 184 / 153 964) a RECUPERADO (305 168 / 155 684) con integridad en 0. CP-SC030-02: RRHH comprueba en la aplicación tres empleados del anexo sin marcaciones previas. Justificación, anexo y conformidad de RRHH: [`SC-030-RECUPERACION-MARCACIONES.md`](SC-030-RECUPERACION-MARCACIONES.md). Pendiente de ejecución y de firma. |
+
 ## SC-026 · RF-15 · Reportar labores presenciales y días de teletrabajo por persona
 
 - Rama: `feature/presencialidad-y-teletrabajo`, commit `20da2b7`. Integrada en `dev` y publicada en `v2.7.0`.
