@@ -23,7 +23,7 @@
     @* SC-011: sistema visual institucional (Tailwind, compilado desde Estilos/app.css) *@
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
 </head>
-<body data-url-buscar-documento="@(User.Identity?.IsAuthenticated == true ? Url.Action("PorDocumento", "BuscarEmpleado") : null)">
+<body class="@(User.Identity?.IsAuthenticated == true ? "con-dock" : "")" data-url-buscar-documento="@(User.Identity?.IsAuthenticated == true ? Url.Action("PorDocumento", "BuscarEmpleado") : null)">
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
     <div id="splashLoader" class="splash-loader">
@@ -36,7 +36,6 @@
 
     @if (User.Identity?.IsAuthenticated == true)
     {
-        var controlador = ViewContext.RouteData.Values["controller"]?.ToString();
         var nombreUsuario = User.Identity?.Name ?? "";
         var partesNombre = nombreUsuario.Split(new[] { ' ', '.', '_', '-' }, StringSplitOptions.RemoveEmptyEntries);
         string inicialesUsuario;
@@ -47,144 +46,14 @@
         else
             inicialesUsuario = "?";
 
-        <aside class="sidebar" id="sidebar">
-            <a class="sidebar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
-                <span class="brand-logo"><i class="bi bi-person-badge-fill"></i></span>
-                <span class="fw-bold">RRHH</span>
-            </a>
-            <div class="sidebar-section">PRINCIPAL</div>
-            <nav class="sidebar-nav">
-                <a class="sidebar-link @(controlador == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">@if (controlador == "Home") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                    <i class="bi bi-speedometer2"></i><span>Inicio</span>
-                </a>
-                @if (User.PuedeVer("Empleado"))
-                {
-                    <a class="sidebar-link @(controlador == "Empleado" ? "active" : "")" asp-controller="Empleado" asp-action="Index">@if (controlador == "Empleado") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-people"></i><span>Personal</span>
-                    </a>
-                }
-                @if (User.PuedeVer("Salud"))
-                {
-                    <a class="sidebar-link @(controlador == "Salud" ? "active" : "")" asp-controller="Salud" asp-action="Index">@if (controlador == "Salud") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-heart-pulse"></i><span>Salud</span>
-                    </a>
-                }
-                @if (User.PuedeVer("Familia"))
-                {
-                    <a class="sidebar-link @(controlador == "Familia" ? "active" : "")" asp-controller="Familia" asp-action="Index">@if (controlador == "Familia") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-people-fill"></i><span>Familia</span>
-                    </a>
-                }
-                @if (User.PuedeVer("Asistencia"))
-                {
-                    <a class="sidebar-link @(controlador == "Asistencia" ? "active" : "")" asp-controller="Asistencia" asp-action="Index">@if (controlador == "Asistencia") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-clock-history"></i><span>Asistencia</span>
-                    </a>
-                }
-                @if (User.PuedeVer("Feriado"))
-                {
-                    <a class="sidebar-link @(controlador == "Feriado" ? "active" : "")" asp-controller="Feriado" asp-action="Index">@if (controlador == "Feriado") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-calendar-event"></i><span>Feriados</span>
-                    </a>
-                }
-                @if (User.PuedeVer("Capacitacion"))
-                {
-                    <a class="sidebar-link @(controlador == "Capacitacion" ? "active" : "")" asp-controller="Capacitacion" asp-action="Index">@if (controlador == "Capacitacion") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-mortarboard"></i><span>Capacitación</span>
-                    </a>
-                }
-                @if (User.PuedeVer("Permiso"))
-                {
-                    <a class="sidebar-link @(controlador == "Permiso" ? "active" : "")" asp-controller="Permiso" asp-action="Index">@if (controlador == "Permiso") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-calendar-check"></i><span>Permisos</span>
-                    </a>
-                }
-                @if (User.PuedeVer("Vacaciones"))
-                {
-                    <a class="sidebar-link @(controlador == "Vacaciones" ? "active" : "")" asp-controller="Vacaciones" asp-action="Index">@if (controlador == "Vacaciones") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-sun"></i><span>Vacaciones</span>
-                    </a>
-                }
-                <a class="sidebar-link @(controlador == "MisVacaciones" ? "active" : "")" asp-controller="MisVacaciones" asp-action="Index">@if (controlador == "MisVacaciones") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                    <i class="bi bi-person-badge"></i><span>Mis vacaciones</span>
-                </a>
-                @if (User.PuedeVer("HistorialLaboral"))
-                {
-                    <a class="sidebar-link @(controlador == "HistorialLaboral" ? "active" : "")" asp-controller="HistorialLaboral" asp-action="Index">@if (controlador == "HistorialLaboral") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-briefcase"></i><span>Historial Laboral</span>
-                    </a>
-                }
-                @if (User.PuedeVer("Comportamiento"))
-                {
-                    <a class="sidebar-link @(controlador == "Comportamiento" ? "active" : "")" asp-controller="Comportamiento" asp-action="Index">@if (controlador == "Comportamiento") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-clipboard-data"></i><span>Comportamiento</span>
-                    </a>
-                }
-                @if (User.PuedeVer("Vivienda"))
-                {
-                    <a class="sidebar-link @(controlador == "Vivienda" ? "active" : "")" asp-controller="Vivienda" asp-action="Index">@if (controlador == "Vivienda") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-house"></i><span>Vivienda</span>
-                    </a>
-                }
-                @if (User.PuedeVer("EstructuraOrganiz"))
-                {
-                    <a class="sidebar-link @(controlador == "EstructuraOrganiz" ? "active" : "")" asp-controller="EstructuraOrganiz" asp-action="Index">@if (controlador == "EstructuraOrganiz") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-diagram-3"></i><span>Estructura orgánica</span>
-                    </a>
-                }
-
-                @if (User.IsInRole("Administrador"))
-                {
-                    <div class="sidebar-section">SEGURIDAD</div>
-                    <div class="sidebar-submenu">
-                        <a class="sidebar-link @(controlador == "SeguridadAdmin" ? "active" : "")" asp-controller="SeguridadAdmin" asp-action="Usuarios">@if (controlador == "SeguridadAdmin") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                            <i class="bi bi-person-gear"></i><span>Usuarios y roles</span>
-                        </a>
-                        <a class="sidebar-link" asp-controller="SeguridadAdmin" asp-action="Actividad">
-                            <i class="bi bi-clock-history"></i><span>Bitácora de actividad</span>
-                        </a>
-                    </div>
-                }
-
-                @if (User.PuedeVer("Catalogo"))
-                {
-                <div class="sidebar-section">ADMINISTRACIÓN</div>
-                <div class="sidebar-submenu">
-                    <a class="sidebar-link @(controlador == "Catalogo" ? "active" : "")" data-bs-toggle="collapse" href="#menuCatalogo" role="button" aria-expanded="false" aria-controls="menuCatalogo">@if (controlador == "Catalogo") { <span class="sidebar-indicador" aria-hidden="true"></span> }
-                        <i class="bi bi-grid-1x2"></i><span>Mantenimiento</span><i class="bi bi-chevron-down ms-auto submenu-caret"></i>
-                    </a>
-                    <div class="collapse @(controlador == "Catalogo" ? "show" : "")" id="menuCatalogo">
-                        <div class="submenu-list">
-                            @foreach (var catalogo in Proyecto_Evo_RRLL.Models.ViewModels.CatalogoNavegacion.Items)
-                            {
-                                <a class="sidebar-sublink @(controlador == "Catalogo" && (ViewContext.RouteData.Values["tabla"]?.ToString() ?? "") == catalogo.Key ? "active" : "")"
-                                   asp-controller="Catalogo" asp-action="Index" asp-route-tabla="@catalogo.Key">
-                                    <span>@catalogo.Value</span>
-                                </a>
-                            }
-                        </div>
-                    </div>
-                </div>
-                }
-            </nav>
-            <div class="sidebar-footer">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="brand-logo small"><i class="bi bi-shield-check"></i></div>
-                    <div class="small lh-sm">
-                        <div class="fw-semibold">RRHH</div>
-                        <div class="text-secondary">Sistema de RR.HH.</div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
         <header class="topbar">
             <div class="d-flex align-items-center gap-3 w-100">
-                <button class="btn btn-link d-lg-none p-0 text-body" type="button" id="btnMenu" aria-label="Abrir menú">
-                    <i class="bi bi-list fs-2"></i>
-                </button>
-                <div class="flex-grow-1 d-none d-md-block page-title">@ViewData["Title"]</div>
+                <a class="topbar-brand" asp-controller="Home" asp-action="Index" aria-label="RRHH, ir al inicio">
+                    <span class="brand-logo"><i class="bi bi-person-badge-fill" aria-hidden="true"></i></span>
+                    <span class="fw-bold d-none d-sm-inline">RRHH</span>
+                </a>
+                <span class="topbar-separador d-none d-md-block" aria-hidden="true"></span>
+                <div class="flex-grow-1 d-none d-md-block page-title text-truncate">@ViewData["Title"]</div>
                 <div class="d-flex align-items-center gap-2 ms-auto">
                     <form class="d-flex me-2 d-none d-lg-inline-flex" role="search" onsubmit="return false;">
                         <div class="input-group search-box">
@@ -212,6 +81,7 @@
                 </div>
             </div>
         </header>
+        <partial name="_DockNavegacion" />
     }
     else
     {
@@ -253,6 +123,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                 </div>
             }
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <partial name="_PestanasModulo" />
+            }
             @RenderBody()
         </div>
     </main>
@@ -273,6 +147,20 @@
     </footer>
 
     <div class="evo-toasts" id="toastHost" aria-live="polite"></div>
+
+    @* Ventana emergente para Nuevo/Editar: site.js carga aquí el formulario de los enlaces con data-modal-form.
+       Sin JavaScript el enlace abre la página completa, como antes. *@
+    <div class="modal fade evo-modal-form" id="modalForm" tabindex="-1" aria-labelledby="modalFormTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="modalFormTitulo">Formulario</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="modalFormCuerpo"></div>
+            </div>
+        </div>
+    </div>
 
     <div id="cookieBanner" class="cookie-banner bg-body-tertiary shadow-lg" role="region" aria-label="Aviso de cookies">
         <div class="container py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">

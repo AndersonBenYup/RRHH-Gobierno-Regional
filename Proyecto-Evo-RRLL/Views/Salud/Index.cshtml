@@ -1,4 +1,4 @@
-@model List<RRHH_Salud>
+﻿@model List<RRHH_Salud>
 @{
     ViewData["Title"] = "Salud";
     var idEmpleado = ViewBag.IdEmpleado as int?;
@@ -18,7 +18,7 @@
             <span class="text-secondary small">Empleado: @emp.Nombre</span>
         }
     </div>
-    <a asp-action="SaludNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva ficha</a>
+    <a data-modal-form asp-action="SaludNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva ficha</a>
 </div>
 
 <partial name="_FiltroEmpleado" model="@idEmpleado" />
@@ -38,7 +38,7 @@
                 <div class="col-md-4"><label class="text-secondary">Acudir en caso de enfermedad</label><div class="fw-semibold">@(acude.FirstOrDefault(a => a.idAcudeEnferm == acudeActual.idAcudeEnferm)?.AcudeEnfermDescrip)</div></div>
                 <div class="col-md-4 d-flex align-items-end">
                     <div class="d-flex gap-2">
-                        <a asp-action="SaludEditar" asp-route-id="@acudeActual.idSalud" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
+                        <a data-modal-form asp-action="SaludEditar" asp-route-id="@acudeActual.idSalud" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
                         <form asp-action="SaludEliminar" asp-route-id="@acudeActual.idSalud" method="post" onsubmit="return confirm('¿Eliminar la ficha de salud?');">
                             <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Eliminar</button>
                         </form>
@@ -76,7 +76,7 @@
                     <td>@(f.Alergico == true ? $"Sí — {f.AlergicoDescrip}" : f.Alergico == false ? "No" : "")</td>
                     <td>@(acude.FirstOrDefault(a => a.idAcudeEnferm == f.idAcudeEnferm)?.AcudeEnfermDescrip)</td>
                     <td>
-                        <a asp-action="SaludEditar" asp-route-id="@f.idSalud" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a data-modal-form asp-action="SaludEditar" asp-route-id="@f.idSalud" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
                         <form asp-action="SaludEliminar" asp-route-id="@f.idSalud" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar esta ficha de salud?');">
                             <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
                         </form>

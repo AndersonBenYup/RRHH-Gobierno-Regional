@@ -1,4 +1,4 @@
-@model List<EstudiosRealizado>
+﻿@model List<EstudiosRealizado>
 @{
     ViewData["Title"] = "Estudios realizados";
     var idEmpleado = ViewBag.IdEmpleado as int?;
@@ -14,7 +14,7 @@
             <span class="text-secondary small">Empleado: @ViewBag.NombreEmpleado</span>
         }
     </div>
-    <a asp-action="EstudioNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo estudio</a>
+    <a data-modal-form asp-action="EstudioNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo estudio</a>
 </div>
 
 <partial name="_FiltroEmpleado" model="@idEmpleado" />
@@ -51,7 +51,7 @@
                         @emp.Nombre
                     </td>
                     <td>
-                        <a asp-action="EstudioEditar" asp-route-idTipo="@e.IdTipoEstudios" asp-route-idEmpleado="@e.IdEmpleado" asp-route-correlativo="@e.Correlativo"
+                        <a data-modal-form asp-action="EstudioEditar" asp-route-idTipo="@e.IdTipoEstudios" asp-route-idEmpleado="@e.IdEmpleado" asp-route-correlativo="@e.Correlativo"
                            class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
                         <form asp-action="EstudioEliminar" asp-route-idTipo="@e.IdTipoEstudios" asp-route-idEmpleado="@e.IdEmpleado" asp-route-correlativo="@e.Correlativo"
                               method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este estudio?');">
@@ -64,7 +64,3 @@
     </table>
 </div>
 
-<div class="d-flex gap-2 mt-3">
-    <a asp-action="Index" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-mortarboard me-1"></i>Capacitaciones</a>
-    <a asp-action="Titulos" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-award me-1"></i>Títulos</a>
-</div>

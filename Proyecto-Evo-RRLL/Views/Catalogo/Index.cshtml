@@ -2,103 +2,150 @@
 @{
     ViewData["Title"] = $"Catálogos - {Model.Titulo}";
     var puedeEditar = Model.Editable && User.IsInRole("Administrador");
+    var grupoActual = CatalogoNavegacion.Grupos.FirstOrDefault(g => g.Claves.Contains(Model.Tabla));
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>@Model.Titulo</h3>
-    <div class="d-flex gap-2">
-        @if (User.IsInRole("Administrador"))
-        {
-            <a asp-action="Exportar" asp-route-tabla="@Model.Tabla" class="btn btn-outline-secondary">
-                <i class="bi bi-download me-1"></i> Exportar CSV
-            </a>
-        }
-        @if (puedeEditar)
-        {
-            <a asp-action="Nuevo" asp-route-tabla="@Model.Tabla" class="btn btn-success">
-                <i class="bi bi-plus-lg me-1"></i> Nuevo
-            </a>
-        }
-    </div>
-</div>
-
-<div class="card mb-3">
-    <div class="card-body">
-        <label class="form-label fw-bold">Seleccionar catálogo</label>
-        <div class="d-flex flex-wrap gap-2">
-            @foreach (var item in CatalogoNavegacion.Items)
-            {
-                var activo = item.Key == Model.Tabla;
-                <a asp-action="Index" asp-route-tabla="@item.Key"
-                   class="btn btn-sm @(activo ? "btn-primary" : "btn-outline-secondary")">@item.Value</a>
-            }
+@* Maestro-detalle, como el árbol + grilla del sistema de escritorio: los catálogos agrupados a la izquierda
+   y el contenido del elegido a la derecha. Nuevo/Editar se abren en una ventana emergente (data-modal-form). *@
+<div class="evo-maestro">
+    <aside class="evo-maestro-lista" aria-label="Catálogos">
+        <div class="evo-maestro-lista-filtro">
+            <i class="bi bi-search" aria-hidden="true"></i>
+            <input type="search" class="form-control form-control-sm" placeholder="Buscar catálogo…" aria-label="Buscar catálogo"
+                   data-filtro-catalogos="#listaCatalogos" />
         </div>
-    </div>
-</div>
-
-@if (Model.Filas.Count == 0)
-{
-    <div class="alert alert-info">Sin registros.</div>
-}
-else
-{
-    var columnasVisibles = Model.Columnas.Where(c => !c.EsArchivo).Take(9).ToList();
-    var columnasOcultas = Model.Columnas.Count(c => !c.EsArchivo) - columnasVisibles.Count;
-
-    <div class="table-responsive">
-        <table class="table table-hover align-middle" data-search-target>
-            <thead>
-                <tr>
-                    @foreach (var col in columnasVisibles)
+        <nav class="evo-maestro-lista-cuerpo" id="listaCatalogos">
+            @foreach (var g in CatalogoNavegacion.Grupos)
+            {
+                <div class="evo-maestro-grupo" data-grupo-catalogo>
+                    <div class="evo-maestro-grupo-titulo"><i class="bi @g.Icono" aria-hidden="true"></i>@g.Titulo</div>
+                    @foreach (var clave in g.Claves)
                     {
-                        <th>@col.Nombre</th>
+                        var activo = clave == Model.Tabla;
+                        <a class="evo-maestro-item @(activo ? "active" : "")" asp-action="Index" asp-route-tabla="@clave"
+                           aria-current="@(activo ? "page" : null)" data-item-catalogo>@CatalogoNavegacion.Items[clave]</a>
                     }
-                    @if (puedeEditar)
-                    {
-                        <th style="width:120px">Acciones</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var fila in Model.Filas)
+                </div>
+            }
+        </nav>
+    </aside>
+
+    <section class="evo-maestro-detalle">
+        @* En pantallas angostas la lista lateral se reemplaza por un desplegable *@
+        <form class="evo-maestro-selector" method="get" asp-action="Index">
+            <label for="selectorCatalogo" class="visually-hidden">Catálogo</label>
+            <select id="selectorCatalogo" name="tabla" class="form-select" data-autoenviar data-sin-buscador>
+                @foreach (var g in CatalogoNavegacion.Grupos)
                 {
-                    var id = string.Join("|", Model.Claves.Select(c => fila[c]?.ToString() ?? ""));
-                    <tr>
-                        @foreach (var col in columnasVisibles)
+                    <optgroup label="@g.Titulo">
+                        @foreach (var clave in g.Claves)
                         {
-                            var valor = fila[col.Nombre];
-                            if (Model.Tabla == "Motivo_Perm" && col.Nombre == "TipoModalidad")
-                            {
-                                valor = valor?.ToString() switch { "C" => "Completo", "P" => "Parcial", var otro => otro };
-                            }
-                            <td class="@(col.EsClave ? "fw-semibold" : "")">@(valor ?? "&nbsp;")</td>
+                            <option value="@clave" selected="@(clave == Model.Tabla)">@CatalogoNavegacion.Items[clave]</option>
+                        }
+                    </optgroup>
+                }
+            </select>
+            <noscript><button type="submit" class="btn btn-outline-secondary">Ver</button></noscript>
+        </form>
+
+        <div class="evo-panel">
+            <div class="evo-panel-cabecera">
+                <div class="evo-toolbar">
+                    <div class="evo-toolbar-titulo">
+                        <h1>@Model.Titulo</h1>
+                        <span class="evo-toolbar-meta">@(grupoActual.Titulo ?? "Catálogo") · @Model.Filas.Count registro(s)</span>
+                    </div>
+                    <div class="evo-toolbar-acciones">
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <a asp-action="Exportar" asp-route-tabla="@Model.Tabla" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-download me-1" aria-hidden="true"></i>Exportar CSV
+                            </a>
                         }
                         @if (puedeEditar)
                         {
-                            <td>
-                                <div class="d-flex gap-2">
-                                    <a class="btn btn-sm btn-outline-primary" asp-action="Editar" asp-route-tabla="@Model.Tabla" asp-route-ids="@id"><i class="bi bi-pencil me-1"></i>Editar</a>
-                                    <form asp-action="Eliminar" asp-route-tabla="@Model.Tabla" asp-route-ids="@id" method="post"
-                                          onsubmit="return confirm('¿Seguro de eliminar este registro?');">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Eliminar</button>
-                                    </form>
-                                </div>
-                            </td>
+                            <a asp-action="Nuevo" asp-route-tabla="@Model.Tabla" class="btn btn-primary btn-sm" data-modal-form
+                               data-modal-titulo="Nuevo - @Model.Titulo">
+                                <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Nuevo
+                            </a>
                         }
-                    </tr>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.Filas.Count == 0)
+            {
+                <div class="evo-panel-vacio">
+                    <p class="mb-2">Este catálogo todavía no tiene registros.</p>
+                    @if (puedeEditar)
+                    {
+                        <a asp-action="Nuevo" asp-route-tabla="@Model.Tabla" class="btn btn-outline-primary btn-sm" data-modal-form
+                           data-modal-titulo="Nuevo - @Model.Titulo">Agregar el primero</a>
+                    }
+                </div>
+            }
+            else
+            {
+                var columnasVisibles = Model.Columnas.Where(c => !c.EsArchivo).Take(9).ToList();
+                var columnasOcultas = Model.Columnas.Count(c => !c.EsArchivo) - columnasVisibles.Count;
+
+                <div class="table-responsive evo-tabla-densa">
+                    <table class="table table-hover align-middle" data-search-target>
+                        <thead>
+                            <tr>
+                                @foreach (var col in columnasVisibles)
+                                {
+                                    <th>@col.Nombre</th>
+                                }
+                                @if (puedeEditar)
+                                {
+                                    <th class="text-end" style="width:96px">Acciones</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var fila in Model.Filas)
+                            {
+                                var id = string.Join("|", Model.Claves.Select(c => fila[c]?.ToString() ?? ""));
+                                <tr>
+                                    @foreach (var col in columnasVisibles)
+                                    {
+                                        var valor = fila[col.Nombre];
+                                        if (Model.Tabla == "Motivo_Perm" && col.Nombre == "TipoModalidad")
+                                        {
+                                            valor = valor?.ToString() switch { "C" => "Completo", "P" => "Parcial", var otro => otro };
+                                        }
+                                        <td class="@(col.EsClave ? "fw-semibold" : "")">@(valor ?? "")</td>
+                                    }
+                                    @if (puedeEditar)
+                                    {
+                                        <td>
+                                            <div class="evo-acciones-fila">
+                                                <a class="btn btn-sm btn-outline-primary btn-icono" asp-action="Editar" asp-route-tabla="@Model.Tabla" asp-route-ids="@id"
+                                                   data-modal-form data-modal-titulo="Editar - @Model.Titulo" data-bs-toggle="tooltip" title="Editar" aria-label="Editar">
+                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                </a>
+                                                <form asp-action="Eliminar" asp-route-tabla="@Model.Tabla" asp-route-ids="@id" method="post"
+                                                      onsubmit="return confirm('¿Seguro de eliminar este registro?');">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-icono" data-bs-toggle="tooltip" title="Eliminar" aria-label="Eliminar">
+                                                        <i class="bi bi-trash" aria-hidden="true"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @if (columnasOcultas > 0)
+                {
+                    <div class="evo-panel-pie">
+                        Se muestran @columnasVisibles.Count de @(columnasVisibles.Count + columnasOcultas) columnas; las otras @columnasOcultas se ven al editar.
+                    </div>
                 }
-            </tbody>
-        </table>
-    </div>
-    <p class="text-muted">
-        @Model.Filas.Count registro(s) (@Model.Columnas.Count(c => !c.EsArchivo) columna(s) en total,
-        @if (columnasOcultas > 0)
-        {
-            <span>mostrando las primeras @columnasVisibles.Count — las restantes @columnasOcultas solo se muestran al editar.</span>
-        }
-        else
-        {
-            <span>todas visibles.</span>
-        })
-    </p>
-}
+            }
+        </div>
+    </section>
+</div>

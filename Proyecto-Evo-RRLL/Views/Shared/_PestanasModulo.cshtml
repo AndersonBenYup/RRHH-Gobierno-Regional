@@ -1,0 +1,23 @@
+@using Proyecto_Evo_RRLL.Models.ViewModels
+@* Pestañas de sub-pantallas del módulo actual (MenuNavegacion.Pestanas). Solo en las pantallas de lista definidas;
+   en formularios (Nuevo/Editar) no se muestran. Conserva el empleado elegido (idEmpleado) al cambiar de pestaña. *@
+@{
+    var controlador = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var accion = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    MenuNavegacion.Pestanas.TryGetValue(controlador, out var pestanas);
+    var visible = pestanas is not null && pestanas.Any(p => string.Equals(p.Action, accion, StringComparison.OrdinalIgnoreCase));
+    var idEmpleado = Context.Request.Query["idEmpleado"].ToString();
+}
+@if (visible)
+{
+    <nav class="evo-subnav" aria-label="Secciones del módulo">
+        @foreach (var p in pestanas!)
+        {
+            var actual = string.Equals(p.Action, accion, StringComparison.OrdinalIgnoreCase);
+            <a class="@(actual ? "active" : "")" asp-controller="@p.Controller" asp-action="@p.Action"
+               asp-route-idEmpleado="@(string.IsNullOrEmpty(idEmpleado) ? null : idEmpleado)" aria-current="@(actual ? "page" : null)">
+                <i class="bi @p.Icono" aria-hidden="true"></i>@p.Etiqueta
+            </a>
+        }
+    </nav>
+}

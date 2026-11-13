@@ -1,4 +1,4 @@
-@model List<RRHH_Asegurado>
+﻿@model List<RRHH_Asegurado>
 @{
     ViewData["Title"] = "Beneficiarios";
     var idEmpleado = ViewBag.IdEmpleado as int?;
@@ -17,7 +17,7 @@
             <span class="text-secondary small">Empleado: @emp.Nombre</span>
         }
     </div>
-    <a asp-action="AseguradoNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo beneficiario</a>
+    <a data-modal-form asp-action="AseguradoNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo beneficiario</a>
 </div>
 
 <partial name="_FiltroEmpleado" model="@idEmpleado" />
@@ -54,7 +54,7 @@
                     <td>@a.FechaInicioVinculo?.ToString("dd/MM/yyyy")</td>
                     <td>@a.FechaFinVinculo?.ToString("dd/MM/yyyy")</td>
                     <td>
-                        <a asp-action="AseguradoEditar" asp-route-idEmpleado="@a.idEmpleado" asp-route-nroBeneficiario="@a.NroBeneficiario" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a data-modal-form asp-action="AseguradoEditar" asp-route-idEmpleado="@a.idEmpleado" asp-route-nroBeneficiario="@a.NroBeneficiario" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
                         <form asp-action="AseguradoEliminar" asp-route-idEmpleado="@a.idEmpleado" asp-route-nroBeneficiario="@a.NroBeneficiario" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este beneficiario?');">
                             <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
                         </form>

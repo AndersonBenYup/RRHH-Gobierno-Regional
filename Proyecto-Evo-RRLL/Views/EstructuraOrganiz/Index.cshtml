@@ -1,4 +1,4 @@
-@model List<AreaOrganizFila>
+﻿@model List<AreaOrganizFila>
 @{
     ViewData["Title"] = "Estructura orgánica";
     var anios = ViewBag.Anios as List<int> ?? new List<int>();
@@ -11,7 +11,6 @@
         <span class="text-secondary small">@Model.Count registro(s) en @anio</span>
     </div>
     <div class="d-flex gap-2">
-        <a asp-action="Locales" class="btn btn-outline-secondary"><i class="bi bi-building me-1"></i>Locales</a>
         @if (anio is not null)
         {
             <a asp-action="Nuevo" asp-route-year="@anio" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva unidad</a>

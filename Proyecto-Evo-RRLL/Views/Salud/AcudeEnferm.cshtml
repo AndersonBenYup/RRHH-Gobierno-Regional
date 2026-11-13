@@ -1,4 +1,4 @@
-@model List<RRHH_AcudeEnferm>
+﻿@model List<RRHH_AcudeEnferm>
 @{
     ViewData["Title"] = "A quién acudir en caso de enfermedad";
 }
@@ -8,7 +8,7 @@
         <h3 class="mb-0">Opción: a quién acudir</h3>
         <span class="text-secondary small">@Model.Count registro(s)</span>
     </div>
-    <a asp-action="AcudeEnfermNuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva opción</a>
+    <a data-modal-form asp-action="AcudeEnfermNuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva opción</a>
 </div>
 
 <div class="table-responsive">
@@ -31,7 +31,7 @@
                     <td class="fw-semibold">@a.idAcudeEnferm</td>
                     <td>@a.AcudeEnfermDescrip</td>
                     <td>
-                        <a asp-action="AcudeEnfermEditar" asp-route-id="@a.idAcudeEnferm" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a data-modal-form asp-action="AcudeEnfermEditar" asp-route-id="@a.idAcudeEnferm" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
                         <form asp-action="AcudeEnfermEliminar" asp-route-id="@a.idAcudeEnferm" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar esta opción?');">
                             <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
                         </form>

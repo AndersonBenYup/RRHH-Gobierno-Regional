@@ -728,6 +728,18 @@ CREATE TABLE [dbo].[Permiso](
 	CONSTRAINT [FK_Permiso_Empleado]    FOREIGN KEY ([IdEmpleado]) REFERENCES [dbo].[Empleado]([IdEmpleado]),
 	CONSTRAINT [FK_Permiso_Motivo_Perm] FOREIGN KEY ([idMotivo])   REFERENCES [dbo].[Motivo_Perm]([idMotivo])
 )
+-- RF-13: periodos de teletrabajo (antes solo en Scripts/rf-13-crear-periodo-teletrabajo.sql y en Azure)
+CREATE TABLE [dbo].[PeriodoTeletrabajo](
+	[Id]          int IDENTITY(1,1) NOT NULL,
+	[IdEmpleado]  int  NOT NULL,
+	[FechaInicio] date NOT NULL,
+	[FechaFin]    date NOT NULL,
+	[Parcial]     bit  NOT NULL,
+	CONSTRAINT [PK_PeriodoTeletrabajo] PRIMARY KEY CLUSTERED ([Id]),
+	CONSTRAINT [FK_PeriodoTeletrabajo_Empleado] FOREIGN KEY ([IdEmpleado]) REFERENCES [dbo].[Empleado]([IdEmpleado]),
+	CONSTRAINT [CK_PeriodoTeletrabajo_Fechas]   CHECK ([FechaFin] >= [FechaInicio]),
+	CONSTRAINT [UQ_PeriodoTeletrabajo_Registro] UNIQUE ([IdEmpleado], [FechaInicio], [FechaFin], [Parcial])
+)
 GO
 
 /* ============================================================

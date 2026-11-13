@@ -39,4 +39,22 @@ public static class CatalogoNavegacion
         ["VinculoAsegurado"] = "Vínculos de Asegurado",
         ["ServicioViv"] = "Servicios de Vivienda"
     };
+
+    /// <summary>
+    /// Los catálogos ordenados por tema (como el menú Mantenimientos del sistema de escritorio).
+    /// Lo usan el panel de Mantenimiento del dock y la lista lateral de Catalogo/Index. Cada clave existe en <see cref="Items"/>.
+    /// </summary>
+    public static readonly IReadOnlyList<(string Titulo, string Icono, string[] Claves)> Grupos =
+    [
+        ("Personal", "bi-person-vcard",
+            ["Cargo", "MotivoBaja", "EstadoCivil", "TipoDocID", "TipoTrabajador", "Nacionalidad", "RegimenPension", "AFP", "TipoSangre", "Discapacidad"]),
+        ("Asistencia y permisos", "bi-calendar-check",
+            ["TipoPermiso", "Motivo_Perm", "Horario"]),
+        ("Formación y conducta", "bi-mortarboard",
+            ["TipoEstudio", "TipoInstitucion", "TipoComportamiento", "TipoResolucion"]),
+        ("Familia y salud", "bi-people",
+            ["TipoFamiliar", "RRHH_TipoFamilia", "RRHH_RelacPareja", "RRHH_RelacPH", "RRHH_RelacHermano", "ViveCon", "RRHH_AcudeEnferm", "VinculoAsegurado"]),
+        ("Vivienda", "bi-house",
+            ["TipoViv", "MaterialViv", "TenenciaViv", "ConservacionViv", "UbicacionViv", "ServicioViv", "AguaViv", "AlumbradoViv", "ExcretasViv"])
+    ];
 }

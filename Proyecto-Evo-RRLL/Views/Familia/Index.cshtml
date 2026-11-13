@@ -1,4 +1,4 @@
-@model List<FamiliarFicha>
+﻿@model List<FamiliarFicha>
 @{
     ViewData["Title"] = "Familia";
     var idEmpleado = ViewBag.IdEmpleado as int?;
@@ -16,7 +16,7 @@
             <span class="text-secondary small">Empleado: @emp.Nombre</span>
         }
     </div>
-    <a asp-action="FamiliarNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo familiar</a>
+    <a data-modal-form asp-action="FamiliarNuevo" asp-route-idEmpleado="@idEmpleado" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo familiar</a>
 </div>
 
 <partial name="_FiltroEmpleado" model="@idEmpleado" />
@@ -53,7 +53,7 @@
                     <td>@(f.ViveCasa == true ? "Sí" : f.ViveCasa == false ? "No" : "")</td>
                     <td>@f.Enfermedad</td>
                     <td>
-                        <a asp-action="FamiliarEditar" asp-route-idEmpleado="@f.IdEmpleado" asp-route-idPersona="@f.IdPersona" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a data-modal-form asp-action="FamiliarEditar" asp-route-idEmpleado="@f.IdEmpleado" asp-route-idPersona="@f.IdPersona" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Editar"><i class="bi bi-pencil"></i></a>
                         <form asp-action="FamiliarEliminar" asp-route-idEmpleado="@f.IdEmpleado" asp-route-idPersona="@f.IdPersona" method="post" class="d-inline" onsubmit="return confirm('¿Eliminar este familiar?');">
                             <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="bi bi-trash"></i></button>
                         </form>
@@ -68,7 +68,3 @@
     <partial name="_Paginador" model="paginador" />
 }
 
-<div class="d-flex gap-2 mt-3">
-    <a asp-action="Dinamica" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-primary btn-sm"><i class="bi bi-diagram-3 me-1"></i>Dinámica familiar</a>
-    <a asp-action="FuncFam" asp-route-idEmpleado="@idEmpleado" class="btn btn-outline-secondary btn-sm"><i class="bi bi-sliders me-1"></i>Funcionalidad familiar</a>
-</div>

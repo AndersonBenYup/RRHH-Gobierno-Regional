@@ -1,0 +1,94 @@
+@using Proyecto_Evo_RRLL.Models.ViewModels
+@*
+    Dock de navegación inferior. Reemplaza la barra lateral: los módulos se agrupan como en el sistema de escritorio
+    (Personal, Asistencia, Permisos, Bienestar, Reportes, Mantenimiento, Seguridad) y cada grupo abre un panel hacia arriba.
+    Las opciones se filtran con User.PuedeVer (SC-009); un grupo sin opciones visibles no se muestra.
+*@
+@{
+    var controlador = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var accion = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var tablaActual = Context.Request.Query["tabla"].ToString();
+    var esAdmin = User.IsInRole("Administrador");
+
+    bool EsActual(OpcionMenu o) =>
+        string.Equals(o.Controller, controlador, StringComparison.OrdinalIgnoreCase)
+        && string.Equals(o.Action, accion, StringComparison.OrdinalIgnoreCase);
+
+    // Grupo del dock que se marca como activo: el que contiene el controller actual.
+    string? grupoActivo = controlador == "Home" ? "inicio"
+        : controlador == "Catalogo" ? "mantenimiento"
+        : MenuNavegacion.Grupos.FirstOrDefault(g => g.Controllers.Contains(controlador, StringComparer.OrdinalIgnoreCase))?.Clave;
+}
+
+<nav class="evo-dock" id="evoDock" aria-label="Navegación principal">
+    <div class="evo-dock-inner">
+        <a class="evo-dock-btn @(grupoActivo == "inicio" ? "active" : "")" asp-controller="Home" asp-action="Index"
+           aria-current="@(grupoActivo == "inicio" ? "page" : null)">
+            @if (grupoActivo == "inicio") { <span class="evo-dock-indicador" aria-hidden="true"></span> }
+            <i class="bi bi-house-door" aria-hidden="true"></i><span>Inicio</span>
+        </a>
+
+        @foreach (var grupo in MenuNavegacion.Grupos)
+        {
+            if (grupo.SoloAdministrador && !esAdmin) { continue; }
+            var opciones = grupo.Opciones.Where(o => User.PuedeVer(o.Permiso ?? o.Controller)).ToList();
+            if (opciones.Count == 0) { continue; }
+            var activo = grupoActivo == grupo.Clave;
+            var idPanel = "dock-" + grupo.Clave;
+
+            <div class="dropup evo-dock-grupo">
+                <button class="evo-dock-btn @(activo ? "active" : "")" type="button" id="@(idPanel)-btn"
+                        data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-controls="@idPanel">
+                    @if (activo) { <span class="evo-dock-indicador" aria-hidden="true"></span> }
+                    <i class="bi @grupo.Icono" aria-hidden="true"></i><span>@grupo.Etiqueta</span>
+                </button>
+                <div class="dropdown-menu evo-dock-panel" id="@idPanel" aria-labelledby="@(idPanel)-btn">
+                    <div class="evo-dock-panel-titulo">@grupo.Etiqueta</div>
+                    @foreach (var o in opciones)
+                    {
+                        var actual = EsActual(o);
+                        <a class="dropdown-item @(actual ? "active" : "")" asp-controller="@o.Controller" asp-action="@o.Action"
+                           aria-current="@(actual ? "page" : null)">
+                            <i class="bi @o.Icono" aria-hidden="true"></i><span>@o.Etiqueta</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (User.PuedeVer("Catalogo"))
+        {
+            var activo = grupoActivo == "mantenimiento";
+            <div class="dropup evo-dock-grupo evo-dock-grupo-mega">
+                <button class="evo-dock-btn @(activo ? "active" : "")" type="button" id="dock-mantenimiento-btn"
+                        data-bs-toggle="dropdown" data-bs-display="static" data-bs-auto-close="outside" aria-expanded="false" aria-controls="dock-mantenimiento">
+                    @if (activo) { <span class="evo-dock-indicador" aria-hidden="true"></span> }
+                    <i class="bi bi-sliders" aria-hidden="true"></i><span>Mantenimiento</span>
+                </button>
+                <div class="dropdown-menu evo-dock-panel evo-dock-mega" id="dock-mantenimiento" aria-labelledby="dock-mantenimiento-btn">
+                    <div class="evo-dock-mega-cabecera">
+                        <span class="evo-dock-panel-titulo p-0">Mantenimiento de catálogos</span>
+                        <div class="evo-dock-filtro">
+                            <i class="bi bi-search" aria-hidden="true"></i>
+                            <input type="search" class="form-control form-control-sm" placeholder="Filtrar catálogos…" aria-label="Filtrar catálogos" data-filtro-catalogos="#dock-mantenimiento" />
+                        </div>
+                    </div>
+                    <div class="evo-dock-mega-columnas">
+                        @foreach (var g in CatalogoNavegacion.Grupos)
+                        {
+                            <div class="evo-dock-mega-col" data-grupo-catalogo>
+                                <div class="evo-dock-mega-titulo"><i class="bi @g.Icono" aria-hidden="true"></i>@g.Titulo</div>
+                                @foreach (var clave in g.Claves)
+                                {
+                                    var actual = controlador == "Catalogo" && tablaActual == clave;
+                                    <a class="dropdown-item @(actual ? "active" : "")" asp-controller="Catalogo" asp-action="Index" asp-route-tabla="@clave"
+                                       aria-current="@(actual ? "page" : null)" data-item-catalogo>@CatalogoNavegacion.Items[clave]</a>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</nav>

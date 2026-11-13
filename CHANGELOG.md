@@ -11,6 +11,23 @@ Cada versión 2.x tiene su tag en este repositorio. El código de cada solicitud
 
 ## [Sin publicar]
 
+## [2.12.0] - 2026-11-13
+
+### Agregado
+- SC-033: **dock de navegación inferior**. Reemplaza la barra lateral: los módulos se agrupan como en el sistema de escritorio (Personal, Asistencia, Permisos, Bienestar, Reportes, Mantenimiento, Seguridad) y cada grupo abre un panel hacia arriba. El contenido usa todo el ancho. Definición única en `Models/ViewModels/MenuNavegacion.cs`, filtrada con `User.PuedeVer`.
+- SC-033: **Mantenimiento en panel ancho y maestro-detalle**. Los 34 catálogos se agrupan por tema (`CatalogoNavegacion.Grupos`); `Catalogo/Index` muestra la lista agrupada con buscador a la izquierda y la grilla a la derecha, en lugar del bloque de 34 botones.
+- SC-033: **formularios en ventana emergente**. Los enlaces con `data-modal-form` (catálogos, feriados, comportamiento, capacitación, marcaciones, registro diario, horarios temporales, roles, salud y familia) abren Nuevo/Editar sin salir de la lista; sin JavaScript abren la página completa como antes.
+- SC-033: **pestañas por módulo** (`_PestanasModulo`) para las sub-pantallas de Asistencia, Permisos, Salud, Familia, Capacitación, Estructura orgánica y Seguridad; reemplazan las filas de botones repetidas en cada vista.
+- SC-033: **Centro de reportes** (`/Reportes`): reúne los reportes y exportaciones existentes, filtrados por los permisos del usuario.
+- `PeriodoTeletrabajo` (RF-13) agregada a `Scripts/bd-Normalizada/01-esquema-RRHH_Normalizado.sql`, igual que en Azure.
+
+### Cambiado
+- Inicio: los 7 indicadores en una fila y accesos rápidos junto al saludo.
+- El aviso de cookies se muestra encima del dock y no lo tapa.
+- `<Version>2.12.0</Version>`.
+
+Pruebas: 187 en verde.
+
 ## [2.11.0] - 2026-11-11
 
 ### Agregado

@@ -1,0 +1,132 @@
+@{
+    ViewData["Title"] = "Centro de reportes";
+    var esAdmin = User.IsInRole("Administrador");
+    var verPermisos = User.PuedeVer("Permiso");
+    var verAsistencia = User.PuedeVer("Asistencia");
+    var verVacaciones = User.PuedeVer("Vacaciones");
+    var verPersonal = User.PuedeVer("Empleado");
+    var verEstructura = User.PuedeVer("EstructuraOrganiz");
+    var verCatalogos = User.PuedeVer("Catalogo") && esAdmin;
+    var hayAlguno = verPermisos || verAsistencia || verVacaciones || verPersonal || verEstructura || verCatalogos;
+}
+
+<div class="evo-toolbar">
+    <div class="evo-toolbar-titulo">
+        <h1>Centro de reportes</h1>
+        <span class="evo-toolbar-meta">Reportes y exportaciones de todos los módulos</span>
+    </div>
+</div>
+
+@if (!hayAlguno)
+{
+    <div class="evo-panel evo-panel-vacio">
+        Su rol no tiene acceso a ningún módulo con reportes. Pida al administrador que le asigne uno.
+    </div>
+}
+
+<div class="evo-reportes">
+    @if (verPermisos || verAsistencia)
+    {
+        <section class="evo-panel" aria-labelledby="rep-asistencia">
+            <div class="evo-panel-cabecera"><h2 id="rep-asistencia"><i class="bi bi-calendar-check" aria-hidden="true"></i>Asistencia y permisos</h2></div>
+            @if (verPermisos)
+            {
+                <div class="evo-reporte">
+                    <div class="evo-reporte-texto">
+                        <p class="evo-reporte-nombre">Ausencias por periodo</p>
+                        <p class="evo-reporte-desc">Ausencias del personal en un rango de fechas, filtrables por motivo de permiso.</p>
+                    </div>
+                    <div class="evo-reporte-acciones">
+                        <a asp-controller="Permiso" asp-action="ReporteAusencias" class="btn btn-outline-primary btn-sm">Abrir</a>
+                    </div>
+                </div>
+                <div class="evo-reporte">
+                    <div class="evo-reporte-texto">
+                        <p class="evo-reporte-nombre">Días de teletrabajo</p>
+                        <p class="evo-reporte-desc">Días de teletrabajo por empleado y por dispositivo de marcación.</p>
+                    </div>
+                    <div class="evo-reporte-acciones">
+                        <a asp-controller="Permiso" asp-action="ReporteTeletrabajo" class="btn btn-outline-primary btn-sm">Abrir</a>
+                    </div>
+                </div>
+            }
+            @if (verAsistencia)
+            {
+                <div class="evo-reporte">
+                    <div class="evo-reporte-texto">
+                        <p class="evo-reporte-nombre">Registro de asistencia</p>
+                        <p class="evo-reporte-desc">Elija el rango de fechas en la pantalla y expórtelo a CSV con los mismos filtros.</p>
+                    </div>
+                    <div class="evo-reporte-acciones">
+                        <a asp-controller="Asistencia" asp-action="Index" class="btn btn-outline-primary btn-sm">Abrir</a>
+                    </div>
+                </div>
+            }
+        </section>
+    }
+
+    @if (verVacaciones)
+    {
+        <section class="evo-panel" aria-labelledby="rep-vacaciones">
+            <div class="evo-panel-cabecera"><h2 id="rep-vacaciones"><i class="bi bi-sun" aria-hidden="true"></i>Vacaciones</h2></div>
+            <div class="evo-reporte">
+                <div class="evo-reporte-texto">
+                    <p class="evo-reporte-nombre">Saldo de vacaciones</p>
+                    <p class="evo-reporte-desc">Días ganados, gozados y pendientes de todo el personal a una fecha de corte.</p>
+                </div>
+                <div class="evo-reporte-acciones">
+                    <a asp-controller="Vacaciones" asp-action="Index" class="btn btn-outline-primary btn-sm">Abrir</a>
+                    <a asp-controller="Vacaciones" asp-action="Exportar" class="btn btn-outline-secondary btn-sm"><i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>CSV a hoy</a>
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (verPersonal || verEstructura)
+    {
+        <section class="evo-panel" aria-labelledby="rep-personal">
+            <div class="evo-panel-cabecera"><h2 id="rep-personal"><i class="bi bi-people" aria-hidden="true"></i>Personal</h2></div>
+            @if (verPersonal)
+            {
+                <div class="evo-reporte">
+                    <div class="evo-reporte-texto">
+                        <p class="evo-reporte-nombre">Relación de personal</p>
+                        <p class="evo-reporte-desc">Listado completo del personal registrado.</p>
+                    </div>
+                    <div class="evo-reporte-acciones">
+                        <a asp-controller="Empleado" asp-action="Index" class="btn btn-outline-primary btn-sm">Abrir</a>
+                        <a asp-controller="Empleado" asp-action="Exportar" class="btn btn-outline-secondary btn-sm"><i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>CSV</a>
+                    </div>
+                </div>
+            }
+            @if (verEstructura)
+            {
+                <div class="evo-reporte">
+                    <div class="evo-reporte-texto">
+                        <p class="evo-reporte-nombre">Personal por oficina</p>
+                        <p class="evo-reporte-desc">Estructura orgánica con el personal asignado a cada unidad.</p>
+                    </div>
+                    <div class="evo-reporte-acciones">
+                        <a asp-controller="EstructuraOrganiz" asp-action="Index" class="btn btn-outline-primary btn-sm">Abrir</a>
+                    </div>
+                </div>
+            }
+        </section>
+    }
+
+    @if (verCatalogos)
+    {
+        <section class="evo-panel" aria-labelledby="rep-catalogos">
+            <div class="evo-panel-cabecera"><h2 id="rep-catalogos"><i class="bi bi-sliders" aria-hidden="true"></i>Catálogos</h2></div>
+            <div class="evo-reporte">
+                <div class="evo-reporte-texto">
+                    <p class="evo-reporte-nombre">Exportar un catálogo</p>
+                    <p class="evo-reporte-desc">Abra el catálogo en Mantenimiento y use «Exportar CSV».</p>
+                </div>
+                <div class="evo-reporte-acciones">
+                    <a asp-controller="Catalogo" asp-action="Index" asp-route-tabla="Cargo" class="btn btn-outline-primary btn-sm">Abrir</a>
+                </div>
+            </div>
+        </section>
+    }
+</div>

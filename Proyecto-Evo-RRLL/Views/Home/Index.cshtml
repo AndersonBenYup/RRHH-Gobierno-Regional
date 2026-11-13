@@ -13,13 +13,26 @@
         <h3 class="mb-1">@saludo, @User.Identity?.Name</h3>
         <p class="text-secondary small mb-0"><i class="bi bi-calendar3 me-1"></i>@fechaHoy</p>
     </div>
-    <a asp-controller="Empleado" asp-action="Nuevo" class="btn btn-primary">
-        <i class="bi bi-person-plus me-1"></i>Nuevo empleado
-    </a>
+    @* Accesos rápidos a las tareas diarias (como la barra de herramientas del sistema de escritorio) *@
+    <div class="evo-accesos" role="group" aria-label="Accesos rápidos">
+        @if (User.PuedeVer("Empleado"))
+        {
+            <a asp-controller="Empleado" asp-action="Nuevo" class="btn btn-primary"><i class="bi bi-person-plus me-1" aria-hidden="true"></i>Nuevo empleado</a>
+        }
+        @if (User.PuedeVer("Asistencia"))
+        {
+            <a asp-controller="Asistencia" asp-action="Marcaciones" class="btn btn-outline-secondary"><i class="bi bi-fingerprint me-1" aria-hidden="true"></i>Marcaciones</a>
+        }
+        @if (User.PuedeVer("Permiso"))
+        {
+            <a asp-controller="Permiso" asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-calendar-check me-1" aria-hidden="true"></i>Permisos</a>
+        }
+        <a asp-controller="Reportes" asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-bar-chart-line me-1" aria-hidden="true"></i>Reportes</a>
+    </div>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-4 col-sm-6">
+<div class="evo-indicadores mb-4">
+    <div class="evo-indicador">
         <a asp-controller="Empleado" asp-action="Index" class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
                 <div class="stat-chip c-primary"><i class="bi bi-people"></i></div>
@@ -31,7 +44,7 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4 col-sm-6">
+    <div class="evo-indicador">
         <div class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
                 <div class="stat-chip c-success"><i class="bi bi-person-vcard"></i></div>
@@ -42,7 +55,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4 col-sm-6">
+    <div class="evo-indicador">
         <a asp-controller="Asistencia" asp-action="Index" class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
                 <div class="stat-chip c-info"><i class="bi bi-clock-history"></i></div>
@@ -54,7 +67,7 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4 col-sm-6">
+    <div class="evo-indicador">
         <div class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
                 <div class="stat-chip c-violet"><i class="bi bi-diagram-3"></i></div>
@@ -65,7 +78,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4 col-sm-6">
+    <div class="evo-indicador">
         <a asp-controller="Catalogo" asp-action="Index" asp-route-tabla="Cargo" class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
                 <div class="stat-chip c-danger"><i class="bi bi-briefcase"></i></div>
@@ -77,7 +90,7 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4 col-sm-6">
+    <div class="evo-indicador">
         <a asp-controller="Empleado" asp-action="Index" class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
                 <div class="stat-chip c-success"><i class="bi bi-person-check"></i></div>
@@ -89,7 +102,7 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4 col-sm-6">
+    <div class="evo-indicador">
         <div class="card stat-card h-100">
             <div class="card-body d-flex align-items-center gap-3">
                 <div class="stat-chip c-warning"><i class="bi bi-calendar-heart"></i></div>

@@ -3,6 +3,13 @@
 (function () {
     'use strict';
 
+    // Raíz de la aplicación (por si se publica en una subcarpeta): se deduce de la ruta de este archivo.
+    var BASE_APP = (function () {
+        var src = document.currentScript && document.currentScript.getAttribute('src') || '';
+        var i = src.indexOf('js/site.js');
+        return i >= 0 ? src.substring(0, i) : '/';
+    })();
+
     document.addEventListener('DOMContentLoaded', function () {
         initSplash();
         initTheme();
@@ -13,7 +20,8 @@
         initPasswordToggle();
         initCopyButtons();
         initToasts();
-        initSidebar();
+        initFiltroCatalogos();
+        initModalForm();
         initCargaTablas();
         initBotonesCarga();
         initTooltips();
@@ -505,29 +513,137 @@
         if (!document.hidden) correr();
     };
 
-    /* ---------- Menú móvil (sidebar) ---------- */
-    function initSidebar() {
-        var sidebar = document.getElementById('sidebar');
-        var backdrop = document.getElementById('sidebarBackdrop');
-        var btn = document.getElementById('btnMenu');
-        if (!sidebar || !backdrop || !btn) return;
-
-        function abrir() {
-            sidebar.classList.add('open');
-            backdrop.classList.add('open');
-        }
-        function cerrar() {
-            sidebar.classList.remove('open');
-            backdrop.classList.remove('open');
-        }
-        btn.addEventListener('click', abrir);
-        backdrop.addEventListener('click', cerrar);
-        // Cierra al navegar (click en enlace del sidebar) en móvil
-        sidebar.querySelectorAll('a.sidebar-link, a.sidebar-sublink').forEach(function (enlace) {
-            enlace.addEventListener('click', function () {
-                if (window.innerWidth < 992) cerrar();
+    /* ---------- Filtro de catálogos (panel Mantenimiento del dock y lista de Catalogo/Index) ----------
+       <input data-filtro-catalogos="#contenedor"> oculta los [data-item-catalogo] que no coinciden y los
+       [data-grupo-catalogo] que quedan vacíos. Enter abre el primero visible; Esc limpia. */
+    function initFiltroCatalogos() {
+        document.querySelectorAll('input[data-filtro-catalogos]').forEach(function (input) {
+            var cont = document.querySelector(input.getAttribute('data-filtro-catalogos'));
+            if (!cont) return;
+            function filtrar() {
+                var q = sinTildes(input.value.trim());
+                cont.querySelectorAll('[data-grupo-catalogo]').forEach(function (grupo) {
+                    var visibles = 0;
+                    grupo.querySelectorAll('[data-item-catalogo]').forEach(function (item) {
+                        var ok = !q || sinTildes(item.textContent).indexOf(q) >= 0;
+                        item.hidden = !ok;
+                        if (ok) visibles++;
+                    });
+                    grupo.hidden = visibles === 0;
+                });
+            }
+            input.addEventListener('input', filtrar);
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var primero = cont.querySelector('[data-item-catalogo]:not([hidden])');
+                    if (primero) primero.click();
+                } else if (e.key === 'Escape' && input.value) {
+                    e.stopPropagation();
+                    input.value = '';
+                    filtrar();
+                }
             });
         });
+        // Al abrir el panel de Mantenimiento el foco va directo al filtro
+        var btnMant = document.getElementById('dock-mantenimiento-btn');
+        if (btnMant) {
+            btnMant.addEventListener('shown.bs.dropdown', function () {
+                var f = document.querySelector('#dock-mantenimiento input[data-filtro-catalogos]');
+                if (f) f.focus();
+            });
+        }
+    }
+
+    /* ---------- Formularios en ventana emergente ----------
+       Un enlace <a data-modal-form href="/Modulo/Nuevo"> abre el formulario de esa página en #modalForm sin salir
+       de la lista. Se descarga la página, se toma su formulario POST y se valida igual que en la página.
+       Al guardar, el formulario se envía normalmente y el servidor redirige a la lista con su mensaje.
+       Si algo falla (sesión vencida, sin acceso, error de red) se abre la página completa, como antes. */
+    var promesaValidacion = null;
+    function cargarScript(src) {
+        return new Promise(function (ok, error) {
+            var s = document.createElement('script');
+            s.src = src;
+            s.onload = ok;
+            s.onerror = error;
+            document.body.appendChild(s);
+        });
+    }
+    function asegurarValidacion() {
+        if (window.jQuery && jQuery.validator && jQuery.validator.unobtrusive) return Promise.resolve();
+        if (!promesaValidacion) {
+            promesaValidacion = cargarScript(BASE_APP + 'lib/jquery-validation/dist/jquery.validate.min.js')
+                .then(function () { return cargarScript(BASE_APP + 'lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js'); })
+                .then(function () { return cargarScript(BASE_APP + 'js/validacion-es.js'); });
+        }
+        return promesaValidacion;
+    }
+
+    function initModalForm() {
+        var modalEl = document.getElementById('modalForm');
+        if (!modalEl || !window.bootstrap || !window.fetch || !window.DOMParser) return;
+        var cuerpo = document.getElementById('modalFormCuerpo');
+        var titulo = document.getElementById('modalFormTitulo');
+        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        document.addEventListener('click', function (e) {
+            var enlace = e.target.closest && e.target.closest('a[data-modal-form]');
+            if (!enlace || e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            var tip = bootstrap.Tooltip.getInstance(enlace);
+            if (tip) tip.hide();
+            abrir(enlace.href, enlace.getAttribute('data-modal-titulo') || enlace.getAttribute('title') || enlace.textContent.trim());
+        });
+
+        modalEl.addEventListener('shown.bs.modal', function () {
+            var campo = cuerpo.querySelector('input:not([type=hidden]):not([readonly]):not([disabled]), select:not([disabled]), textarea');
+            if (campo) campo.focus();
+        });
+        modalEl.addEventListener('hidden.bs.modal', function () { cuerpo.innerHTML = ''; });
+
+        function abrir(url, tituloInicial) {
+            titulo.textContent = tituloInicial || 'Formulario';
+            cuerpo.innerHTML = '<div class="evo-modal-cargando"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Cargando formulario…</div>';
+            modal.show();
+
+            fetch(url, { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(function (r) {
+                    if (!r.ok || r.redirected) throw new Error('respuesta');
+                    return r.text();
+                })
+                .then(function (html) {
+                    var doc = new DOMParser().parseFromString(html, 'text/html');
+                    var main = doc.getElementById('contenido');
+                    var form = main && main.querySelector('form[method="post"], form[method="POST"]');
+                    if (!form) throw new Error('sin formulario');
+                    var h = main.querySelector('h1, h3');
+                    if (h && h.textContent.trim()) titulo.textContent = h.textContent.trim();
+
+                    var nuevo = document.importNode(form, true);
+                    // "Cancelar" / "Volver" dentro del formulario cierran la ventana en vez de navegar
+                    nuevo.querySelectorAll('a.btn').forEach(function (a) {
+                        if (/cancelar|volver/i.test(a.textContent)) {
+                            a.setAttribute('data-bs-dismiss', 'modal');
+                            a.setAttribute('role', 'button');
+                            a.addEventListener('click', function (ev) { ev.preventDefault(); });
+                        }
+                    });
+                    cuerpo.innerHTML = '';
+                    cuerpo.appendChild(nuevo);
+                    initSelectBuscable(cuerpo);
+                    var campo = cuerpo.querySelector('input:not([type=hidden]):not([readonly]):not([disabled]), select:not([disabled]), textarea');
+                    if (campo) campo.focus();
+                    return asegurarValidacion().then(function () {
+                        if (window.jQuery && jQuery.validator && jQuery.validator.unobtrusive) {
+                            jQuery.validator.unobtrusive.parse(nuevo);
+                        }
+                    });
+                })
+                .catch(function () {
+                    window.location.href = url;
+                });
+        }
     }
 
     /* ---------- SC-011: skeleton de tablas ----------
